@@ -83,12 +83,25 @@ not by assuming.
 
 ## Regenerating
 
-From the Seam repo, using the brand toolkit:
+From this repo. The toolkit and the token contract are both vendored here, so
+regeneration needs nothing from upstream:
 
 ```bash
-python -m tools.branding.assets png branding/ghost/ghost.svg out.png --width 512
-python -m tools.branding.assets ico branding/ghost/ghost-mark.svg ghost.ico
+uv sync --group dev
+python -m tools.branding.assets fonts                                   # verify brand faces resolve
+python -m tools.branding.assets png branding/ghost.svg out.png --width 512
+python -m tools.branding.assets ico branding/ghost-mark.svg branding/ghost.ico
 ```
+
+Needs headless Chrome (rasterizer) and Pillow (ICO). `ffmpeg` is only required
+for the video path.
+
+> **The vendored toolkit is a bridge.** `tools/branding/` is being extracted
+> into its own repository; this copy exists so Ghost can regenerate its identity
+> in the meantime. Do not fix bugs here alone, and delete the directory in
+> favour of a dependency once the toolkit ships as a package.
+> `branding/tokens.json` is likewise a copy of the Canticle contract, which
+> upstream owns.
 
 The `ico` path renders every size independently from the vector rather than
 downscaling one large render, which is what keeps 16px legible.

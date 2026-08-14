@@ -24,6 +24,9 @@ ghost = "ghost.cli:main"
 dev = [
   "pytest>=8.3,<10",
   "ruff>=0.15,<1",
+  # Brand asset generation (tools/branding). Pillow writes the multi-size ICO;
+  # headless Chrome and ffmpeg are system tools, not Python dependencies.
+  "pillow>=11,<14",
 ]
 
 [tool.hatch.metadata]
