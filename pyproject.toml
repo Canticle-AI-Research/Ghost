@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "canticle-ghost"
+version = "0.1.0"
+description = "A DeepAgent with durable MIRL memory through the private SEAM SDK"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+dependencies = [
+  "deepagents>=0.5.9,<0.6",
+  "langchain>=1.2,<2",
+  "langchain-openai>=1.1,<2",
+  "langgraph>=1.0,<2",
+  "python-dotenv>=1.1,<2",
+  "seam-runtime[pgvector] @ git+ssh://git@github.com/BlackhatShiftey/Seam.git@022b0037502c9af0d93e8c5bfa4d5f38d9aec7ac",
+]
+
+[project.scripts]
+ghost = "ghost.cli:main"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3,<10",
+  "ruff>=0.15,<1",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ghost"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "UP"]

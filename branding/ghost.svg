@@ -1,0 +1,179 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96"
+     class="rgb" role="img" aria-label="Ghost, the SEAM agent">
+  <title>Ghost</title>
+  <desc>An ethereal being of light with a defined edge, holding a slowly evolving neural
+        constellation at his core. Entirely RGB, cycling the Canticle hues as one.</desc>
+  <!--
+    Eighth pass. Two changes on v7.
+
+    The edge is defined now. A single feathered stroke gave the silhouette no
+    line to hold, so the rim is two layers: a wide soft bloom that keeps the
+    ethereal falloff, and a tight stroke over it that actually draws the form.
+    The being still has no hard outline in the graphic sense, because the tight
+    stroke is itself lightly blurred and sits on the glow, but the shape now
+    reads at a glance.
+
+    The core is alive rather than merely drifting. Every node pulses on its own
+    period and every edge fades in and out on another, none of them multiples
+    of each other, so connections form and dissolve and the pattern never
+    visibly repeats. The whole cluster rotates once every eighty seconds and
+    the nebula behind it blooms slowly in and out. The intent is a network
+    thinking, glimpsed through the body, never loud enough to become the
+    subject.
+
+    Everything still resolves to currentColor, animated on the root so the
+    gradients inherit it, and cycles the eight Canticle stops as one.
+  -->
+  <style>
+    @keyframes rgb {
+      0%   { color: #f7768e } 14%  { color: #ff9e64 }
+      28%  { color: #e0af68 } 42%  { color: #9ece6a }
+      57%  { color: #7dcfff } 71%  { color: #7aa2f7 }
+      85%  { color: #c4a7e7 } 100% { color: #f7768e }
+    }
+    @keyframes drift-near {
+      0%   { transform: translate(0,0) rotate(0deg) }
+      33%  { transform: translate(1.5px,-1px) rotate(2.6deg) }
+      66%  { transform: translate(-1.1px,1.3px) rotate(-2deg) }
+      100% { transform: translate(0,0) rotate(0deg) }
+    }
+    @keyframes drift-far {
+      0%   { transform: translate(0,0) rotate(0deg) }
+      33%  { transform: translate(.7px,-.5px) rotate(-1.5deg) }
+      66%  { transform: translate(-.5px,.6px) rotate(1.1deg) }
+      100% { transform: translate(0,0) rotate(0deg) }
+    }
+    @keyframes spin  { to { transform: rotate(360deg) } }
+    @keyframes bloom { 0%,100% { transform: scale(.86); opacity:.55 } 50% { transform: scale(1.12); opacity:.9 } }
+    @keyframes breathe { 0%,100% { opacity:.88 } 50% { opacity:1 } }
+    @keyframes blink { 0% { opacity:1 } 50% { opacity:0 } 100% { opacity:1 } }
+    @keyframes fire  { 0%,100% { opacity:.2; r:.45 } 50% { opacity:.9; r:1.05 } }
+    @keyframes synapse { 0%,100% { opacity:.03 } 45% { opacity:.2 } }
+
+    .rgb { animation: rgb 8000ms linear infinite; }
+    .near { animation: drift-near 17s ease-in-out infinite; transform-origin:48px 56px; }
+    .far  { animation: drift-far 23s ease-in-out infinite; transform-origin:48px 56px; }
+    .spin { animation: spin 80s linear infinite; transform-origin:48px 56px; }
+    .bloom { animation: bloom 19s ease-in-out infinite; transform-origin:48px 56px; }
+    .body { animation: breathe 6500ms ease-in-out infinite; }
+    .cursor { animation: blink 800ms step-end infinite; }
+
+    .n1 { animation: fire 5.3s ease-in-out infinite }
+    .n2 { animation: fire 7.1s ease-in-out infinite .8s }
+    .n3 { animation: fire 4.7s ease-in-out infinite 2.1s }
+    .n4 { animation: fire 6.3s ease-in-out infinite 1.4s }
+    .n5 { animation: fire 8.9s ease-in-out infinite .3s }
+    .n6 { animation: fire 5.9s ease-in-out infinite 3.2s }
+    .n7 { animation: fire 7.7s ease-in-out infinite 2.6s }
+    .n8 { animation: fire 6.7s ease-in-out infinite 4.1s }
+
+    .e1 { animation: synapse 9.4s ease-in-out infinite }
+    .e2 { animation: synapse 11.3s ease-in-out infinite 1.7s }
+    .e3 { animation: synapse 7.9s ease-in-out infinite 3.4s }
+    .e4 { animation: synapse 13.1s ease-in-out infinite .9s }
+    .e5 { animation: synapse 10.7s ease-in-out infinite 5.2s }
+    .e6 { animation: synapse 8.6s ease-in-out infinite 2.3s }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rgb,.near,.far,.spin,.bloom,.body,.cursor,
+      .n1,.n2,.n3,.n4,.n5,.n6,.n7,.n8,
+      .e1,.e2,.e3,.e4,.e5,.e6 { animation: none }
+      .rgb { color:#c4a7e7 }
+    }
+  </style>
+
+  <defs>
+    <path id="form" d="M 24 66 L 24 46 A 24 24 0 0 1 72 46 L 72 66
+                       C 64 70, 56 63, 48 68 C 40 73, 32 65, 24 66 Z"/>
+    <clipPath id="within"><use href="#form"/></clipPath>
+
+    <radialGradient id="ambient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="currentColor" stop-opacity=".40"/>
+      <stop offset="55%" stop-color="currentColor" stop-opacity=".15"/>
+      <stop offset="100%" stop-color="currentColor" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="flesh" cx="50%" cy="38%" r="68%">
+      <stop offset="0%" stop-color="currentColor" stop-opacity=".38"/>
+      <stop offset="45%" stop-color="currentColor" stop-opacity=".25"/>
+      <stop offset="80%" stop-color="currentColor" stop-opacity=".13"/>
+      <stop offset="100%" stop-color="currentColor" stop-opacity=".07"/>
+    </radialGradient>
+    <radialGradient id="nebula" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="currentColor" stop-opacity=".62"/>
+      <stop offset="65%" stop-color="currentColor" stop-opacity=".2"/>
+      <stop offset="100%" stop-color="currentColor" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="feather" x="-70%" y="-70%" width="240%" height="240%">
+      <feGaussianBlur stdDeviation="1.7"/>
+    </filter>
+    <filter id="rimglow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="2.2"/>
+    </filter>
+    <filter id="rimline" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation=".35"/>
+    </filter>
+    <filter id="soften" x="-140%" y="-140%" width="380%" height="380%">
+      <feGaussianBlur stdDeviation=".7"/>
+    </filter>
+    <filter id="haze" x="-140%" y="-140%" width="380%" height="380%">
+      <feGaussianBlur stdDeviation="2.6"/>
+    </filter>
+    <filter id="eyeglow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="1.1" result="g"/>
+      <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <ellipse cx="48" cy="53" rx="31" ry="32" fill="url(#ambient)"/>
+
+  <g class="body">
+    <use href="#form" fill="url(#flesh)" filter="url(#feather)"/>
+    <use href="#form" fill="url(#flesh)" opacity=".36"/>
+  </g>
+
+  <g clip-path="url(#within)">
+    <g class="spin">
+      <ellipse class="bloom" cx="48" cy="56" rx="14" ry="9"
+               fill="url(#nebula)" filter="url(#haze)"/>
+
+      <g class="far" filter="url(#soften)" fill="currentColor" opacity=".55">
+        <circle cx="37" cy="60" r=".6"/><circle cx="59" cy="54" r=".55"/>
+        <circle cx="54" cy="63" r=".5"/><circle cx="40" cy="50" r=".5"/>
+      </g>
+
+      <g class="near" filter="url(#soften)">
+        <g stroke="currentColor" fill="none" stroke-width=".3" stroke-linecap="round">
+          <path class="e1" d="M 42 52 L 48 50 L 55 53"/>
+          <path class="e2" d="M 42 52 L 38 58"/>
+          <path class="e3" d="M 48 50 L 46 57 L 53 59"/>
+          <path class="e4" d="M 55 53 L 53 59"/>
+          <path class="e5" d="M 38 58 L 43 63"/>
+          <path class="e6" d="M 46 57 L 43 63"/>
+        </g>
+        <g fill="currentColor">
+          <circle class="n1" cx="42" cy="52" r=".9"/>
+          <circle class="n2" cx="48" cy="50" r="1"/>
+          <circle class="n3" cx="55" cy="53" r=".85"/>
+          <circle class="n4" cx="38" cy="58" r=".8"/>
+          <circle class="n5" cx="46" cy="57" r="1.1"/>
+          <circle class="n6" cx="53" cy="59" r=".9"/>
+          <circle class="n7" cx="43" cy="63" r=".75"/>
+          <circle class="n8" cx="51" cy="63" r=".8"/>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <use href="#form" fill="none" stroke="currentColor" stroke-width="2.4"
+       opacity=".45" filter="url(#rimglow)"/>
+  <use href="#form" fill="none" stroke="currentColor" stroke-width="1.15"
+       opacity=".95" filter="url(#rimline)"/>
+
+  <g filter="url(#eyeglow)" opacity=".97">
+    <path d="M 37 38 L 42.5 43 L 37 48" fill="none" stroke="currentColor"
+          stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect class="cursor" x="52" y="36.6" width="6.4" height="11.4" rx="1.2"
+          fill="currentColor"/>
+  </g>
+</svg>

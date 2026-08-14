@@ -4,6 +4,22 @@ Ghost is a DeepAgent whose durable memory is provided by the private SEAM SDK.
 SEAM compiles completed turns into MIRL, retrieves bounded evidence before the
 next turn, and records which memories supported each agent run.
 
+A knowledge graph is one part of Ghost's intended second brain, not the whole
+system. RAW evidence and MIRL remain canonical truth; graph, vector, and context
+representations are derived and traceable views.
+
+## Documentation
+
+Start with the [documentation map](docs/INDEX.md). The main routes are:
+
+- [Second brain and knowledge graph](docs/concepts/SECOND_BRAIN.md)
+- [System architecture](docs/architecture/SYSTEM_MAP.md)
+- [Memory layers and truth ownership](docs/architecture/MEMORY_LAYERS.md)
+- [Memory lifecycle](docs/operations/MEMORY_LIFECYCLE.md)
+- [Trust boundaries](docs/security/TRUST_BOUNDARIES.md)
+- [Evaluation plan](docs/evaluation/MEMORY_EVALS.md)
+- [Second-brain roadmap](docs/roadmap/SECOND_BRAIN_ROADMAP.md)
+
 ## Architecture
 
 ```mermaid
@@ -25,18 +41,22 @@ used as a DeepAgents filesystem backend.
 
 - Python 3.11 or newer
 - `uv`
-- A checkout of the private SEAM repository
+- Read access to the private SEAM repository
 - `OPENAI_API_KEY` in the process environment or an ignored `.env.local`
 
-The checked-in `uv` source points to this machine's private SEAM checkout:
+OpenAI-backed models are sent through the Responses API so reasoning models can
+use DeepAgents' function tools.
+
+`pyproject.toml` pins the private SEAM repository to an exact reviewed commit:
 
 ```text
-/home/terrabyte/Documents/Projects/Seam
+BlackhatShiftey/Seam@022b0037502c9af0d93e8c5bfa4d5f38d9aec7ac
 ```
 
-If the checkout moves, update `tool.uv.sources.seam-runtime.path` in
-`pyproject.toml`. Do not replace it with the legacy public `seam-runtime`
-package; Ghost requires the private `SeamSDK` and MIRL runtime.
+Do not replace it with the legacy public `seam-runtime` package; Ghost requires
+the private `SeamSDK` and MIRL runtime. For editable SDK development, explicitly
+replace that Git source locally with a path to your private SEAM checkout before
+running `uv sync`; do not commit the machine-specific path.
 The `pgvector` extra is installed because Ghost honors the operator's existing
 `SEAM_PGVECTOR_DSN` when one is configured.
 
@@ -47,11 +67,14 @@ uv sync
 uv run ghost "What do you remember about this project?"
 ```
 
-Ghost reuses the unified SEAM database by default:
+Ghost uses an operator-local MIRL database by default:
 
 ```text
-/home/terrabyte/Documents/Projects/Seam/seam.db
+~/.local/share/ghost/seam.db
 ```
+
+Set `GHOST_SEAM_DB` explicitly if Ghost should participate in an existing
+unified SEAM store.
 
 Override configuration through environment variables when needed:
 
@@ -94,3 +117,24 @@ make live model calls:
 uv run pytest
 uv run ruff check .
 ```
+
+## Identity
+
+Ghost has a mark. It lives in [`branding/`](branding/) with full usage notes in
+[`branding/README.md`](branding/README.md).
+
+| File | Use |
+|---|---|
+| `branding/ghost.svg` | above 32px |
+| `branding/ghost-mark.svg` | 32px and below |
+| `branding/ghost.ico` | favicon, six sizes |
+
+He is a being of light with a neural constellation firing at his core, and his
+eyes are the SEAM lockup — the `❯` prompt and the `█` block cursor. That is the
+architecture drawn: Ghost is a DeepAgent whose durable memory is SEAM, so the
+constellation is the memory layer seen through the body, and the face is the
+substrate he runs on.
+
+Every part of the mark is RGB, cycling the eight Canticle hues as one on an
+8 second loop. Nothing holds a fixed colour. All motion stops under
+`prefers-reduced-motion`.
