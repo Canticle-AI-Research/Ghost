@@ -128,12 +128,18 @@ Ghost has a mark. It lives in [`branding/`](branding/) with full usage notes in
 | `branding/ghost.svg` | above 32px |
 | `branding/ghost-mark.svg` | 32px and below |
 | `branding/ghost.ico` | favicon, six sizes |
+| `branding/ghost-faces.svg` | twelve swappable kaomoji expressions |
 
 He is a being of light with a neural constellation firing at his core, and his
 eyes are the SEAM lockup — the `❯` prompt and the `█` block cursor. That is the
 architecture drawn: Ghost is a DeepAgent whose durable memory is SEAM, so the
 constellation is the memory layer seen through the body, and the face is the
 substrate he runs on.
+
+He also has faces. `branding/ghost-faces.svg` carries the body and twelve
+expressions as separate symbols — `^ ^`, `> <`, `✧ ✧`, `〉 █` and more — so a
+surface can show what he is doing without a word of chrome. Only the default
+`❯ █` face belongs in a mark or favicon; the rest are the character acting.
 
 Every part of the mark is RGB, cycling the eight Canticle hues as one on an
 8 second loop. Nothing holds a fixed colour. All motion stops under

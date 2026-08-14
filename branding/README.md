@@ -109,3 +109,45 @@ Every value is a Canticle token; none was invented.
 
 Ground is `#0a0b0a`, `color.base.brand_square`. The mark is built for dark
 grounds; a light-ground colourway does not exist yet.
+
+## Expressions
+
+`ghost-faces.svg` carries the body and twelve faces as separate symbols, so a
+consumer swaps expression without touching the body:
+
+```html
+<svg class="rgb" viewBox="0 0 96 96">
+  <use href="#ghost-body"/>
+  <use href="#face-happy"/>
+</svg>
+```
+
+| Face | Glyph | Use |
+|---|---|---|
+| `face-default` | `❯ █` | the logo face — identity, not mood |
+| `face-happy` | `^ ^` | pleased, task done |
+| `face-blissful` | `‿ ‿` | delighted |
+| `face-surprised` | `o o` | unexpected input |
+| `face-sleepy` | `⌒ ⌒` | idle, dormant |
+| `face-wink` | `^ █` | acknowledging |
+| `face-excited` | `✧ ✧` | discovery, a good result |
+| `face-flustered` | `> <` | retrying, confused |
+| `face-error` | `x x` | failed |
+| `face-focused` | `▪ ▪` | working |
+| `face-blank` | `・ ・` | waiting |
+| `face-curious` | `? ・` | asking |
+
+The faces are kaomoji, not drawn eyes. Ghost lives in a terminal, so his
+expressions are the marks a terminal can make — cute without dragging the
+identity toward a cartoon unrelated to what he is.
+
+**Only `face-default` belongs in a mark, favicon, or lockup.** The rest are the
+character acting, not the identity being stated.
+
+Every face sits on the same baseline at `y 43`, left eye near `x 40` and right
+near `x 55`, so swapping never shifts the face. All strokes are `currentColor`
+and inherit the RGB cycle.
+
+One trap: `eyeglow` uses `filterUnits="userSpaceOnUse"` deliberately. A flat
+face such as the sleepy lids has a zero-height bounding box, and the default
+percentage filter region of zero renders nothing at all — silently.

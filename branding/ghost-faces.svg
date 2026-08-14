@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96"
+     class="rgb" role="img" aria-label="Ghost expression set">
+  <title>Ghost expressions</title>
+  <desc>Ghost's body with a swappable set of kaomoji faces, all in currentColor.</desc>
+  <!--
+    Expression set. The body is one symbol and each face is another, so a
+    consumer composes them:
+
+        <svg class="rgb" viewBox="0 0 96 96">
+          <use href="#ghost-body"/>
+          <use href="#face-happy"/>
+        </svg>
+
+    The faces are kaomoji rather than drawn eyes. Ghost lives in a terminal, so
+    his expressions are made of the marks a terminal can make, which keeps them
+    cute without pulling the identity toward a cartoon that has nothing to do
+    with what he is.
+
+    face-default is the lockup, the prompt glyph and the block cursor. It is the
+    logo face and the only one that should appear in a mark, a favicon, or
+    anywhere the identity is being stated rather than the character acting.
+
+    Every face is drawn on the same eye baseline at y 43, with the left eye
+    centred near x 40 and the right near x 55, so swapping one for another never
+    shifts the face. All strokes are currentColor and inherit the RGB cycle from
+    the root; nothing carries its own colour.
+  -->
+  <style>
+    @keyframes rgb {
+      0%   { color:#f7768e } 14%  { color:#ff9e64 } 28%  { color:#e0af68 }
+      42%  { color:#9ece6a } 57%  { color:#7dcfff } 71%  { color:#7aa2f7 }
+      85%  { color:#c4a7e7 } 100% { color:#f7768e }
+    }
+    @keyframes blink { 0% { opacity:1 } 50% { opacity:0 } 100% { opacity:1 } }
+    @keyframes breathe { 0%,100% { opacity:.88 } 50% { opacity:1 } }
+    @keyframes fire { 0%,100% { opacity:.2; r:.45 } 50% { opacity:.9; r:1.05 } }
+    @keyframes twinkle { 0%,100% { opacity:.55; transform:scale(.9) } 50% { opacity:1; transform:scale(1.1) } }
+    .rgb { animation: rgb 8000ms linear infinite; }
+    .cursor { animation: blink 800ms step-end infinite; }
+    .body { animation: breathe 6500ms ease-in-out infinite; }
+    .n { animation: fire 6.3s ease-in-out infinite; }
+    .sp1 { animation: twinkle 2.4s ease-in-out infinite; transform-origin:40px 43px; }
+    .sp2 { animation: twinkle 2.9s ease-in-out infinite .5s; transform-origin:55px 43px; }
+    @media (prefers-reduced-motion: reduce) {
+      .rgb,.cursor,.body,.n,.sp1,.sp2 { animation:none }
+      .rgb { color:#c4a7e7 }
+    }
+    .eye { fill:none; stroke:currentColor; stroke-width:3.1;
+           stroke-linecap:round; stroke-linejoin:round; }
+  </style>
+
+  <defs>
+    <path id="form" d="M 24 66 L 24 46 A 24 24 0 0 1 72 46 L 72 66
+                       C 64 70, 56 63, 48 68 C 40 73, 32 65, 24 66 Z"/>
+    <clipPath id="within"><use href="#form"/></clipPath>
+    <radialGradient id="ambient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="currentColor" stop-opacity=".40"/>
+      <stop offset="55%" stop-color="currentColor" stop-opacity=".15"/>
+      <stop offset="100%" stop-color="currentColor" stop-opacity="0"/></radialGradient>
+    <radialGradient id="flesh" cx="50%" cy="38%" r="68%">
+      <stop offset="0%" stop-color="currentColor" stop-opacity=".38"/>
+      <stop offset="45%" stop-color="currentColor" stop-opacity=".25"/>
+      <stop offset="80%" stop-color="currentColor" stop-opacity=".13"/>
+      <stop offset="100%" stop-color="currentColor" stop-opacity=".07"/></radialGradient>
+    <filter id="feather" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="1.7"/></filter>
+    <filter id="rimglow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="2.2"/></filter>
+    <filter id="rimline" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation=".35"/></filter>
+    <filter id="soften" x="-140%" y="-140%" width="380%" height="380%"><feGaussianBlur stdDeviation=".7"/></filter>
+    <!-- userSpaceOnUse, not the default bounding box units: a perfectly flat face
+         such as the sleepy dashes has a zero height bbox, and a percentage
+         filter region of zero renders nothing at all. -->
+    <filter id="eyeglow" filterUnits="userSpaceOnUse"
+            x="24" y="26" width="52" height="36">
+      <feGaussianBlur stdDeviation="1.1" result="g"/>
+      <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+
+    <!-- Body without a face. Compose with any face symbol. -->
+    <g id="ghost-body">
+      <ellipse cx="48" cy="53" rx="31" ry="32" fill="url(#ambient)"/>
+      <g class="body">
+        <use href="#form" fill="url(#flesh)" filter="url(#feather)"/>
+        <use href="#form" fill="url(#flesh)" opacity=".36"/>
+      </g>
+      <g clip-path="url(#within)" filter="url(#soften)" fill="currentColor">
+        <circle class="n" cx="42" cy="57" r=".9"/>
+        <circle class="n" cx="48" cy="60" r="1" style="animation-delay:1.1s"/>
+        <circle class="n" cx="54" cy="58" r=".85" style="animation-delay:2.4s"/>
+        <g stroke="currentColor" stroke-width=".3" fill="none" opacity=".14">
+          <path d="M 42 57 L 48 60 L 54 58"/>
+        </g>
+      </g>
+      <use href="#form" fill="none" stroke="currentColor" stroke-width="2.4"
+           opacity=".45" filter="url(#rimglow)"/>
+      <use href="#form" fill="none" stroke="currentColor" stroke-width="1.15"
+           opacity=".95" filter="url(#rimline)"/>
+    </g>
+
+    <!-- The logo face. Prompt and cursor. Identity, not mood. -->
+    <g id="face-default" filter="url(#eyeglow)">
+      <path d="M 37 38 L 42.5 43 L 37 48" class="eye" stroke-width="3.2"/>
+      <rect class="cursor" x="52" y="36.6" width="6.4" height="11.4" rx="1.2" fill="currentColor"/>
+    </g>
+
+    <!-- ^ ^  pleased -->
+    <g id="face-happy" filter="url(#eyeglow)">
+      <path class="eye" d="M 35 46 L 40 39.5 L 45 46"/>
+      <path class="eye" d="M 50 46 L 55 39.5 L 60 46"/>
+    </g>
+
+    <!-- ‿ ‿  blissful, eyes shut smiling -->
+    <g id="face-blissful" filter="url(#eyeglow)">
+      <path class="eye" d="M 35 40 Q 40 47.5 45 40"/>
+      <path class="eye" d="M 50 40 Q 55 47.5 60 40"/>
+    </g>
+
+    <!-- o o  surprised -->
+    <g id="face-surprised" filter="url(#eyeglow)">
+      <circle class="eye" cx="40" cy="43" r="4.4"/>
+      <circle class="eye" cx="55" cy="43" r="4.4"/>
+    </g>
+
+    <!-- - -  sleeping -->
+    <g id="face-sleepy" filter="url(#eyeglow)">
+      <path class="eye" d="M 34.5 46 Q 40 40.5 45.5 46"/>
+      <path class="eye" d="M 50.5 46 Q 56 40.5 61.5 46"/>
+    </g>
+
+    <!-- ^ |  wink, one eye still the cursor -->
+    <g id="face-wink" filter="url(#eyeglow)">
+      <path class="eye" d="M 35 46 L 40 39.5 L 45 46"/>
+      <rect class="cursor" x="52" y="36.6" width="6.4" height="11.4" rx="1.2" fill="currentColor"/>
+    </g>
+
+    <!-- ✧ ✧  excited -->
+    <g id="face-excited" filter="url(#eyeglow)" fill="currentColor">
+      <path class="sp1" d="M 40 36.5 Q 41 42 46.5 43 Q 41 44 40 49.5 Q 39 44 33.5 43 Q 39 42 40 36.5 Z"/>
+      <path class="sp2" d="M 55 36.5 Q 56 42 61.5 43 Q 56 44 55 49.5 Q 54 44 48.5 43 Q 54 42 55 36.5 Z"/>
+    </g>
+
+    <!-- &gt; &lt;  flustered -->
+    <g id="face-flustered" filter="url(#eyeglow)">
+      <path class="eye" d="M 35.5 38.5 L 41 43 L 35.5 47.5"/>
+      <path class="eye" d="M 59.5 38.5 L 54 43 L 59.5 47.5"/>
+    </g>
+
+    <!-- x x  error -->
+    <g id="face-error" filter="url(#eyeglow)">
+      <path class="eye" d="M 36.5 39.5 L 43.5 46.5 M 43.5 39.5 L 36.5 46.5"/>
+      <path class="eye" d="M 51.5 39.5 L 58.5 46.5 M 58.5 39.5 L 51.5 46.5"/>
+    </g>
+
+    <!-- ▪ ▪  focused, working -->
+    <g id="face-focused" filter="url(#eyeglow)" fill="currentColor">
+      <rect x="36" y="41.2" width="8" height="3.6" rx="1.8"/>
+      <rect x="52" y="41.2" width="8" height="3.6" rx="1.8"/>
+    </g>
+
+    <!-- ・ ・  blank, idle -->
+    <g id="face-blank" filter="url(#eyeglow)" fill="currentColor">
+      <circle cx="40" cy="43" r="2.2"/>
+      <circle cx="55" cy="43" r="2.2"/>
+    </g>
+
+    <!-- ? one raised, curious -->
+    <g id="face-curious" filter="url(#eyeglow)">
+      <path class="eye" d="M 35 41.5 L 45 39"/>
+      <circle cx="55" cy="43" r="2.4" fill="currentColor"/>
+    </g>
+  </defs>
+
+  <use href="#ghost-body"/>
+  <use href="#face-default"/>
+</svg>
