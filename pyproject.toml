@@ -14,7 +14,7 @@ dependencies = [
   "langchain-openai>=1.1,<2",
   "langgraph>=1.0,<2",
   "python-dotenv>=1.1,<2",
-  "seam-runtime[pgvector] @ git+ssh://git@github.com/BlackhatShiftey/Seam.git@022b0037502c9af0d93e8c5bfa4d5f38d9aec7ac",
+  "seam-sdk[pgvector] @ git+ssh://git@github.com/Canticle-AI-Research/Seam_SDK.git@294ab08919646a03dcdceb3c777dfd7d8eabc624",
 ]
 
 [project.scripts]

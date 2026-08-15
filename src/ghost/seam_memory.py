@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from seam_runtime import SeamSDK
+from seam_sdk import SeamSDK
 
 from .config import GhostSettings
 

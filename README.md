@@ -47,15 +47,18 @@ used as a DeepAgents filesystem backend.
 OpenAI-backed models are sent through the Responses API so reasoning models can
 use DeepAgents' function tools.
 
-`pyproject.toml` pins the private SEAM repository to an exact reviewed commit:
+`pyproject.toml` depends on the SEAM SDK, pinned to an exact reviewed commit:
 
 ```text
-BlackhatShiftey/Seam@022b0037502c9af0d93e8c5bfa4d5f38d9aec7ac
+Canticle-AI-Research/Seam_SDK@294ab08919646a03dcdceb3c777dfd7d8eabc624
 ```
 
-Do not replace it with the legacy public `seam-runtime` package; Ghost requires
-the private `SeamSDK` and MIRL runtime. For editable SDK development, explicitly
-replace that Git source locally with a path to your private SEAM checkout before
+`seam-sdk` (BUSL-1.1) is the in-process SDK. It pulls the private SEAM runtime
+transitively, so read access to the private SEAM repository is still required.
+Do not replace it with the legacy public `seam-runtime` package, and do not
+substitute Apache-licensed `seam-client` — that is the opaque `/v1` HTTP client
+and cannot reach `SeamSDK` or MIRL. For editable SDK development, explicitly
+replace that Git source locally with a path to your private SDK checkout before
 running `uv sync`; do not commit the machine-specific path.
 The `pgvector` extra is installed because Ghost honors the operator's existing
 `SEAM_PGVECTOR_DSN` when one is configured.
