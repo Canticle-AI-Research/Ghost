@@ -39,6 +39,7 @@ idea cannot be mistaken for a shipped capability.
 | Transient context injection | `src/ghost/middleware.py` | Retrieved memory is untrusted data and is not checkpointed |
 | Runtime settings | `src/ghost/config.py` | Model, database, namespace, scope, recall budget, graph hops |
 | Invocation context | `src/ghost/context.py` | Per-turn recalled-memory payload |
+| Read-only tools | `src/ghost/tools.py` | Memory recall, bounded file read and search; no write path |
 | Operator interface | `src/ghost/cli.py` | One-shot and interactive terminal use |
 | Verification | `tests/` | Agent lifecycle, Responses API routing, MIRL round trip, idempotency |
 

@@ -133,6 +133,69 @@ class SeamMemory:
         )
         return stored_ids
 
+    def query_knowledge(
+        self,
+        *,
+        query: str,
+        limit: int,
+        namespace: str | None = None,
+        scope: str | None = None,
+    ) -> dict[str, Any]:
+        """Read the knowledge plane. READ ONLY -- the only query path tools get.
+
+        Deliberately a narrow wrapper rather than handing a tool the SDK: the
+        SDK also carries ``apply_delete``, ``ingest``, ``apply_promotion`` and
+        ``lifecycle_operation``, and a tool that reaches the SDK reaches those
+        too. This method is the whole surface `ghost.tools` is allowed.
+        """
+
+        return self._sdk.knowledge(
+            query=query,
+            namespace=namespace or self.settings.namespace,
+            scope=scope or self.settings.scope,
+            limit=limit,
+            hops=self.settings.graph_hops,
+        )
+
+    def fail_turn(
+        self,
+        turn: SeamTurn,
+        *,
+        error: BaseException,
+        thread_id: str,
+        turn_id: str,
+    ) -> None:
+        """Close a reasoning run whose turn did not complete.
+
+        Two things must be true of a failed turn and neither is automatic.
+
+        It must not be ingested. Ingest compiles a turn into MIRL, and a turn
+        that crashed has no trustworthy assistant output to compile -- storing
+        it would put a half-finished or error-shaped answer into durable memory
+        and let a later turn recall it as evidence.
+
+        Its outcome must not be ``accepted``. ``reasoning_promotion`` and
+        ``reasoning_patterns`` both gate on that exact status, so an accepted
+        outcome makes a crash eligible for promotion into knowledge. The
+        outcome is recorded and then rejected, which closes the run, preserves
+        the evidence that was recalled, and leaves the failure visible instead
+        of erased.
+        """
+
+        detail = f"{type(error).__name__}: {error}".strip()[:500]
+        run = self._sdk.reasoning(turn.run_id)
+        outcome = run.add_node(
+            "outcome",
+            f"Ghost did not complete the turn ({detail}).",
+            evidence_refs=turn.evidence_refs,
+        )
+        run.transition(
+            str(outcome["node_id"]),
+            "rejected",
+            reason=f"turn failed on thread {thread_id} turn {turn_id}",
+            actor=self.settings.agent_id,
+        )
+
     def close(self) -> None:
         if self._owns_sdk:
             self._sdk.close()

@@ -96,6 +96,33 @@ uv run ghost --thread-id local-demo
 
 Type `/exit` to leave the session.
 
+## Tools
+
+Ghost's tools are read-only, built to the contract in
+[`docs/security/TRUST_BOUNDARIES.md`](docs/security/TRUST_BOUNDARIES.md).
+
+| Tool | Reads | Available |
+|---|---|---|
+| `seam_recall` | Ghost's durable SEAM memory | always |
+| `read_file` | one UTF-8 file inside a configured root | when `GHOST_TOOL_ROOTS` is set |
+| `search_repo` | a literal string across configured roots | when `GHOST_TOOL_ROOTS` is set |
+
+`seam_recall` is a deliberate mid-turn lookup, distinct from the automatic
+pre-turn recall the middleware performs. It reaches SEAM only through
+`SeamMemory.query_knowledge`, so the SDK's `ingest`, `apply_delete`,
+`apply_promotion`, and `lifecycle_operation` are unreachable from a tool — a
+tool that can delete memory is a tool a prompt injection can delete memory
+with.
+
+The filesystem tools are absent unless the operator names readable roots:
+
+```bash
+export GHOST_TOOL_ROOTS="/path/to/repo:/path/to/notes"
+```
+
+Every path is resolved before the containment check, so a symlink inside a root
+that points outside it is refused rather than followed.
+
 ## Memory lifecycle
 
 For every successful root turn, Ghost:
