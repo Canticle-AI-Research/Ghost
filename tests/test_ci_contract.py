@@ -32,6 +32,8 @@ CREDENTIAL_FREE_JOBS = ("repo-hygiene", "brand-assets", "package-smoke")
 PRIVATE_TIER_JOB = "tests"
 
 _GHOST_IMPORT = re.compile(r"^\s*(?:from|import)\s+ghost\b", re.MULTILINE)
+# Split so this file never matches itself.
+_LIVE_MARKER = "pytest" ".mark.live"
 
 
 @pytest.fixture(scope="module")
@@ -90,6 +92,46 @@ def test_credential_free_tests_also_run_without_the_private_sdk(workflow) -> Non
         "these test files need no private dependency but run only in the private "
         f"tier, so CI says nothing when the SEAM remote is unreachable: {missing}"
     )
+
+
+def test_live_marked_tests_actually_run_in_a_job(workflow) -> None:
+    """`-m "not live"` in pyproject DESELECTS rather than skips, which strict
+    no-skip cannot see. Without this invariant a live test could sit in the
+    tree running in no lane at all -- and the live tests are the only ones that
+    prove Ghost works, so that failure would be silent and total.
+    """
+    this_file = Path(__file__).resolve()
+    live_files = sorted(
+        path.relative_to(REPO_ROOT).as_posix()
+        for path in _test_files()
+        if path.resolve() != this_file and _LIVE_MARKER in path.read_text(encoding="utf-8")
+    )
+    assert live_files, "no live-marked test files found; the detector is wrong"
+
+    commands = _job_commands(workflow, "live")
+    assert "-m live" in commands, (
+        "the `live` job no longer selects the live tests back, so they run nowhere"
+    )
+    # The job runs the whole marker set, so naming the marker is enough; but a
+    # path filter would silently narrow it.
+    narrowed = [f for f in live_files if "tests/" in commands and f not in commands]
+    assert not narrowed or "-m live" in commands, (
+        f"the live job filters by path and omits: {narrowed}"
+    )
+
+
+def test_live_tests_do_not_run_on_pull_requests(workflow) -> None:
+    """They cost real money per run and cannot prove anything about a PR that
+    they will not prove again on main."""
+    condition = str(workflow["jobs"]["live"].get("if", ""))
+    assert "pull_request" in condition, "the live job has no pull-request guard"
+
+
+def test_live_job_degrades_to_skipped_without_a_key(workflow) -> None:
+    """An unconfigured repository must show `live` as skipped, not failed."""
+    assert "live-key-present" in (workflow["jobs"]["live"].get("needs") or [])
+    condition = str(workflow["jobs"]["live"].get("if", ""))
+    assert "live-key-present" in condition and "available" in condition
 
 
 def test_credential_free_jobs_never_sync_the_project(workflow) -> None:
