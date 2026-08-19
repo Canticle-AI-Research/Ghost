@@ -79,6 +79,13 @@ Ghost uses an operator-local MIRL database by default:
 Set `GHOST_SEAM_DB` explicitly if Ghost should participate in an existing
 unified SEAM store.
 
+Conversation checkpoints are persistent and live in a **separate** database
+(`GHOST_CHECKPOINT_DB`, defaulting beside the SEAM store), so `--thread-id`
+resumes a conversation after the process exits. The checkpoint holds execution
+state — where the conversation got to — and never semantic truth; SEAM remains
+the only thing that remembers what was said. Keeping them in different files
+makes that boundary physical rather than a convention.
+
 Override configuration through environment variables when needed:
 
 ```bash

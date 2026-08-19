@@ -1,0 +1,155 @@
+"""Ghost's turn lifecycle. Framework-free by construction.
+
+This is layer 2 of three:
+
+    SEAM SDK          durable memory and reasoning records (no LLM dependency)
+    turn lifecycle    THIS FILE -- what a turn is, and what a turn owes SEAM
+    agent adapter     application.py -- LangChain, DeepAgents, model wiring
+
+Nothing here imports LangChain, LangGraph, or DeepAgents, and
+`tests/test_layering.py` fails if that changes. The reason is not tidiness. The
+rules a memory-backed turn must obey -- recall before the turn is written so an
+answer cannot cite itself, ingest only what completed, close the run on every
+path out, and never finalize a crash as an accepted outcome -- are properties
+of SEAM's contract, not of any agent framework. Keeping them here means
+swapping the harness cannot silently drop one of them.
+
+The agent is reached through the `AgentGraph` protocol, so this file is equally
+happy driving DeepAgents, a raw provider loop, or a fake in a test.
+"""
+
+from __future__ import annotations
+
+from typing import Any, Protocol
+from uuid import uuid4
+
+from .config import GhostSettings
+from .context import GhostTurnContext
+from .seam_memory import SeamTurn
+
+
+class AgentGraph(Protocol):
+    """Anything that can execute one turn. DeepAgents satisfies this."""
+
+    def invoke(
+        self,
+        input: dict[str, Any],
+        *,
+        context: GhostTurnContext,
+        config: dict[str, Any],
+    ) -> dict[str, Any]: ...
+
+
+class MemoryLayer(Protocol):
+    """The SEAM operations a turn needs. `SeamMemory` satisfies this."""
+
+    def begin_turn(self, user_input: str) -> SeamTurn: ...
+
+    def complete_turn(
+        self,
+        turn: SeamTurn,
+        *,
+        user_input: str,
+        assistant_output: str,
+        thread_id: str,
+        turn_id: str,
+    ) -> tuple[str, ...]: ...
+
+    def fail_turn(
+        self,
+        turn: SeamTurn,
+        *,
+        error: BaseException,
+        thread_id: str,
+        turn_id: str,
+    ) -> None: ...
+
+    def close(self) -> None: ...
+
+
+def message_text(message: Any) -> str:
+    """Flatten a provider message into the text that gets ingested.
+
+    Providers return either a string or a list of content blocks. Without this,
+    a block-returning provider would persist the repr of a list into MIRL.
+    """
+
+    content = getattr(message, "content", message)
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        parts = []
+        for block in content:
+            if isinstance(block, str):
+                parts.append(block)
+            elif isinstance(block, dict) and isinstance(block.get("text"), str):
+                parts.append(block["text"])
+        if parts:
+            return "\n".join(parts)
+    return str(content)
+
+
+def run_turn(
+    *,
+    memory: MemoryLayer,
+    graph: AgentGraph,
+    user_input: str,
+    thread_id: str,
+    turn_id: str | None = None,
+) -> str:
+    """Execute one turn under SEAM's contract, and return the answer.
+
+    Recall happens before the turn is ingested, so a response can never cite
+    the memory it is about to create.
+    """
+
+    resolved_input = user_input.strip()
+    if not resolved_input:
+        raise ValueError("user input is required")
+
+    resolved_turn_id = turn_id or uuid4().hex
+    seam_turn = memory.begin_turn(resolved_input)
+
+    # Everything between begin_turn and complete_turn runs inside an open SEAM
+    # reasoning run. If it raises -- a model error, a tool timeout, a
+    # KeyboardInterrupt mid-answer -- the run must still be closed, or the
+    # store accumulates one dangling run per crash. Tools make this the common
+    # path rather than the rare one.
+    try:
+        result = graph.invoke(
+            {"messages": [{"role": "user", "content": resolved_input}]},
+            context=GhostTurnContext(seam_memory=seam_turn.rendered_memory),
+            config={"configurable": {"thread_id": thread_id}},
+        )
+        messages = result.get("messages") or []
+        if not messages:
+            raise RuntimeError("Ghost returned no messages")
+        answer = message_text(messages[-1])
+    except BaseException as error:
+        # BaseException, not Exception: a cancelled or interrupted turn leaves
+        # exactly the same dangling run as a failed one.
+        memory.fail_turn(
+            seam_turn,
+            error=error,
+            thread_id=thread_id,
+            turn_id=resolved_turn_id,
+        )
+        raise
+
+    memory.complete_turn(
+        seam_turn,
+        user_input=resolved_input,
+        assistant_output=answer,
+        thread_id=thread_id,
+        turn_id=resolved_turn_id,
+    )
+    return answer
+
+
+__all__ = [
+    "AgentGraph",
+    "GhostSettings",
+    "MemoryLayer",
+    "message_text",
+    "run_turn",
+]

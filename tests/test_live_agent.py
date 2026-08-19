@@ -148,3 +148,65 @@ def test_a_completed_turn_leaves_no_open_reasoning_run(tmp_path_factory) -> None
     assert not statuses.get("rejected"), (
         f"a successful turn recorded a rejected outcome: {statuses}"
     )
+
+
+def test_a_thread_resumes_after_the_agent_is_torn_down(tmp_path_factory) -> None:
+    """Stage 1's exit condition: resume an interrupted thread.
+
+    With the previous in-process checkpointer this was impossible -- every
+    `uv run ghost` was a fresh process with an empty checkpoint, so
+    `--thread-id` did nothing between invocations. The distinction this proves
+    is subtle but real: SEAM recall works across threads and would answer even
+    without a checkpoint, so the question here is asked in a way only the
+    CONVERSATION history can settle -- a pronoun with no antecedent except the
+    previous turn.
+    """
+    root = tmp_path_factory.mktemp("live")
+    settings = _settings(root / "ghost.db")
+    thread = "resume-probe"
+
+    with GhostAgent(settings) as first:
+        first.invoke(
+            "I am going to name three fruits: apple, banana, cherry. "
+            "Just acknowledge with 'ok'.",
+            thread_id=thread,
+        )
+
+    assert settings.checkpoints.exists(), "no checkpoint database was written"
+
+    # A brand new agent object over the same checkpoint file.
+    with GhostAgent(settings) as second:
+        answer = second.invoke(
+            "What was the second one I named? Reply with just that word.",
+            thread_id=thread,
+        )
+
+    assert "banana" in answer.lower(), (
+        "the thread did not resume; the second agent could not see the first "
+        f"agent's turn. Answer was: {answer[:300]}"
+    )
+
+
+def test_a_different_thread_does_not_see_the_conversation(tmp_path_factory) -> None:
+    """Resumption must not leak across threads -- otherwise `--thread-id` is
+    decorative in the other direction."""
+    root = tmp_path_factory.mktemp("live")
+    settings = _settings(root / "ghost.db")
+
+    with GhostAgent(settings) as first:
+        first.invoke(
+            "Remember for this conversation only: the passphrase is bluebird. "
+            "Acknowledge with 'ok'.",
+            thread_id="thread-a",
+        )
+
+    with GhostAgent(settings) as second:
+        answer = second.invoke(
+            "Without guessing, what passphrase did I give you earlier in THIS "
+            "conversation? If none, say 'none'.",
+            thread_id="thread-b",
+        )
+
+    assert "bluebird" not in answer.lower(), (
+        f"thread-b saw thread-a's conversation history. Answer: {answer[:300]}"
+    )

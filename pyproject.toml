@@ -13,6 +13,10 @@ dependencies = [
   "langchain>=1.2,<2",
   "langchain-openai>=1.1,<2",
   "langgraph>=1.0,<2",
+  # Persistent LangGraph checkpoints. Without it `--thread-id` is in-process
+  # only, so an interrupted thread cannot be resumed -- Stage 1's exit
+  # condition. Execution state only; SEAM remains the semantic memory.
+  "langgraph-checkpoint-sqlite>=3.1,<4",
   "python-dotenv>=1.1,<2",
   "seam-sdk[pgvector] @ git+ssh://git@github.com/Canticle-AI-Research/Seam_SDK.git@294ab08919646a03dcdceb3c777dfd7d8eabc624",
 ]

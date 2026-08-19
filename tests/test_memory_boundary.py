@@ -67,18 +67,47 @@ def test_ghost_never_hands_deepagents_a_memory_surface(captured, parameter) -> N
 
 
 def test_checkpointer_is_execution_state_only(captured) -> None:
-    """ADR-0001 item 6. A checkpointer is fine — it holds the message thread —
-    but it must never be mistaken for, or swapped in as, durable memory."""
+    """ADR-0001 item 6. The checkpoint is now persistent, which is the point --
+    a thread must survive a restart -- so the invariant is no longer "it is in
+    memory". It is that the checkpoint holds where the conversation got to and
+    SEAM holds what is remembered, and that the two never share a file.
+    """
     checkpointer = captured.get("checkpointer")
     assert checkpointer is not None, "the agent lost its checkpointer"
-    # `MemorySaver` is an alias; the concrete class is `InMemorySaver`. Assert
-    # on the module, not the name, so the alias can move without a false alarm.
     module = type(checkpointer).__module__
-    assert module.startswith("langgraph.checkpoint.memory"), (
-        f"checkpointer is now {type(checkpointer).__name__} from {module}. "
-        "SYSTEM_MAP records the checkpoint as in-memory and development-only; "
-        "if this became persistent, confirm it still holds only execution "
-        "state and is not being used as semantic memory (ADR-0001 item 6)."
+    assert module.startswith("langgraph.checkpoint"), (
+        f"checkpointer is {type(checkpointer).__name__} from {module}; it must "
+        "remain a LangGraph checkpoint, not a memory store"
+    )
+
+
+def test_checkpoints_never_share_a_database_with_seam(tmp_path) -> None:
+    """The new failure mode a persistent checkpoint introduces.
+
+    An in-memory saver could not collide with the MIRL store. A SQLite one can,
+    and pointing it at seam.db would put LangGraph's message history inside the
+    database whose whole contract is that MIRL is canonical.
+    """
+    settings = GhostSettings(
+        model="openai:test",
+        seam_db=tmp_path / "seam.db",
+        namespace="ghost.test",
+        scope="thread",
+    )
+    assert settings.checkpoints != settings.seam_db
+    assert settings.checkpoints.name != settings.seam_db.name
+
+    explicit = GhostSettings(
+        model="openai:test",
+        seam_db=tmp_path / "seam.db",
+        namespace="ghost.test",
+        scope="thread",
+        checkpoint_db=tmp_path / "seam.db",
+    )
+    assert explicit.checkpoints == explicit.seam_db, (
+        "this assertion documents that an operator CAN still collide them by "
+        "setting GHOST_CHECKPOINT_DB to the SEAM path; if that is ever "
+        "rejected at startup, tighten this test to expect the rejection"
     )
 
 

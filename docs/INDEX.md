@@ -34,7 +34,8 @@ idea cannot be mistaken for a shipped capability.
 
 | Concern | Current source | Current state |
 |---|---|---|
-| Root agent lifecycle | `src/ghost/application.py` | Recall, model execution, successful-turn persistence |
+| Turn lifecycle (framework-free) | `src/ghost/lifecycle.py` | Recall, execution, completion and failure finalization |
+| Agent adapter | `src/ghost/application.py` | DeepAgents, model wiring, persistent checkpoint |
 | Private SEAM adapter | `src/ghost/seam_memory.py` | Reasoning retrieval, MIRL ingest, evidence-linked outcome |
 | Transient context injection | `src/ghost/middleware.py` | Retrieved memory is untrusted data and is not checkpointed |
 | Runtime settings | `src/ghost/config.py` | Model, database, namespace, scope, recall budget, graph hops |

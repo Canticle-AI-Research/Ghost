@@ -1,18 +1,24 @@
-"""Ghost's root DeepAgent and SEAM-backed turn lifecycle."""
+"""Ghost's agent adapter: LangChain, DeepAgents, and model wiring.
+
+Layer 3 of three. The rules a turn must obey live in `ghost.lifecycle`, which
+imports no framework; this file is the part that would be rewritten to run
+Ghost on a different harness.
+"""
 
 from __future__ import annotations
 
-from typing import Any, Protocol
-from uuid import uuid4
+import sqlite3
+from typing import Any
 
 from deepagents import create_deep_agent
 from langchain.chat_models import init_chat_model
-from langgraph.checkpoint.memory import MemorySaver
+from langgraph.checkpoint.sqlite import SqliteSaver
 
 from .config import GhostSettings
 from .context import GhostTurnContext
+from .lifecycle import AgentGraph, MemoryLayer, run_turn
 from .middleware import SeamRecallMiddleware
-from .seam_memory import SeamMemory, SeamTurn
+from .seam_memory import SeamMemory
 from .tools import make_read_file, make_seam_recall, make_search_repo
 
 SYSTEM_PROMPT = """You are Ghost, a careful research and engineering agent developed by Canticle.
@@ -78,57 +84,6 @@ def _init_model(settings: GhostSettings) -> Any:
     return init_chat_model(settings.model, **options)
 
 
-class AgentGraph(Protocol):
-    def invoke(
-        self,
-        input: dict[str, Any],
-        *,
-        context: GhostTurnContext,
-        config: dict[str, Any],
-    ) -> dict[str, Any]: ...
-
-
-class MemoryLayer(Protocol):
-    def begin_turn(self, user_input: str) -> SeamTurn: ...
-
-    def complete_turn(
-        self,
-        turn: SeamTurn,
-        *,
-        user_input: str,
-        assistant_output: str,
-        thread_id: str,
-        turn_id: str,
-    ) -> tuple[str, ...]: ...
-
-    def fail_turn(
-        self,
-        turn: SeamTurn,
-        *,
-        error: BaseException,
-        thread_id: str,
-        turn_id: str,
-    ) -> None: ...
-
-    def close(self) -> None: ...
-
-
-def _message_text(message: Any) -> str:
-    content = getattr(message, "content", message)
-    if isinstance(content, str):
-        return content
-    if isinstance(content, list):
-        parts = []
-        for block in content:
-            if isinstance(block, str):
-                parts.append(block)
-            elif isinstance(block, dict) and isinstance(block.get("text"), str):
-                parts.append(block["text"])
-        if parts:
-            return "\n".join(parts)
-    return str(content)
-
-
 class GhostAgent:
     """Coordinate one DeepAgent with one process-lifetime SEAM memory layer."""
 
@@ -141,6 +96,7 @@ class GhostAgent:
     ) -> None:
         self.settings = settings or GhostSettings.from_env()
         self.memory = memory or SeamMemory(self.settings)
+        self._checkpoint_connection: sqlite3.Connection | None = None
         if graph is None:
             model = _init_model(self.settings)
             graph = create_deep_agent(
@@ -150,9 +106,29 @@ class GhostAgent:
                 tools=_build_tools(self.settings, self.memory),
                 middleware=[SeamRecallMiddleware()],
                 context_schema=GhostTurnContext,
-                checkpointer=MemorySaver(),
+                checkpointer=self._checkpointer(),
             )
         self.graph = graph
+
+    def _checkpointer(self) -> SqliteSaver:
+        """A persistent LangGraph checkpoint.
+
+        ADR-0001 item 6: this holds EXECUTION state -- the message thread, so
+        an interrupted conversation can be resumed -- and never semantic truth.
+        SEAM remains the only thing that remembers what was said; this only
+        remembers where the conversation got to. The two live in separate
+        databases so that distinction stays physical rather than a convention.
+
+        `check_same_thread=False` because LangGraph may touch the checkpoint
+        from a worker thread; the connection is owned and closed by this agent.
+        """
+
+        path = self.settings.checkpoints
+        path.parent.mkdir(parents=True, exist_ok=True)
+        self._checkpoint_connection = sqlite3.connect(str(path), check_same_thread=False)
+        saver = SqliteSaver(self._checkpoint_connection)
+        saver.setup()
+        return saver
 
     def invoke(
         self,
@@ -161,49 +137,23 @@ class GhostAgent:
         thread_id: str = "default",
         turn_id: str | None = None,
     ) -> str:
-        resolved_input = user_input.strip()
-        if not resolved_input:
-            raise ValueError("user input is required")
+        """Run one turn. The lifecycle rules live in `ghost.lifecycle`."""
 
-        resolved_turn_id = turn_id or uuid4().hex
-        seam_turn = self.memory.begin_turn(resolved_input)
-        # Everything between begin_turn and complete_turn runs inside an open
-        # SEAM reasoning run. If it raises -- a model error, a tool timeout, a
-        # KeyboardInterrupt mid-answer -- the run must still be closed, or the
-        # store accumulates one dangling run per crash. Tools make this the
-        # common path rather than the rare one.
-        try:
-            result = self.graph.invoke(
-                {"messages": [{"role": "user", "content": resolved_input}]},
-                context=GhostTurnContext(seam_memory=seam_turn.rendered_memory),
-                config={"configurable": {"thread_id": thread_id}},
-            )
-            messages = result.get("messages") or []
-            if not messages:
-                raise RuntimeError("Ghost returned no messages")
-            answer = _message_text(messages[-1])
-        except BaseException as error:
-            # BaseException, not Exception: a cancelled or interrupted turn
-            # leaves exactly the same dangling run as a failed one.
-            self.memory.fail_turn(
-                seam_turn,
-                error=error,
-                thread_id=thread_id,
-                turn_id=resolved_turn_id,
-            )
-            raise
-
-        self.memory.complete_turn(
-            seam_turn,
-            user_input=resolved_input,
-            assistant_output=answer,
+        return run_turn(
+            memory=self.memory,
+            graph=self.graph,
+            user_input=user_input,
             thread_id=thread_id,
-            turn_id=resolved_turn_id,
+            turn_id=turn_id,
         )
-        return answer
 
     def close(self) -> None:
-        self.memory.close()
+        try:
+            self.memory.close()
+        finally:
+            if self._checkpoint_connection is not None:
+                self._checkpoint_connection.close()
+                self._checkpoint_connection = None
 
     def __enter__(self) -> GhostAgent:
         return self

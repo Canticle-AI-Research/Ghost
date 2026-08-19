@@ -16,7 +16,7 @@ from __future__ import annotations
 import json
 from types import SimpleNamespace
 
-from ghost.application import _message_text
+from ghost.lifecycle import message_text as _message_text
 from ghost.seam_memory import _record_summary, render_memories
 
 

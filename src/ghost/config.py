@@ -57,13 +57,22 @@ class GhostSettings:
     # not be able to read arbitrary files just because it was started, so the
     # operator opts in per deployment with GHOST_TOOL_ROOTS.
     tool_roots: tuple[Path, ...] = ()
+    # Execution state only (ADR-0001 item 6), never semantic truth. Defaults
+    # beside the SEAM store rather than inside it, so the distinction between
+    # "where the conversation got to" and "what is remembered" stays physical.
+    checkpoint_db: Path | None = None
 
     @classmethod
     def from_env(cls) -> GhostSettings:
-        default_db = Path.home() / ".local" / "share" / "ghost" / "seam.db"
+        default_root = Path.home() / ".local" / "share" / "ghost"
+        default_db = default_root / "seam.db"
+        default_checkpoints = default_root / "checkpoints.db"
         return cls(
             model=os.environ.get("GHOST_MODEL", "openai:gpt-5.6-terra"),
             seam_db=Path(os.environ.get("GHOST_SEAM_DB", str(default_db))).expanduser(),
+            checkpoint_db=Path(
+                os.environ.get("GHOST_CHECKPOINT_DB", str(default_checkpoints))
+            ).expanduser(),
             namespace=os.environ.get("GHOST_SEAM_NAMESPACE", "ghost.default"),
             scope=os.environ.get("GHOST_SEAM_SCOPE", "thread"),
             recall_budget=_bounded_int(
@@ -72,6 +81,14 @@ class GhostSettings:
             graph_hops=_bounded_int("GHOST_GRAPH_HOPS", 2, minimum=0, maximum=3),
             tool_roots=_tool_roots(),
         )
+
+    @property
+    def checkpoints(self) -> Path:
+        """Resolved checkpoint path, defaulting beside ``seam_db``."""
+
+        if self.checkpoint_db is not None:
+            return self.checkpoint_db
+        return self.seam_db.with_name("checkpoints.db")
 
     @property
     def provider(self) -> str | None:

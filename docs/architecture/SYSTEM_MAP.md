@@ -88,7 +88,7 @@ sequenceDiagram
 | Synchronous root-agent turn | Current | `src/ghost/application.py` |
 | Private SDK recall and MIRL ingest | Current | `src/ghost/seam_memory.py` |
 | Injection-resistant transient recall | Current | `src/ghost/middleware.py` |
-| In-memory LangGraph checkpoint | Current, development-only | `MemorySaver` in `src/ghost/application.py` |
+| Persistent LangGraph checkpoint | Current | `SqliteSaver` in `src/ghost/application.py` |
 | Persistent checkpoint | Planned | roadmap stage 1 |
 | Curated domain tools | Planned | roadmap stage 1 |
 | Selective memory admission | Planned | roadmap stage 2 |
