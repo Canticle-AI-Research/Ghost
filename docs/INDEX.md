@@ -27,6 +27,8 @@ idea cannot be mistaken for a shipped capability.
 | How will memory quality and safety be measured? | [Memory evaluations](evaluation/MEMORY_EVALS.md) |
 | What should be built next, and in what order? | [Second-brain roadmap](roadmap/SECOND_BRAIN_ROADMAP.md) |
 | Why does SEAM own memory while Ghost owns policy? | [ADR-0001](decisions/0001-seam-memory-boundary.md) |
+| What actually changed, and when? | [Ghost updates](updates/README.md) |
+| What landed on 2026-08-19? | [CI, three defects, and the memory boundary](updates/2026-08-19-ci-and-test-coverage.md) |
 
 ## Current implementation map
 
@@ -52,6 +54,9 @@ idea cannot be mistaken for a shipped capability.
    RAW/MIRL truth.
 
 ## Documentation maintenance
+
+When work lands, record it in [`updates/`](updates/README.md) — that
+directory is Ghost's provenance track, and its reports are append-only.
 
 Every new Markdown document under `docs/` must be linked from this index.
 Relative links are verified by `tests/test_docs.py`. Architectural changes
