@@ -121,6 +121,56 @@ uv run pytest
 uv run ruff check .
 ```
 
+A skip never silently means "this test never ran": `tests/conftest.py` fails the
+session on any unexplained skip. Set `GHOST_STRICT_NO_SKIP=0` for an ad-hoc
+local run only; CI must not skip.
+
+### Continuous integration
+
+`.github/workflows/ci.yml` runs on the `seam-box` self-hosted runner, in two
+tiers split by what they need to reach:
+
+| Job | Needs the private SEAM repos? | Covers |
+|---|---|---|
+| `repo-hygiene` | no | ruff, docs routing and links, CI contract, secret scan |
+| `brand-assets` | no | the vendored brand toolkit, against real Chrome and fontconfig |
+| `package-smoke` | no | wheel and sdist build, shipped modules, console-script entry point |
+| `tests` | yes | the full suite on Python 3.11 and 3.13, plus a real `ghost --help` |
+
+The split is deliberate. Ghost's only runtime dependency is pinned to a private
+`git+ssh` URL, so a single-tier CI would say nothing at all whenever those
+repositories are unreachable. `tests/test_ci_contract.py` enforces the split: it
+derives from the test tree which files need the private SDK and fails if a
+credential-free test file runs only in the private tier.
+
+The self-hosted runner is what makes the private tier possible without storing a
+credential. A hosted runner would need a token with read access to two private
+repositories, held as a secret; `seam-box` already authenticates as the owner,
+so the private tier needs no secret.
+
+### Going public
+
+Ghost is private today and is intended to go public once the site is ready.
+**That flip is not just a visibility setting.** `seam-box` is a personal
+desktop that holds an SSH key with read access to two private repositories. A
+public repo accepts pull requests from anyone, a fork's pull request supplies
+its own copy of the workflow file, and GitHub will run it — so attaching a
+public repo to this runner hands strangers code execution on that machine.
+
+`repo-hygiene` carries a tripwire that fails the run when the repository is
+public. It is a **reminder, not a boundary**: a hostile fork ships its own
+workflow and can delete the step. Before going public, do one of these:
+
+1. **Move CI to hosted runners.** The three credential-free jobs already run
+   without the private SDK; drop the `tests` job or run it only on `push` to
+   `main` from the owner. Nothing then touches the desktop.
+2. **Detach Ghost from the runner group** so the runner will not accept Ghost's
+   jobs at all, regardless of what a fork's workflow file asks for.
+
+In either case also set *Settings → Actions → General → Fork pull request
+workflows from outside collaborators* to require approval. That setting, and
+the runner group's repository list, are the actual controls; the YAML is not.
+
 ## Identity
 
 Ghost has a mark. It lives in [`branding/`](branding/) with full usage notes in

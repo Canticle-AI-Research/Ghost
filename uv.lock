@@ -75,6 +75,7 @@ dependencies = [
 dev = [
     { name = "pillow" },
     { name = "pytest" },
+    { name = "pyyaml" },
     { name = "ruff" },
 ]
 
@@ -92,6 +93,7 @@ requires-dist = [
 dev = [
     { name = "pillow", specifier = ">=11,<14" },
     { name = "pytest", specifier = ">=8.3,<10" },
+    { name = "pyyaml", specifier = ">=6,<7" },
     { name = "ruff", specifier = ">=0.15,<1" },
 ]
 

@@ -1,0 +1,231 @@
+# Canonical invocation: uv run <command>
+#
+# Ghost is a uv project (uv.lock is committed and `uv sync` is the documented
+# setup), so this workflow drives uv where the SEAM template drives pip. Every
+# other convention here is SEAM's: job shape, the self-hosted runner, the fast
+# required gates ahead of the heavier suite, and comments that record WHY.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions: read-all
+
+# One CI run per ref; a new push cancels the superseded run. On a single
+# self-hosted runner this stops stale runs from queueing behind fresh ones.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# All jobs run on the seam-box self-hosted runner, for two reasons.
+#
+# 1. Credentials. Ghost's only runtime dependency is `seam-sdk`, pinned to a
+#    git+ssh URL, which pulls `seam-runtime` from a second private repository.
+#    A hosted runner has read access to neither, so it would need a PAT with
+#    read on both repos stored as a secret -- a standing credential for two
+#    private repos, held by a PUBLIC repo, where any workflow change could
+#    exfiltrate it. seam-box already authenticates to GitHub as the owner, so
+#    the private tier needs no secret at all. That is the whole reason it is
+#    worth the runner.
+# 2. Cost. Private-repo hosted minutes were burning real money; see the same
+#    note in the SEAM workflow.
+#
+# Self-hosted rules, inherited from SEAM: no sudo steps, no host-mutating
+# cleanup, caches persist between runs by design. The brand job depends on
+# Chrome and fontconfig ALREADY being on the box for that reason -- it verifies
+# them in a preflight step instead of installing them.
+jobs:
+  repo-hygiene:
+    runs-on: [self-hosted, seam-box]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Guard against public repo on a self-hosted runner
+        # TRIPWIRE, NOT A SECURITY BOUNDARY -- be clear about which this is.
+        #
+        # A pull request from a fork supplies its OWN copy of this file, so an
+        # attacker simply deletes this step. It cannot stop a hostile fork and
+        # must never be mistaken for the thing that does.
+        #
+        # What it does catch is the realistic case: Ghost is flipped public
+        # (planned, once the site is ready) and nobody remembers that seam-box
+        # is a personal desktop holding SSH keys to two private repositories.
+        # The owner's next push to main goes red with the reason attached,
+        # instead of the runner quietly becoming reachable from fork PRs.
+        #
+        # The real controls are repository settings, not YAML. See the
+        # "Going public" section of README.md before removing this.
+        if: ${{ github.event.repository.private == false }}
+        run: |
+          echo "::error::Ghost is PUBLIC and this workflow targets the seam-box self-hosted runner (a personal desktop with SSH access to the private SEAM repos). Before going public, either detach Ghost from the runner group and move these jobs to hosted runners, or require approval for all outside-collaborator workflow runs. See README.md#going-public."
+          exit 1
+
+      - name: Check diff hygiene
+        run: git diff --check
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      # This tier deliberately never runs `uv sync`: syncing would resolve the
+      # private git dependency and couple the repo's cheapest, most-required
+      # gate to the availability of two private repositories. `--no-project`
+      # builds a throwaway environment from the named tools only.
+      - name: Lint (correctness + import order)
+        run: uv run --no-project --with 'ruff>=0.15,<1' ruff check .
+
+      - name: Verify documentation routing and links
+        run: >-
+          uv run --no-project --with 'pytest>=8.3,<10'
+          pytest tests/test_docs.py -q
+
+      - name: Verify CI covers every test file
+        # The gate that keeps this workflow honest: it derives the test tree
+        # from disk and fails if any file runs in no job. Without it, adding a
+        # test file that no lane names is invisible -- the suite stays green
+        # while the new tests never execute anywhere.
+        run: >-
+          uv run --no-project --with 'pytest>=8.3,<10' --with 'pyyaml>=6,<7'
+          pytest tests/test_ci_contract.py -q
+
+      - name: Secret scan
+        # Ghost is a public repo that documents private infrastructure paths, so
+        # a leaked key here is immediately world-readable. gitleaks is fetched
+        # to RUNNER_TEMP rather than installed, to honour the no-sudo rule.
+        env:
+          GITLEAKS_VERSION: 8.30.1
+        run: |
+          set -euo pipefail
+          cd "${RUNNER_TEMP}"
+          curl -sSfL -o gitleaks.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          tar -xzf gitleaks.tar.gz gitleaks
+          cd "${GITHUB_WORKSPACE}"
+          "${RUNNER_TEMP}/gitleaks" dir . --no-banner --redact --exit-code 1
+
+  brand-assets:
+    runs-on: [self-hosted, seam-box]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Preflight brand renderers
+        # No-sudo means these cannot be installed here, so their absence has to
+        # be a loud, named failure. Otherwise a runner image change surfaces as
+        # "render_png produced a blank canvas", which reads as a brand bug.
+        # fc-match matters specifically: check_fonts() returns {} without it and
+        # the font test then fails with a message about the toolkit, not the box.
+        run: |
+          set -euo pipefail
+          missing=""
+          command -v google-chrome >/dev/null 2>&1 || command -v chromium >/dev/null 2>&1 || missing="${missing} chrome"
+          command -v fc-match >/dev/null 2>&1 || missing="${missing} fontconfig"
+          if [ -n "${missing}" ]; then
+            echo "::error::seam-box is missing brand renderers:${missing} (no-sudo runner; install on the host)"
+            exit 1
+          fi
+          echo "renderers present: $(command -v google-chrome || command -v chromium), $(command -v fc-match)"
+
+      - name: Verify brand asset toolkit
+        # Pillow only -- the brand tier needs no private dependency, so it stays
+        # green even when the private repos are unreachable.
+        run: >-
+          uv run --no-project --with 'pytest>=8.3,<10' --with 'pillow>=11,<14'
+          pytest tests/test_brand_assets.py -q
+
+  package-smoke:
+    runs-on: [self-hosted, seam-box]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Build wheel and source distribution
+        # hatchling does not resolve runtime dependencies to build, so this
+        # proves the package is publishable without private-repo access.
+        run: uv build
+
+      - name: Verify the wheel ships the package and the entry point
+        # Inspected rather than installed: `ghost --help` imports deepagents and
+        # seam_sdk, so it cannot run in a credential-free job. The private tier
+        # smokes the real command; this proves the artifact is well-formed.
+        run: |
+          set -euo pipefail
+          uv run --no-project --with 'pytest>=8.3,<10' python - <<'PY'
+          import sys, zipfile
+          from pathlib import Path
+
+          wheels = sorted(Path("dist").glob("*.whl"))
+          assert len(wheels) == 1, f"expected exactly one wheel, got {wheels}"
+          assert sorted(Path("dist").glob("*.tar.gz")), "no source distribution built"
+
+          with zipfile.ZipFile(wheels[0]) as zf:
+              names = zf.namelist()
+              entry_points = next(n for n in names if n.endswith("entry_points.txt"))
+              declared = zf.read(entry_points).decode()
+
+          missing = [m for m in ("ghost/__init__.py", "ghost/cli.py", "ghost/seam_memory.py")
+                     if m not in names]
+          assert not missing, f"wheel is missing modules: {missing}"
+          assert "ghost = ghost.cli:main" in declared, f"console script missing:\n{declared}"
+          print(f"{wheels[0].name}: {len(names)} members, entry point OK")
+          PY
+
+  tests:
+    # The private tier: everything that imports `ghost` and therefore needs the
+    # SEAM SDK. Gated behind the three credential-free jobs because seam-box
+    # runs one job at a time -- a lint error should not wait on a full sync.
+    needs:
+      - repo-hygiene
+      - brand-assets
+      - package-smoke
+    runs-on: [self-hosted, seam-box]
+    strategy:
+      fail-fast: false
+      matrix:
+        # The floor and the development version. `requires-python` claims
+        # >=3.11,<3.15; nothing verified the floor until now.
+        python-version: ["3.11", "3.13"]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Verify the lock file matches pyproject
+        # uv.lock is committed and pins two private git revisions. A hand-edited
+        # pyproject that never re-locked would install a different SEAM than the
+        # one the README names as reviewed.
+        run: uv lock --check
+
+      - name: Install project and development dependencies
+        run: uv sync --frozen --python ${{ matrix.python-version }}
+
+      - name: Run the full test suite
+        # Strict no-skip (tests/conftest.py) is on by default and fails the run
+        # on any unexplained skip, so a test cannot quietly stop executing here.
+        run: uv run --frozen python -m pytest --durations=10
+
+      - name: Smoke the installed console script
+        # The credential-free package-smoke job can only inspect the wheel. This
+        # is the first point in CI where the whole import chain -- ghost ->
+        # deepagents -> langchain -> seam_sdk -> seam_runtime -- is proven to
+        # load, which is exactly the chain the private pins can break.
+        run: uv run --frozen ghost --help

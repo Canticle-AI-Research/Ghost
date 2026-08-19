@@ -27,6 +27,8 @@ dev = [
   # Brand asset generation (tools/branding). Pillow writes the multi-size ICO;
   # headless Chrome and ffmpeg are system tools, not Python dependencies.
   "pillow>=11,<14",
+  # tests/test_ci_contract.py parses .github/workflows/ci.yml.
+  "pyyaml>=6,<7",
 ]
 
 [tool.hatch.metadata]

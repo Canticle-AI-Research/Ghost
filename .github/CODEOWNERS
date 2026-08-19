@@ -1,0 +1,19 @@
+# Ghost code ownership
+#
+# This file is a review-routing hint for GitHub. It does not change runtime
+# behavior, packaging, imports, CLI commands, or tests.
+
+* @BlackhatShiftey
+
+# Memory boundary: the SEAM adapter and the trust contract around recalled
+# records. A change here can turn recalled memory back into instructions.
+/src/ghost/seam_memory.py @BlackhatShiftey
+/src/ghost/middleware.py @BlackhatShiftey
+/docs/security/TRUST_BOUNDARIES.md @BlackhatShiftey
+/docs/decisions/ @BlackhatShiftey
+
+# Dependency and CI surfaces: the private SEAM pins and the gates that verify
+# them.
+/pyproject.toml @BlackhatShiftey
+/uv.lock @BlackhatShiftey
+/.github/ @BlackhatShiftey
