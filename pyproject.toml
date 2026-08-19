@@ -58,4 +58,39 @@ pythonpath = ["."]
 line-length = 100
 
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F", "I", "UP"]
+# Ruff implements pylint's checks (the PL rules), so this is the whole linter
+# rather than one of two. A second tool with its own config would duplicate
+# these findings and disagree at the edges.
+#
+# Deliberately excluded: PLR (refactor opinions like argument counts), D
+# (docstring style -- this codebase writes docstrings for readers, not for a
+# checker), and ANN (annotations are already near-total and mypy is the right
+# tool for the rest).
+select = [
+  "E", "W",      # pycodestyle
+  "F",           # pyflakes: real errors
+  "I",           # import order
+  "UP",          # pyupgrade
+  "B",           # bugbear: likely bugs
+  "SIM",         # simplifications
+  "C4",          # comprehensions
+  "PLE", "PLW",  # pylint errors and warnings
+  "RUF",         # ruff-specific
+  "S",           # bandit: security. Load-bearing now that Ghost has a shell.
+  "DTZ",         # naive datetimes
+  "A",           # builtin shadowing
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests assert, use literals, and import lazily inside test bodies on purpose.
+# A002: test fakes implement the AgentGraph protocol, whose parameter is named
+# `input` by LangGraph; renaming it in the fake would break the contract.
+"tests/*" = ["S101", "S105", "S108", "PLR2004", "PLC0415", "A002"]
+# The CLI's whole job is printing to a terminal.
+"src/ghost/cli.py" = ["T201"]
+# `input` is LangGraph's parameter name on the graph protocol; renaming it would
+# break the call, and the shadowing is confined to a Protocol signature.
+"src/ghost/lifecycle.py" = ["A002"]
+# The brand toolkit shells out to Chrome and ffmpeg by design, resolved from
+# PATH because that is where those tools live on a developer machine.
+"tools/branding/assets.py" = ["S603", "S607"]

@@ -52,12 +52,12 @@ def shell_on(monkeypatch):
 
 
 def _settings(tmp_path: Path, **kw) -> GhostSettings:
-    base = dict(
-        model="openai:test-model",
-        seam_db=tmp_path / "g.db",
-        namespace="ghost.test",
-        scope="thread",
-    )
+    base = {
+        "model": "openai:test-model",
+        "seam_db": tmp_path / "g.db",
+        "namespace": "ghost.test",
+        "scope": "thread",
+    }
     base.update(kw)
     return GhostSettings(**base)
 
@@ -96,7 +96,7 @@ def test_the_tool_is_absent_from_the_agent_until_enabled(tmp_path: Path) -> None
 def test_run_command_is_declared_a_write_tool() -> None:
     """Classification is data so it cannot drift silently, and so a reviewer
     can see the whole write surface in one place."""
-    assert WRITE_TOOLS == {"run_command"}
+    assert set(WRITE_TOOLS) == {"run_command"}
 
 
 # --- what it does ----------------------------------------------------------

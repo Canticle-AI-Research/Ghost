@@ -8,6 +8,8 @@ handle released -- on every path out, including Ctrl-C mid-answer.
 
 from __future__ import annotations
 
+from typing import ClassVar
+
 import pytest
 
 from ghost import cli
@@ -16,7 +18,9 @@ from ghost import cli
 class FakeGhost:
     """Stands in for GhostAgent, recording lifecycle and prompts."""
 
-    instances: list[FakeGhost] = []
+    # ClassVar is the point, not an annotation nicety: every FakeGhost appends
+    # to one shared list and the fixture resets it per test.
+    instances: ClassVar[list[FakeGhost]] = []
 
     def __init__(self, settings=None, **_: object) -> None:
         self.settings = settings

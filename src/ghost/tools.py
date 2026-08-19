@@ -329,7 +329,14 @@ def make_run_command(
         )
         started = time.monotonic()
         try:
-            completed = subprocess.run(
+            # S602 is suppressed, not overlooked. `shell=True` is the feature:
+            # this tool exists to run shell commands, so pipes, redirection,
+            # globs and `&&` must work. Passing an argv list would make it a
+            # worse-behaved `exec` while removing none of the risk, because the
+            # risk is not in how the process is spawned. It is managed above
+            # this line -- the opt-in flag, the approval hook, the timeout --
+            # and by SEAM refusing to accept an outcome whose check failed.
+            completed = subprocess.run(  # noqa: S602
                 line,
                 shell=True,
                 cwd=str(resolved_workdir),

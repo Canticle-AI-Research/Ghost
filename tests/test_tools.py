@@ -55,7 +55,6 @@ def tree(tmp_path: Path) -> Path:
     (tmp_path / "src").mkdir()
     (tmp_path / "src" / "app.py").write_text("import os\nSECRET = 'not-a-real-key'\n")
     (tmp_path / "notes.md").write_text("ultramarine is the colour\n")
-    (tmp_path / "outside.txt").parent  # touch nothing
     return tmp_path
 
 
