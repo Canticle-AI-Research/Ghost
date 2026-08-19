@@ -25,7 +25,12 @@ class SeamTurn:
 
 def _record_summary(record: Any) -> str:
     attrs = record.attrs if isinstance(getattr(record, "attrs", None), dict) else {}
-    for key in ("content", "text", "summary", "object", "label"):
+    # "object" is deliberately NOT in this list. It used to be, which meant a
+    # graph triple hit this loop on its object and returned the bare object --
+    # "ultramarine" instead of "user prefers ultramarine" -- so the triple
+    # branch below was dead for exactly the records it was written for. A record
+    # carrying only an object still renders through that branch unchanged.
+    for key in ("content", "text", "summary", "label"):
         value = attrs.get(key)
         if isinstance(value, str) and value.strip():
             return value.strip()[:1200]
