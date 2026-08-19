@@ -187,28 +187,46 @@ def test_a_thread_resumes_after_the_agent_is_torn_down(tmp_path_factory) -> None
     )
 
 
-def test_a_different_thread_does_not_see_the_conversation(tmp_path_factory) -> None:
-    """Resumption must not leak across threads -- otherwise `--thread-id` is
-    decorative in the other direction."""
+def test_memory_crosses_threads_because_scope_is_a_label_not_a_partition(
+    tmp_path_factory,
+) -> None:
+    """Pins documented behaviour that is easy to mistake for a bug.
+
+    `GHOST_SEAM_SCOPE=thread` is a scope LABEL, not a binding to the LangGraph
+    thread id -- `NAMESPACE_AND_SCOPE.md` says so plainly: "the current
+    `thread` label does not itself partition data by LangGraph thread ID."
+    Every thread in a namespace therefore writes to, and recalls from, the same
+    scope.
+
+    That is correct for single-operator use and is exactly what makes Ghost
+    remember across sessions. It is NOT a tenancy boundary, and it matters more
+    now that Ghost can run commands: what it learns while working in one thread
+    is recallable from every other thread in the namespace.
+
+    This test asserts the current behaviour so that implementing real per-thread
+    partitioning has to update it deliberately rather than silently.
+    """
     root = tmp_path_factory.mktemp("live")
     settings = _settings(root / "ghost.db")
+    # A neutral fact, not a credential: asking a model to repeat a
+    # "passphrase" triggers a safety refusal and tests memory not at all.
+    token = f"crossthread-{uuid.uuid4().hex[:10]}"
 
     with GhostAgent(settings) as first:
         first.invoke(
-            "Remember for this conversation only: the passphrase is bluebird. "
-            "Acknowledge with 'ok'.",
-            thread_id="thread-a",
+            f"Remember: the staging build is codenamed {token}.", thread_id="thread-a"
         )
 
     with GhostAgent(settings) as second:
         answer = second.invoke(
-            "Without guessing, what passphrase did I give you earlier in THIS "
-            "conversation? If none, say 'none'.",
+            "What is the staging build codename? Answer with just the codename.",
             thread_id="thread-b",
         )
 
-    assert "bluebird" not in answer.lower(), (
-        f"thread-b saw thread-a's conversation history. Answer: {answer[:300]}"
+    assert token in answer, (
+        "memory did not cross threads. If per-thread partitioning was just "
+        "implemented, this test documents the old behaviour and should be "
+        "rewritten to assert isolation instead."
     )
 
 
@@ -256,3 +274,87 @@ def test_a_real_tool_call_produces_a_verified_reasoning_graph(tmp_path_factory) 
     assert all(length is not None and digest for length, digest in stored_output), (
         "a tool result was recorded without a length and digest"
     )
+
+
+def test_ghost_uses_the_operating_system(tmp_path_factory, monkeypatch) -> None:
+    """Ghost drives the real machine, and the store records what it ran.
+
+    Asserted against the DATABASE rather than the answer text: what matters is
+    not that the model reported a kernel version but that the command it ran is
+    recoverable, its exit code was checked, and the outcome was accepted only
+    against a check that passed.
+    """
+    root = tmp_path_factory.mktemp("live-os")
+    monkeypatch.setenv("GHOST_ENABLE_SHELL", "1")
+    settings = _settings(root / "ghost.db")
+    settings = GhostSettings(
+        model=settings.model,
+        seam_db=settings.seam_db,
+        namespace=settings.namespace,
+        scope=settings.scope,
+        recall_budget=settings.recall_budget,
+        graph_hops=settings.graph_hops,
+        enable_shell=True,
+        shell_approval=False,
+        shell_workdir=root,
+    )
+
+    marker = f"ghost-live-{uuid.uuid4().hex[:10]}"
+    with GhostAgent(settings) as ghost:
+        ghost.invoke(
+            f"Using the shell, create a file named {marker}.txt in the current "
+            "directory containing the word ready, then confirm it exists."
+        )
+
+    created = root / f"{marker}.txt"
+    assert created.exists(), "Ghost did not actually touch the filesystem"
+    assert "ready" in created.read_text()
+
+    connection = sqlite3.connect(settings.seam_db)
+    try:
+        commands = [
+            r[0]
+            for r in connection.execute(
+                "select summary from reasoning_node "
+                "where kind = 'decision' and summary like 'run_command%'"
+            )
+        ]
+        checks = connection.execute(
+            "select check_ref, verdict, exit_code from reasoning_verification "
+            "where check_ref = 'run_command'"
+        ).fetchall()
+    finally:
+        connection.close()
+
+    assert commands, "an OS command ran but no decision node recorded it"
+    assert any(marker in c for c in commands), (
+        f"the recorded commands do not show what Ghost actually did: {commands}"
+    )
+    assert any(v == "passed" and code == 0 for _ref, v, code in checks), (
+        f"no passed tool check with a zero exit code: {checks}"
+    )
+
+
+def test_a_declined_command_does_not_end_the_turn(tmp_path_factory, monkeypatch) -> None:
+    """An operator saying no to one command must not cost the conversation."""
+    root = tmp_path_factory.mktemp("live-deny")
+    monkeypatch.setenv("GHOST_ENABLE_SHELL", "1")
+    base = _settings(root / "ghost.db")
+    settings = GhostSettings(
+        model=base.model,
+        seam_db=base.seam_db,
+        namespace=base.namespace,
+        scope=base.scope,
+        enable_shell=True,
+        shell_workdir=root,
+    )
+
+    target = root / "must-not-exist.txt"
+    with GhostAgent(settings, approve=lambda _command: False) as ghost:
+        answer = ghost.invoke(
+            f"Using the shell, create the file {target.name} here. "
+            "If you cannot, say so plainly."
+        )
+
+    assert not target.exists(), "a declined command still changed the filesystem"
+    assert answer.strip(), "the turn produced no answer after the refusal"

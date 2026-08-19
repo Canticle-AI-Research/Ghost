@@ -108,11 +108,12 @@ Type `/exit` to leave the session.
 Ghost's tools are read-only, built to the contract in
 [`docs/security/TRUST_BOUNDARIES.md`](docs/security/TRUST_BOUNDARIES.md).
 
-| Tool | Reads | Available |
+| Tool | Does | Available |
 |---|---|---|
-| `seam_recall` | Ghost's durable SEAM memory | always |
-| `read_file` | one UTF-8 file inside a configured root | when `GHOST_TOOL_ROOTS` is set |
-| `search_repo` | a literal string across configured roots | when `GHOST_TOOL_ROOTS` is set |
+| `seam_recall` | reads Ghost's durable SEAM memory | always |
+| `read_file` | reads one UTF-8 file inside a configured root | when `GHOST_TOOL_ROOTS` is set |
+| `search_repo` | searches configured roots for a literal string | when `GHOST_TOOL_ROOTS` is set |
+| `run_command` | **runs a shell command — changes the machine** | when `GHOST_ENABLE_SHELL=1` |
 
 `seam_recall` is a deliberate mid-turn lookup, distinct from the automatic
 pre-turn recall the middleware performs. It reaches SEAM only through
@@ -129,6 +130,39 @@ export GHOST_TOOL_ROOTS="/path/to/repo:/path/to/notes"
 
 Every path is resolved before the containment check, so a symlink inside a root
 that points outside it is refused rather than followed.
+
+### Shell access
+
+`run_command` gives Ghost your account's full authority on the machine. It is
+off unless you turn it on:
+
+```bash
+export GHOST_ENABLE_SHELL=1
+export GHOST_SHELL_WORKDIR="/path/to/work"   # defaults to the current directory
+```
+
+There is deliberately **no denylist of dangerous commands**. Pattern-matching
+shell strings is trivially bypassable and would imply a protection that does
+not exist. The real controls are:
+
+- **opt-in** — without `GHOST_ENABLE_SHELL` the tool is not built at all;
+- **approval** — `GHOST_SHELL_APPROVAL` defaults on whenever the shell is on,
+  and the CLI prompts on the terminal before each command. With no terminal to
+  ask, the answer is no. Set it to `0` only for deliberate unattended runs;
+- **timeouts** — every command is capped, and the model may narrow that cap but
+  never widen it; and
+- **verification** — each command becomes a `decision` node with a `tool` check
+  carrying its real exit code, and SEAM refuses to accept the turn's outcome
+  against a check that failed.
+
+A refused command is returned to Ghost as a tool result, not an exception, so
+declining one command does not end the conversation.
+
+Command output is passed to SEAM as a check result, which SEAM reduces to a
+length and a SHA-256. The output itself is never stored, which is what makes
+shell output admissible at all — it routinely carries environment and tokens
+that [trust boundaries](docs/security/TRUST_BOUNDARIES.md) forbid becoming
+durable memory.
 
 ## Memory lifecycle
 

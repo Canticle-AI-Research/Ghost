@@ -17,7 +17,6 @@ from ghost.application import _build_tools
 from ghost.config import GhostSettings
 from ghost.seam_memory import SeamMemory
 from ghost.tools import (
-    ToolError,
     make_read_file,
     make_seam_recall,
     make_search_repo,
@@ -36,6 +35,19 @@ MUTATING_SDK_METHODS = (
     "reverse_promotion",
     "review_promotion",
 )
+
+
+def refusal(built, args: dict) -> str:
+    """A tool's refusal, as the model receives it.
+
+    `handle_tool_error` means a raised `ToolError` comes back as the tool's
+    result rather than an exception, so the model can read the reason and try
+    something else. These tests assert on that text for the same reason.
+    """
+
+    out = built.invoke(args)
+    assert isinstance(out, str), f"expected a refusal string, got {out!r}"
+    return out
 
 
 @pytest.fixture
@@ -71,8 +83,7 @@ def test_read_file_refuses_a_path_outside_every_root(tree: Path, tmp_path: Path)
     outside = tmp_path.parent / "elsewhere.txt"
     outside.write_text("should not be readable")
     tool = make_read_file([tree])
-    with pytest.raises(ToolError, match="outside the readable roots"):
-        tool.invoke({"path": str(outside)})
+    assert "outside the readable roots" in refusal(tool, {"path": str(outside)})
 
 
 @pytest.mark.parametrize(
@@ -81,8 +92,7 @@ def test_read_file_refuses_a_path_outside_every_root(tree: Path, tmp_path: Path)
 )
 def test_read_file_refuses_traversal_and_home_expansion(tree: Path, traversal: str) -> None:
     tool = make_read_file([tree])
-    with pytest.raises(ToolError, match="outside the readable roots"):
-        tool.invoke({"path": traversal})
+    assert "outside the readable roots" in refusal(tool, {"path": traversal})
 
 
 def test_read_file_refuses_a_symlink_pointing_out_of_the_root(tree: Path, tmp_path: Path) -> None:
@@ -96,25 +106,25 @@ def test_read_file_refuses_a_symlink_pointing_out_of_the_root(tree: Path, tmp_pa
     except OSError:  # pragma: no cover - platform without symlink support
         pytest.fail("symlinks unavailable; this boundary cannot be verified here")
     tool = make_read_file([tree])
-    with pytest.raises(ToolError, match="outside the readable roots"):
-        tool.invoke({"path": str(link)})
+    assert "outside the readable roots" in refusal(tool, {"path": str(link)})
 
 
 def test_read_file_refuses_an_oversized_file(tree: Path) -> None:
     big = tree / "big.txt"
     big.write_text("x" * 300_000)
-    with pytest.raises(ToolError, match="larger than"):
-        make_read_file([tree]).invoke({"path": str(big)})
+    assert "larger than" in refusal(make_read_file([tree]), {"path": str(big)})
 
 
 def test_read_file_reports_a_missing_file_without_leaking_the_tree(tree: Path) -> None:
-    with pytest.raises(ToolError, match="no such file"):
-        make_read_file([tree]).invoke({"path": str(tree / "nope.md")})
+    assert "no such file" in refusal(
+        make_read_file([tree]), {"path": str(tree / "nope.md")}
+    )
 
 
 def test_no_roots_means_nothing_is_readable(tree: Path) -> None:
-    with pytest.raises(ToolError, match="no readable roots"):
-        make_read_file([]).invoke({"path": str(tree / "notes.md")})
+    assert "no readable roots" in refusal(
+        make_read_file([]), {"path": str(tree / "notes.md")}
+    )
 
 
 # --- search_repo -----------------------------------------------------------
@@ -197,8 +207,7 @@ def test_seam_recall_rejects_an_empty_query(tmp_path: Path) -> None:
     settings = _settings(tmp_path / "g.db")
     with SeamMemory(settings, allow_pgvector_env=False) as memory:
         tool = make_seam_recall(memory, namespace=settings.namespace, scope=settings.scope)
-        with pytest.raises(ToolError, match="query is required"):
-            tool.invoke({"query": "   "})
+        assert "query is required" in refusal(tool, {"query": "   "})
 
 
 def test_seam_recall_cannot_reach_a_mutating_sdk_call() -> None:

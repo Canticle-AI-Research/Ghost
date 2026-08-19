@@ -30,6 +30,7 @@ idea cannot be mistaken for a shipped capability.
 | What actually changed, and when? | [Ghost updates](updates/README.md) |
 | What landed on 2026-08-19? | [CI, three defects, and the memory boundary](updates/2026-08-19-ci-and-test-coverage.md) |
 | How does a turn become a verified graph? | [Verified action graph](updates/2026-08-19-verified-action-graph.md) |
+| How does Ghost use the computer? | [Operating system control](updates/2026-08-19-operating-system-control.md) |
 
 ## Current implementation map
 
@@ -41,7 +42,7 @@ idea cannot be mistaken for a shipped capability.
 | Transient context injection | `src/ghost/middleware.py` | Retrieved memory is untrusted data and is not checkpointed |
 | Runtime settings | `src/ghost/config.py` | Model, database, namespace, scope, recall budget, graph hops |
 | Invocation context | `src/ghost/context.py` | Per-turn recalled-memory payload |
-| Read-only tools | `src/ghost/tools.py` | Memory recall, bounded file read and search; no write path |
+| Tools | `src/ghost/tools.py` | Memory recall, bounded file read and search, and an opt-in shell |
 | Operator interface | `src/ghost/cli.py` | One-shot and interactive terminal use |
 | Verification | `tests/` | Agent lifecycle, Responses API routing, MIRL round trip, idempotency |
 

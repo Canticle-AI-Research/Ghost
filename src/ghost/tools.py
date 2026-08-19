@@ -1,9 +1,16 @@
-"""Ghost's read-only tools.
+"""Ghost's tools.
 
 Every tool here is built to the contract in `docs/security/TRUST_BOUNDARIES.md`
 -- narrow purpose, typed inputs, explicit read/write classification, scope
-validation, output-size limits, and an auditable result. All three are READ
-ONLY, and that is enforced structurally rather than by convention:
+validation, output-size limits, and an auditable result.
+
+Three of the four are READ ONLY, enforced structurally rather than by
+convention. The fourth, `run_command`, is a shell and is exactly as powerful as
+the account running Ghost; see `make_run_command` for what bounds it and what
+does not. Read/write classification is data, in `WRITE_TOOLS`, so a test can
+assert that no tool quietly becomes a write.
+
+The read-only guarantees:
 
 * `seam_recall` touches only the SDK's query surface. `SeamSDK` also exposes
   `apply_delete`, `plan_delete`, `ingest`, `batch_ingest`, `apply_promotion`,
@@ -23,11 +30,14 @@ boundary intact.
 from __future__ import annotations
 
 import json
-from collections.abc import Sequence
+import os
+import subprocess
+import time
+from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Any
 
-from langchain_core.tools import BaseTool, tool
+from langchain_core.tools import BaseTool, ToolException, tool
 
 # One record's rendered text, and one tool result overall. A tool result is
 # pasted into the model's context verbatim, so an unbounded read is an
@@ -36,10 +46,54 @@ MAX_RECORD_CHARS = 1_200
 MAX_RESULT_CHARS = 20_000
 MAX_FILE_BYTES = 200_000
 MAX_MATCHES = 50
+# A command that has not finished in this long is hung, not slow. Without a
+# ceiling, one `tail -f` ends the session.
+DEFAULT_COMMAND_TIMEOUT = 120
+MAX_COMMAND_TIMEOUT = 3_600
+
+#: Tools that can change the machine. Kept as data so `tests/test_tools.py`
+#: can assert the set has not grown without the trust-boundary review that
+#: TRUST_BOUNDARIES.md requires for consequential tools.
+WRITE_TOOLS: frozenset[str] = frozenset({"run_command"})
+
+_TRUTHY = {"1", "true", "yes", "on"}
 
 
-class ToolError(Exception):
-    """A tool refused its input. The message is shown to the model."""
+class ToolError(ToolException):
+    """A tool refused its input. The message is shown to the model.
+
+    Subclasses LangChain's ``ToolException`` deliberately. A tool refusing bad
+    input is a normal event -- a path outside the roots, a file that is not
+    UTF-8, an operator declining a command -- and the model should see the
+    reason and choose differently. Raising a plain exception instead kills the
+    whole turn, which is both a worse experience and a worse failure mode: the
+    turn is finalized as failed and nothing is learned from it.
+
+    Paired with ``handle_tool_error`` on each tool, which turns the raised
+    message into a tool result the model reads.
+    """
+
+
+class ApprovalDenied(ToolError):
+    """An operator declined a write action.
+
+    A subclass so declining one command reaches the model as a refusal it can
+    reason about and work around, rather than ending the turn.
+    """
+
+
+def _recoverable(built: BaseTool) -> BaseTool:
+    """Return tool errors to the model instead of ending the turn.
+
+    `handle_tool_error` is a field on the tool, not an argument to the
+    decorator. With it set, a raised `ToolError` becomes a tool result the
+    model reads and can act on -- "that path is outside the readable roots",
+    "the operator declined" -- rather than an exception that kills the turn and
+    finalizes it as failed.
+    """
+
+    built.handle_tool_error = True
+    return built
 
 
 def _truncate(text: str, limit: int) -> str:
@@ -114,7 +168,7 @@ def make_seam_recall(memory: Any, *, namespace: str, scope: str) -> BaseTool:
             lines.append(encoded.replace("<", "\\u003c").replace(">", "\\u003e"))
         return _truncate("\n".join(lines), MAX_RESULT_CHARS)
 
-    return seam_recall
+    return _recoverable(seam_recall)
 
 
 def make_read_file(roots: Sequence[Path]) -> BaseTool:
@@ -144,7 +198,7 @@ def make_read_file(roots: Sequence[Path]) -> BaseTool:
             raise ToolError("file is not UTF-8 text") from exc
         return _truncate(text, MAX_RESULT_CHARS)
 
-    return read_file
+    return _recoverable(read_file)
 
 
 def make_search_repo(roots: Sequence[Path]) -> BaseTool:
@@ -193,4 +247,107 @@ def make_search_repo(roots: Sequence[Path]) -> BaseTool:
             return f"No matches for {needle!r}."
         return _truncate("\n".join(matches), MAX_RESULT_CHARS)
 
-    return search_repo
+    return _recoverable(search_repo)
+
+
+def shell_enabled() -> bool:
+    """Whether the operator opted this process into shell access."""
+
+    return os.environ.get("GHOST_ENABLE_SHELL", "").strip().lower() in _TRUTHY
+
+
+def make_run_command(
+    *,
+    workdir: Path | None = None,
+    timeout: int = DEFAULT_COMMAND_TIMEOUT,
+    approve: Callable[[str], bool] | None = None,
+) -> BaseTool:
+    """Run a shell command. THIS IS A WRITE TOOL -- it can change the machine.
+
+    Be honest about what this is. A shell is exactly as powerful as the account
+    running Ghost; no wrapper makes that safe, and a denylist of dangerous
+    strings would be trivially bypassable while implying a protection that does
+    not exist. So this deliberately does not pattern-match commands. What the
+    design does instead is make shell use *bounded* and *accountable*.
+
+    Bounded:
+
+    * it refuses to run unless the operator set ``GHOST_ENABLE_SHELL``, so a
+      default deployment cannot reach a shell at all;
+    * every command carries a timeout, capped, because an agent that runs
+      ``tail -f`` otherwise hangs the session forever; and
+    * output is truncated before it reaches the model's context.
+
+    Accountable, which is the part that matters and the part SEAM provides:
+    the caller records each invocation as a ``decision`` node with a ``tool``
+    verification carrying the real exit code, and ``finalize_verified`` refuses
+    to accept the turn's outcome against a check that failed. The command's
+    output is fingerprinted rather than stored, which is the only reason shell
+    output may touch the record at all -- it routinely carries environment and
+    tokens that ``TRUST_BOUNDARIES.md`` forbids becoming MIRL knowledge.
+
+    ``approve`` is the operator's stop button, wired by the CLI. It is a chance
+    for a human to say no, not a security boundary against the model.
+    """
+
+    resolved_workdir = Path(workdir).expanduser().resolve() if workdir else Path.cwd()
+    bounded_timeout = max(1, min(int(timeout), MAX_COMMAND_TIMEOUT))
+
+    @tool("run_command", parse_docstring=False)
+    def run_command(command: str, timeout_seconds: int | None = None) -> str:
+        """Run a shell command on the operator's machine and return its output.
+
+        This CHANGES THE MACHINE. Prefer `read_file` or `search_repo` when you
+        only need to look at something. Say what a command will do before you
+        run it, and never chain destructive operations speculatively.
+
+        Returns the exit code and duration, then combined stdout and stderr.
+
+        Args:
+            command: the shell command to run.
+            timeout_seconds: optional override, capped by the operator.
+        """
+        if not shell_enabled():
+            raise ToolError(
+                "the shell tool is disabled; the operator must set GHOST_ENABLE_SHELL=1"
+            )
+        line = command.strip()
+        if not line:
+            raise ToolError("command is required")
+
+        if approve is not None and not approve(line):
+            raise ApprovalDenied(f"the operator declined to run: {line}")
+
+        # The model may NARROW the timeout and never widen it. Capping its
+        # request against MAX_COMMAND_TIMEOUT instead of the operator's limit
+        # let it ask for 999s against an operator ceiling of 1s and win, which
+        # is the model overriding the operator rather than configuring itself.
+        limit = (
+            bounded_timeout
+            if timeout_seconds is None
+            else max(1, min(int(timeout_seconds), bounded_timeout))
+        )
+        started = time.monotonic()
+        try:
+            completed = subprocess.run(
+                line,
+                shell=True,
+                cwd=str(resolved_workdir),
+                capture_output=True,
+                text=True,
+                timeout=limit,
+                check=False,
+            )
+        except subprocess.TimeoutExpired as exc:
+            raise ToolError(f"command exceeded {limit}s and was killed: {line}") from exc
+        except OSError as exc:
+            raise ToolError(f"could not run command: {exc}") from exc
+
+        elapsed_ms = (time.monotonic() - started) * 1000
+        body = (completed.stdout or "") + (completed.stderr or "")
+        return _truncate(
+            f"exit={completed.returncode} duration_ms={elapsed_ms:.0f}\n{body}",
+            MAX_RESULT_CHARS,
+        )
+
+    return _recoverable(run_command)

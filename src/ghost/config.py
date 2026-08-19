@@ -18,6 +18,20 @@ def _bounded_int(name: str, default: int, *, minimum: int, maximum: int) -> int:
     return value
 
 
+def _flag(name: str, *, default: bool) -> bool:
+    """Read a boolean switch.
+
+    Anything unrecognised is the default rather than an error, EXCEPT that an
+    unset shell flag must never read as enabled -- so the default is passed in
+    by the caller rather than inferred from the string.
+    """
+
+    raw = os.environ.get(name)
+    if raw is None or not raw.strip():
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "on"}
+
+
 def _tool_roots() -> tuple[Path, ...]:
     """Readable roots for the filesystem tools, from ``GHOST_TOOL_ROOTS``.
 
@@ -61,6 +75,15 @@ class GhostSettings:
     # beside the SEAM store rather than inside it, so the distinction between
     # "where the conversation got to" and "what is remembered" stays physical.
     checkpoint_db: Path | None = None
+    # Shell access. Off unless the operator turns it on, so importing Ghost or
+    # running it with defaults can never reach a shell.
+    enable_shell: bool = False
+    # Ask before each command. On whenever the shell is on, because the shell's
+    # blast radius is the whole account; an operator running unattended turns
+    # it off deliberately with GHOST_SHELL_APPROVAL=0.
+    shell_approval: bool = True
+    shell_timeout: int = 120
+    shell_workdir: Path | None = None
 
     @classmethod
     def from_env(cls) -> GhostSettings:
@@ -80,6 +103,16 @@ class GhostSettings:
             ),
             graph_hops=_bounded_int("GHOST_GRAPH_HOPS", 2, minimum=0, maximum=3),
             tool_roots=_tool_roots(),
+            enable_shell=_flag("GHOST_ENABLE_SHELL", default=False),
+            shell_approval=_flag("GHOST_SHELL_APPROVAL", default=True),
+            shell_timeout=_bounded_int(
+                "GHOST_SHELL_TIMEOUT", 120, minimum=1, maximum=3600
+            ),
+            shell_workdir=(
+                Path(os.environ["GHOST_SHELL_WORKDIR"]).expanduser().resolve()
+                if os.environ.get("GHOST_SHELL_WORKDIR", "").strip()
+                else None
+            ),
         )
 
     @property
