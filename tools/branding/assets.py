@@ -13,8 +13,8 @@ Kept deliberately small and dependency-light so the swap is a one-line change.
 
 Every asset this company ships -- a logo, an avatar, a favicon, an ad card, a
 report, a video frame -- should derive its colors, type, and lockup geometry
-from one place. That place is ``branding/kit/tokens.json``, which already
-records the palette, font stacks, lockup geometry, and motion timing.
+from one place. In this repo that place is ``branding/tokens.json``, which
+already records the palette, font stacks, lockup geometry, and motion timing.
 
 This module is the consumer side of that contract. It resolves the tokens
 (including the ``color.semantic.*`` aliases, which point at other token paths
@@ -28,8 +28,10 @@ pipeline needs no new system packages:
     ffmpeg            PNG frame sequence -> MP4/WebM
     Pillow            multi-resolution ICO
 
-The brand fonts (Fira Code, JetBrains Mono, Outfit, Press Start 2P) are not
-bundled with the kit by design. ``check_fonts()`` reports which are missing,
+The brand faces (Fira Code, Outfit, Press Start 2P) are not bundled with the
+kit by design. They are the FIRST entry in each stack in tokens.json; the rest
+(JetBrains Mono, Cascadia Mono, system-ui) are fallbacks, and their absence on
+a given machine is not a defect. ``check_fonts()`` reports which are missing,
 because a render that silently falls back to a generic face is off-brand in a
 way nobody notices until it is printed.
 
@@ -161,7 +163,7 @@ def check_fonts(tokens: Tokens) -> dict[str, bool]:
 def tokens_to_css(tokens: Tokens) -> str:
     """CSS custom properties, so an HTML asset is on-brand by construction."""
     lines = [
-        "/* Generated from branding/kit/tokens.json by tools/branding/assets.py.",
+        "/* Generated from branding/tokens.json by tools/branding/assets.py.",
         f"   kit={tokens.raw.get('kit_id')} schema={tokens.raw.get('schema_version')}",
         "   Do not hand-edit; regenerate instead. */",
         ":root {",

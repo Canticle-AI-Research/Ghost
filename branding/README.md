@@ -8,7 +8,8 @@ which to use where.
 | `ghost.svg` | above 32px — site headers, docs, README, social, anywhere with room |
 | `ghost-mark.svg` | 32px and below — favicon, avatar, tab icon, inline chips |
 | `ghost.ico` | favicon, six sizes (16 / 32 / 48 / 64 / 128 / 256) |
-| `ghost-512.png`, `ghost-mark-512.png` | raster fallbacks for surfaces that cannot take SVG |
+| `ghost-faces.svg` | the body plus twelve swappable expressions — see [Expressions](#expressions). Only `face-default` belongs in a mark |
+| `ghost-512.png`, `ghost-mark-512.png`, `ghost-faces-512.png` | raster fallbacks for surfaces that cannot take SVG |
 
 ## What it is
 
