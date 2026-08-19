@@ -68,13 +68,14 @@ dependencies = [
     { name = "langchain-openai" },
     { name = "langgraph" },
     { name = "python-dotenv" },
-    { name = "seam-runtime", extra = ["pgvector"] },
+    { name = "seam-sdk", extra = ["pgvector"] },
 ]
 
 [package.dev-dependencies]
 dev = [
     { name = "pillow" },
     { name = "pytest" },
+    { name = "pyyaml" },
     { name = "ruff" },
 ]
 
@@ -85,13 +86,14 @@ requires-dist = [
     { name = "langchain-openai", specifier = ">=1.1,<2" },
     { name = "langgraph", specifier = ">=1.0,<2" },
     { name = "python-dotenv", specifier = ">=1.1,<2" },
-    { name = "seam-runtime", extras = ["pgvector"], git = "ssh://git@github.com/BlackhatShiftey/Seam.git?rev=022b0037502c9af0d93e8c5bfa4d5f38d9aec7ac" },
+    { name = "seam-sdk", extras = ["pgvector"], git = "ssh://git@github.com/Canticle-AI-Research/Seam_SDK.git?rev=294ab08919646a03dcdceb3c777dfd7d8eabc624" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "pillow", specifier = ">=11,<14" },
     { name = "pytest", specifier = ">=8.3,<10" },
+    { name = "pyyaml", specifier = ">=6,<7" },
     { name = "ruff", specifier = ">=0.15,<1" },
 ]
 
@@ -1516,7 +1518,7 @@ wheels = [
 [[package]]
 name = "seam-runtime"
 version = "2.4.0"
-source = { git = "ssh://git@github.com/BlackhatShiftey/Seam.git?rev=022b0037502c9af0d93e8c5bfa4d5f38d9aec7ac#022b0037502c9af0d93e8c5bfa4d5f38d9aec7ac" }
+source = { git = "ssh://git@github.com/BlackhatShiftey/Seam.git?rev=6b746ad95139b8c0dd298a18ca87e0d9a207fce3#6b746ad95139b8c0dd298a18ca87e0d9a207fce3" }
 dependencies = [
     { name = "rich" },
     { name = "tiktoken" },
@@ -1525,6 +1527,19 @@ dependencies = [
 [package.optional-dependencies]
 pgvector = [
     { name = "psycopg", extra = ["binary"] },
+]
+
+[[package]]
+name = "seam-sdk"
+version = "0.1.0"
+source = { git = "ssh://git@github.com/Canticle-AI-Research/Seam_SDK.git?rev=294ab08919646a03dcdceb3c777dfd7d8eabc624#294ab08919646a03dcdceb3c777dfd7d8eabc624" }
+dependencies = [
+    { name = "seam-runtime" },
+]
+
+[package.optional-dependencies]
+pgvector = [
+    { name = "seam-runtime", extra = ["pgvector"] },
 ]
 
 [[package]]

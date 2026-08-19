@@ -14,7 +14,7 @@ dependencies = [
   "langchain-openai>=1.1,<2",
   "langgraph>=1.0,<2",
   "python-dotenv>=1.1,<2",
-  "seam-runtime[pgvector] @ git+ssh://git@github.com/BlackhatShiftey/Seam.git@022b0037502c9af0d93e8c5bfa4d5f38d9aec7ac",
+  "seam-sdk[pgvector] @ git+ssh://git@github.com/Canticle-AI-Research/Seam_SDK.git@294ab08919646a03dcdceb3c777dfd7d8eabc624",
 ]
 
 [project.scripts]
@@ -27,6 +27,8 @@ dev = [
   # Brand asset generation (tools/branding). Pillow writes the multi-size ICO;
   # headless Chrome and ffmpeg are system tools, not Python dependencies.
   "pillow>=11,<14",
+  # tests/test_ci_contract.py parses .github/workflows/ci.yml.
+  "pyyaml>=6,<7",
 ]
 
 [tool.hatch.metadata]
@@ -38,6 +40,9 @@ packages = ["src/ghost"]
 [tool.pytest.ini_options]
 addopts = "-q"
 testpaths = ["tests"]
+# `tools` is a repo-root package that is deliberately not shipped in the wheel,
+# so the root must be importable for tests/test_brand_assets.py to collect.
+pythonpath = ["."]
 
 [tool.ruff]
 line-length = 100

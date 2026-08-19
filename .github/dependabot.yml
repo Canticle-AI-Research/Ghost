@@ -1,0 +1,23 @@
+# Dependabot version updates. See:
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+version: 2
+updates:
+  # Not present in the SEAM config, and the reason it is here: Ghost's workflow
+  # pins actions by major tag, and a sibling repo sharing one self-hosted runner
+  # should move those pins in lockstep rather than drift apart silently.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    ignore:
+      # Both arrive over git+ssh from private repositories that Dependabot
+      # cannot authenticate to; left unignored it fails the run every week and
+      # trains everyone to ignore the whole config. These pins advance
+      # deliberately, by a reviewed commit, as documented in the README.
+      - dependency-name: "seam-sdk"
+      - dependency-name: "seam-runtime"
