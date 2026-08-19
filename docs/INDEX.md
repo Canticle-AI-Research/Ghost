@@ -29,6 +29,7 @@ idea cannot be mistaken for a shipped capability.
 | Why does SEAM own memory while Ghost owns policy? | [ADR-0001](decisions/0001-seam-memory-boundary.md) |
 | What actually changed, and when? | [Ghost updates](updates/README.md) |
 | What landed on 2026-08-19? | [CI, three defects, and the memory boundary](updates/2026-08-19-ci-and-test-coverage.md) |
+| How does a turn become a verified graph? | [Verified action graph](updates/2026-08-19-verified-action-graph.md) |
 
 ## Current implementation map
 

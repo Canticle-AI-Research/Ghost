@@ -43,6 +43,23 @@ evidence, time, and review requirements appropriate to the memory kind.
 No hidden chain-of-thought, raw provider payload, credential, private key,
 session link, or unrestricted tool log should become MIRL knowledge.
 
+## Verified actions
+
+Every tool call is recorded as a `decision` node checked by a `tool`
+verification, and a turn that used tools is finalized with
+`finalize_verified` against the checks that passed. SEAM refuses that call
+when the named checks did not pass, so "the action succeeded" is enforced by
+the store rather than asserted by the model.
+
+Two consequences matter for future write tools:
+
+- a failed tool is recorded with its verdict but is never offered as outcome
+  support, so an unverified action cannot commit; and
+- the tool's raw output is passed as a check `result`, which SEAM reduces to
+  `result_length` and `result_sha256`. The result stays provable while its
+  contents — environment, tokens, paths — never enter the record. This is the
+  mechanism that makes shell output admissible at all.
+
 ## Tool permissions
 
 Before Ghost receives consequential tools, every tool needs:

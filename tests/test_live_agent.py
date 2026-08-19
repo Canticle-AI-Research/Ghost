@@ -210,3 +210,49 @@ def test_a_different_thread_does_not_see_the_conversation(tmp_path_factory) -> N
     assert "bluebird" not in answer.lower(), (
         f"thread-b saw thread-a's conversation history. Answer: {answer[:300]}"
     )
+
+
+def test_a_real_tool_call_produces_a_verified_reasoning_graph(tmp_path_factory) -> None:
+    """The end-to-end claim behind giving Ghost consequential tools.
+
+    A real model calls a real tool, and the store ends up holding a `decision`,
+    a `tool` check with a verdict, and an outcome accepted against it. Nothing
+    here is asserted about what the model said -- only about what the database
+    will now stand behind.
+    """
+    root = tmp_path_factory.mktemp("live")
+    settings = _settings(root / "ghost.db")
+
+    with GhostAgent(settings) as seed:
+        seed.invoke("Remember: the release captain is Ex0-Byte.")
+
+    with GhostAgent(settings) as ghost:
+        ghost.invoke(
+            "Use your seam_recall tool to search your memory for 'release captain', "
+            "then tell me what you found."
+        )
+
+    connection = sqlite3.connect(settings.seam_db)
+    try:
+        kinds = [r[0] for r in connection.execute("select kind from reasoning_node")]
+        checks = connection.execute(
+            "select check_kind, check_ref, verdict from reasoning_verification"
+        ).fetchall()
+        stored_output = connection.execute(
+            "select result_length, result_sha256 from reasoning_verification"
+        ).fetchall()
+    finally:
+        connection.close()
+
+    assert "decision" in kinds, (
+        f"a real tool call produced no decision node; kinds were {sorted(set(kinds))}"
+    )
+    assert any(kind == "tool" for kind, _ref, _v in checks), (
+        f"the tool call was not verified as a check: {checks}"
+    )
+    assert any(verdict == "passed" for _k, _r, verdict in checks), (
+        f"no tool check passed: {checks}"
+    )
+    assert all(length is not None and digest for length, digest in stored_output), (
+        "a tool result was recorded without a length and digest"
+    )

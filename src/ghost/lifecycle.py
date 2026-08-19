@@ -20,12 +20,45 @@ happy driving DeepAgents, a raw provider loop, or a fake in a test.
 
 from __future__ import annotations
 
+from collections.abc import Callable, Sequence
+from dataclasses import dataclass, field
 from typing import Any, Protocol
 from uuid import uuid4
 
 from .config import GhostSettings
 from .context import GhostTurnContext
 from .seam_memory import SeamTurn
+
+
+@dataclass(frozen=True, slots=True)
+class ToolAttempt:
+    """One tool call and its result, in a form SEAM can check.
+
+    Deliberately a plain dataclass rather than a provider message: the adapter
+    translates whatever its framework returns into this, so the lifecycle can
+    record an action without knowing what a ``ToolMessage`` is.
+
+    ``output`` is passed to SEAM as a check ``result``, which SEAM fingerprints
+    (``result_sha256``, ``result_length``) and does NOT store. That is what
+    makes it safe to hand it raw command output: the integrity of the result is
+    provable without its contents -- credentials, tokens, environment -- ever
+    entering the record.
+    """
+
+    name: str
+    request: str
+    output: str = ""
+    ok: bool = True
+    exit_code: int | None = None
+    duration_ms: float | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class TurnResult:
+    """What a completed turn produced, beyond its text."""
+
+    answer: str
+    attempts: tuple[ToolAttempt, ...] = field(default_factory=tuple)
 
 
 class AgentGraph(Protocol):
@@ -45,6 +78,10 @@ class MemoryLayer(Protocol):
 
     def begin_turn(self, user_input: str) -> SeamTurn: ...
 
+    def record_actions(
+        self, turn: SeamTurn, attempts: Sequence[ToolAttempt]
+    ) -> tuple[str, ...]: ...
+
     def complete_turn(
         self,
         turn: SeamTurn,
@@ -53,6 +90,7 @@ class MemoryLayer(Protocol):
         assistant_output: str,
         thread_id: str,
         turn_id: str,
+        verification_ids: Sequence[str] = (),
     ) -> tuple[str, ...]: ...
 
     def fail_turn(
@@ -96,11 +134,22 @@ def run_turn(
     user_input: str,
     thread_id: str,
     turn_id: str | None = None,
+    extract_attempts: Callable[[dict[str, Any]], Sequence[ToolAttempt]] | None = None,
 ) -> str:
     """Execute one turn under SEAM's contract, and return the answer.
 
     Recall happens before the turn is ingested, so a response can never cite
     the memory it is about to create.
+
+    Tool calls are not merely logged. Each becomes a `decision` node checked by
+    a `tool` verification, and the turn's outcome is finalized against the
+    checks that PASSED. That is the whole point of routing actions through
+    SEAM rather than a log file: `finalize_verified` refuses an outcome whose
+    checks did not pass, so "the action succeeded" is a property the store
+    enforces rather than a claim the model makes about itself.
+
+    `extract_attempts` belongs to the adapter, because only the adapter knows
+    what its framework's messages look like.
     """
 
     resolved_input = user_input.strip()
@@ -125,6 +174,7 @@ def run_turn(
         if not messages:
             raise RuntimeError("Ghost returned no messages")
         answer = message_text(messages[-1])
+        attempts = tuple(extract_attempts(result)) if extract_attempts else ()
     except BaseException as error:
         # BaseException, not Exception: a cancelled or interrupted turn leaves
         # exactly the same dangling run as a failed one.
@@ -136,18 +186,23 @@ def run_turn(
         )
         raise
 
+    verification_ids = memory.record_actions(seam_turn, attempts) if attempts else ()
+
     memory.complete_turn(
         seam_turn,
         user_input=resolved_input,
         assistant_output=answer,
         thread_id=thread_id,
         turn_id=resolved_turn_id,
+        verification_ids=verification_ids,
     )
     return answer
 
 
 __all__ = [
     "AgentGraph",
+    "ToolAttempt",
+    "TurnResult",
     "GhostSettings",
     "MemoryLayer",
     "message_text",

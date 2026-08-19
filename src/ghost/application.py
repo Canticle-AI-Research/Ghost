@@ -7,6 +7,7 @@ Ghost on a different harness.
 
 from __future__ import annotations
 
+import json
 import sqlite3
 from typing import Any
 
@@ -16,7 +17,7 @@ from langgraph.checkpoint.sqlite import SqliteSaver
 
 from .config import GhostSettings
 from .context import GhostTurnContext
-from .lifecycle import AgentGraph, MemoryLayer, run_turn
+from .lifecycle import AgentGraph, MemoryLayer, ToolAttempt, message_text, run_turn
 from .middleware import SeamRecallMiddleware
 from .seam_memory import SeamMemory
 from .tools import make_read_file, make_seam_recall, make_search_repo
@@ -84,6 +85,48 @@ def _init_model(settings: GhostSettings) -> Any:
     return init_chat_model(settings.model, **options)
 
 
+def extract_tool_attempts(result: dict[str, Any]) -> tuple[ToolAttempt, ...]:
+    """Translate LangChain messages into framework-free tool attempts.
+
+    This is adapter work by definition -- `ToolMessage` and `tool_calls` are
+    LangChain shapes, and the lifecycle must not know them. Requests are paired
+    to results by `tool_call_id`; a request with no result means the turn ended
+    before the tool returned, which is recorded as a failure rather than
+    dropped.
+    """
+
+    requests: dict[str, tuple[str, str]] = {}
+    results: dict[str, tuple[str, bool]] = {}
+
+    for message in result.get("messages") or []:
+        for call in getattr(message, "tool_calls", None) or []:
+            call_id = str(call.get("id") or "")
+            if call_id:
+                requests[call_id] = (
+                    str(call.get("name") or "tool"),
+                    json.dumps(call.get("args") or {}, sort_keys=True, default=str)[:300],
+                )
+        call_id = getattr(message, "tool_call_id", None)
+        if call_id:
+            # LangChain marks a raised tool as status="error".
+            ok = getattr(message, "status", "success") != "error"
+            results[str(call_id)] = (message_text(message), ok)
+
+    attempts: list[ToolAttempt] = []
+    for call_id, (name, request) in requests.items():
+        output, ok = results.get(call_id, ("", False))
+        attempts.append(
+            ToolAttempt(
+                name=name,
+                request=request,
+                output=output,
+                ok=ok,
+                exit_code=0 if ok else 1,
+            )
+        )
+    return tuple(attempts)
+
+
 class GhostAgent:
     """Coordinate one DeepAgent with one process-lifetime SEAM memory layer."""
 
@@ -145,6 +188,7 @@ class GhostAgent:
             user_input=user_input,
             thread_id=thread_id,
             turn_id=turn_id,
+            extract_attempts=extract_tool_attempts,
         )
 
     def close(self) -> None:

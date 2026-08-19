@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -101,6 +101,54 @@ class SeamMemory:
             evidence_refs=tuple(str(candidate.record.id) for candidate in selected),
         )
 
+    def record_actions(
+        self, turn: SeamTurn, attempts: Sequence[Any]
+    ) -> tuple[str, ...]:
+        """Record each tool call as a checked decision, and return passed ids.
+
+        One ``decision`` node per attempt, one ``tool`` verification against it.
+        Only the verifications that PASSED are returned, because those are the
+        only ones ``finalize_verified`` will accept an outcome against -- a
+        failed tool is recorded, and correctly does not support the outcome.
+
+        The tool's raw output goes in as the check ``result``. SEAM stores its
+        length and SHA-256 and discards the text, which is what makes it safe
+        to pass command output here: the result stays provable without its
+        contents entering the record. That matters most for the tools Ghost
+        does not have yet -- shell output routinely carries environment,
+        tokens, and paths that must never become MIRL knowledge.
+        """
+
+        if not attempts:
+            return ()
+
+        run = self._sdk.reasoning(turn.run_id)
+        passed: list[str] = []
+        for attempt in attempts:
+            decision = run.add_node(
+                "decision",
+                f"{attempt.name}: {attempt.request}"[:500],
+                evidence_refs=turn.evidence_refs,
+                operation=attempt.name,
+            )
+            verification = run.verify(
+                str(decision["node_id"]),
+                check_kind="tool",
+                check_ref=attempt.name,
+                verdict="passed" if attempt.ok else "failed",
+                summary=(
+                    f"{attempt.name} completed"
+                    if attempt.ok
+                    else f"{attempt.name} failed"
+                )[:500],
+                result=attempt.output or None,
+                exit_code=attempt.exit_code,
+                duration_ms=attempt.duration_ms,
+            )
+            if attempt.ok:
+                passed.append(str(verification["verification_id"]))
+        return tuple(passed)
+
     def complete_turn(
         self,
         turn: SeamTurn,
@@ -109,6 +157,7 @@ class SeamMemory:
         assistant_output: str,
         thread_id: str,
         turn_id: str,
+        verification_ids: Sequence[str] = (),
     ) -> tuple[str, ...]:
         """Compile a completed turn into MIRL and link its reasoning provenance."""
 
@@ -126,11 +175,22 @@ class SeamMemory:
         )
         stored_ids = tuple(str(record_id) for record_id in report.stored_ids)
         run = self._sdk.reasoning(turn.run_id)
-        run.finalize(
-            "Ghost completed the user turn.",
-            evidence_refs=turn.evidence_refs,
-            knowledge_refs=stored_ids,
-        )
+        if verification_ids:
+            # An outcome supported by checks that actually passed. SEAM refuses
+            # this call otherwise, so a turn cannot claim its actions succeeded
+            # when they did not -- the guarantee a log file cannot give.
+            run.finalize_verified(
+                "Ghost completed the user turn with verified actions.",
+                verification_ids=verification_ids,
+                evidence_refs=turn.evidence_refs,
+                knowledge_refs=stored_ids,
+            )
+        else:
+            run.finalize(
+                "Ghost completed the user turn.",
+                evidence_refs=turn.evidence_refs,
+                knowledge_refs=stored_ids,
+            )
         return stored_ids
 
     def query_knowledge(

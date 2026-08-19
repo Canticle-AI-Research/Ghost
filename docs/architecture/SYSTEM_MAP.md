@@ -87,6 +87,7 @@ sequenceDiagram
 |---|---|---|
 | Synchronous root-agent turn | Current | `src/ghost/application.py` |
 | Private SDK recall and MIRL ingest | Current | `src/ghost/seam_memory.py` |
+| Verified action graph (decision → tool check → verified outcome) | Current | `SeamMemory.record_actions` |
 | Injection-resistant transient recall | Current | `src/ghost/middleware.py` |
 | Persistent LangGraph checkpoint | Current | `SqliteSaver` in `src/ghost/application.py` |
 | Persistent checkpoint | Planned | roadmap stage 1 |

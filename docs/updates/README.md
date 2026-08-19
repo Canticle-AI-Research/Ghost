@@ -31,3 +31,4 @@ Exploratory) is only allowed to move on the evidence of a report.
 | Date | Report | Covers |
 |---|---|---|
 | 2026-08-19 | [CI, three defects, and the memory boundary](2026-08-19-ci-and-test-coverage.md) | Roadmap slice item 6; tests 18 → 81 |
+| 2026-08-19 | [Turns become verified reasoning graphs](2026-08-19-verified-action-graph.md) | Stage 1 complete; foundation for write tools |
