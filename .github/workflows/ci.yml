@@ -4,13 +4,16 @@
 # setup), so this workflow drives uv where the SEAM template drives pip. Every
 # other convention here is SEAM's: job shape, the self-hosted runner, the fast
 # required gates ahead of the heavier suite, and comments that record WHY.
-name: CI
+name: Private CI
 
 on:
-  pull_request:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      run_live:
+        description: Run paid live-provider tests when the key is configured
+        required: true
+        default: false
+        type: boolean
 
 permissions: read-all
 
@@ -43,26 +46,6 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-
-      - name: Guard against public repo on a self-hosted runner
-        # TRIPWIRE, NOT A SECURITY BOUNDARY -- be clear about which this is.
-        #
-        # A pull request from a fork supplies its OWN copy of this file, so an
-        # attacker simply deletes this step. It cannot stop a hostile fork and
-        # must never be mistaken for the thing that does.
-        #
-        # What it does catch is the realistic case: Ghost is flipped public
-        # (planned, once the site is ready) and nobody remembers that seam-box
-        # is a personal desktop holding SSH keys to two private repositories.
-        # The owner's next push to main goes red with the reason attached,
-        # instead of the runner quietly becoming reachable from fork PRs.
-        #
-        # The real controls are repository settings, not YAML. See the
-        # "Going public" section of README.md before removing this.
-        if: ${{ github.event.repository.private == false }}
-        run: |
-          echo "::error::Ghost is PUBLIC and this workflow targets the seam-box self-hosted runner (a personal desktop with SSH access to the private SEAM repos). Before going public, either detach Ghost from the runner group and move these jobs to hosted runners, or require approval for all outside-collaborator workflow runs. See README.md#going-public."
-          exit 1
 
       - name: Check diff hygiene
         run: git diff --check
@@ -255,14 +238,12 @@ jobs:
     # model, so nothing else can tell a working agent from one whose model
     # call, middleware injection, or ingest path is broken.
     #
-    # Not run on pull requests: it costs real money per run and a PR cannot
-    # change what it proves about main. `workflow_dispatch` is there so a
-    # dependency bump can be checked against a real provider on demand.
+    # Paid work requires a second explicit choice on the manual workflow.
     needs:
       - tests
       - live-key-present
     if: >-
-      github.event_name != 'pull_request' &&
+      inputs.run_live == true &&
       needs.live-key-present.outputs.available == 'true'
     runs-on: [self-hosted, seam-box]
     steps:

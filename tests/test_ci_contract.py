@@ -24,6 +24,7 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CI_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "ci.yml"
+PUBLIC_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "public-ci.yml"
 TESTS_DIR = REPO_ROOT / "tests"
 
 # Jobs that must never resolve the private SEAM dependency.
@@ -40,6 +41,17 @@ _LIVE_MARKER = "pytest" ".mark.live"
 def workflow() -> dict:
     assert CI_WORKFLOW.exists(), f"missing CI workflow at {CI_WORKFLOW}"
     return yaml.safe_load(CI_WORKFLOW.read_text(encoding="utf-8"))
+
+
+@pytest.fixture(scope="module")
+def public_workflow() -> dict:
+    assert PUBLIC_WORKFLOW.exists(), f"missing public workflow at {PUBLIC_WORKFLOW}"
+    return yaml.safe_load(PUBLIC_WORKFLOW.read_text(encoding="utf-8"))
+
+
+def _triggers(document: dict) -> dict:
+    # PyYAML 1.1 interprets an unquoted `on` key as boolean true.
+    return document.get("on") or document.get(True) or {}
 
 
 def _job_commands(workflow: dict, job: str) -> str:
@@ -69,7 +81,7 @@ def test_every_test_file_runs_in_the_full_suite(workflow) -> None:
     )
 
 
-def test_credential_free_tests_also_run_without_the_private_sdk(workflow) -> None:
+def test_credential_free_tests_also_run_without_the_private_sdk(public_workflow) -> None:
     """The load-bearing invariant.
 
     Every test file that does not import `ghost` must be named by a job that
@@ -77,7 +89,7 @@ def test_credential_free_tests_also_run_without_the_private_sdk(workflow) -> Non
     two private repositories being reachable.
     """
     credential_free_commands = " ".join(
-        _job_commands(workflow, job) for job in CREDENTIAL_FREE_JOBS
+        _job_commands(public_workflow, job) for job in CREDENTIAL_FREE_JOBS
     )
 
     should_run_publicly = [p for p in _test_files() if not _needs_private_sdk(p)]
@@ -120,11 +132,10 @@ def test_live_marked_tests_actually_run_in_a_job(workflow) -> None:
     )
 
 
-def test_live_tests_do_not_run_on_pull_requests(workflow) -> None:
-    """They cost real money per run and cannot prove anything about a PR that
-    they will not prove again on main."""
+def test_live_tests_require_explicit_manual_selection(workflow) -> None:
+    """A private manual run must not silently spend provider credit."""
     condition = str(workflow["jobs"]["live"].get("if", ""))
-    assert "pull_request" in condition, "the live job has no pull-request guard"
+    assert "inputs.run_live" in condition, "the live job has no explicit paid-run input"
 
 
 def test_live_job_degrades_to_skipped_without_a_key(workflow) -> None:
@@ -134,11 +145,11 @@ def test_live_job_degrades_to_skipped_without_a_key(workflow) -> None:
     assert "live-key-present" in condition and "available" in condition
 
 
-def test_credential_free_jobs_never_sync_the_project(workflow) -> None:
+def test_credential_free_jobs_never_sync_the_project(public_workflow) -> None:
     """`uv sync` resolves the private git dependency. A job claiming to be
     credential-free must not do it, or the claim silently stops being true."""
     for job in CREDENTIAL_FREE_JOBS:
-        commands = _job_commands(workflow, job)
+        commands = _job_commands(public_workflow, job)
         assert "uv sync" not in commands, f"`{job}` runs `uv sync` and is no longer credential-free"
         assert "uv run --no-project" in commands or "uv build" in commands, (
             f"`{job}` neither builds nor uses --no-project; check it stays project-free"
@@ -152,14 +163,14 @@ def test_private_tier_waits_for_the_fast_gates(workflow) -> None:
     assert not missing, f"`{PRIVATE_TIER_JOB}` does not wait for: {missing}"
 
 
-def test_linter_runs_in_a_required_job(workflow) -> None:
+def test_linter_runs_in_a_required_job(public_workflow) -> None:
     """pyproject configures ruff; CI must actually run it."""
-    assert "ruff check" in _job_commands(workflow, "repo-hygiene")
+    assert "ruff check" in _job_commands(public_workflow, "repo-hygiene")
 
 
-def test_secret_scanning_runs(workflow) -> None:
+def test_secret_scanning_runs(public_workflow) -> None:
     """Ghost is public and documents private infrastructure."""
-    assert "gitleaks" in _job_commands(workflow, "repo-hygiene")
+    assert "gitleaks" in _job_commands(public_workflow, "repo-hygiene")
 
 
 def test_lock_file_is_verified_before_install(workflow) -> None:
@@ -196,24 +207,28 @@ def test_all_jobs_target_the_self_hosted_runner(workflow) -> None:
         )
 
 
-def test_public_repo_tripwire_is_present(workflow) -> None:
-    """Ghost is private today and planned to go public once the site is ready.
+def test_public_workflow_is_automatic_and_hosted(public_workflow) -> None:
+    triggers = _triggers(public_workflow)
+    assert "pull_request" in triggers and "push" in triggers
+    for name, job in public_workflow["jobs"].items():
+        assert job.get("runs-on") == "ubuntu-latest", (
+            f"public job `{name}` can reach a non-hosted runner: {job.get('runs-on')}"
+        )
 
-    A self-hosted runner is a personal desktop holding SSH keys to two private
-    repositories, so that flip is the moment the runner must be detached. This
-    asserts the tripwire survives -- it is a reminder to the owner, NOT a
-    security boundary (a fork PR ships its own workflow file and can delete it).
-    """
-    steps = workflow["jobs"]["repo-hygiene"]["steps"]
-    guard = [s for s in steps if "private == false" in str(s.get("if", ""))]
-    assert guard, (
-        "the public-repo tripwire is gone from repo-hygiene; going public would "
-        "silently expose seam-box to fork pull requests"
+
+def test_private_workflow_is_manual_only(workflow) -> None:
+    triggers = _triggers(workflow)
+    assert set(triggers) == {"workflow_dispatch"}, (
+        f"private workflow must allow only workflow_dispatch, got {set(triggers)}"
     )
-    assert guard[0] is steps[1], (
-        "the tripwire must run before any other work, not after the repo has "
-        "already been checked out and acted on"
-    )
+
+
+def test_public_diff_hygiene_checks_event_range(public_workflow) -> None:
+    commands = _job_commands(public_workflow, "repo-hygiene")
+    assert "git diff --check" in commands
+    assert "BASE_SHA" in commands and "HEAD_SHA" in commands
+    checkout = public_workflow["jobs"]["repo-hygiene"]["steps"][0]
+    assert checkout.get("with", {}).get("fetch-depth") == 0
 
 
 def test_superseded_runs_are_cancelled(workflow) -> None:

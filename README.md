@@ -195,8 +195,17 @@ local run only; CI must not skip.
 
 ### Continuous integration
 
-`.github/workflows/ci.yml` runs on the `seam-box` self-hosted runner, in two
-tiers split by what they need to reach:
+Ghost separates public-safe verification from private integration:
+
+- `.github/workflows/public-ci.yml` runs automatically on pull requests and
+  `main` pushes using GitHub-hosted runners. It never installs Ghost, resolves
+  private dependencies, reads repository secrets, or targets self-hosted
+  infrastructure.
+- `.github/workflows/ci.yml` is manual-only. It targets `seam-box` for the
+  private SEAM dependency, and paid live tests additionally require the
+  operator to select `run_live` explicitly.
+
+The private workflow remains split by what each job needs to reach:
 
 | Job | Needs the private SEAM repos? | Covers |
 |---|---|---|
@@ -216,28 +225,19 @@ credential. A hosted runner would need a token with read access to two private
 repositories, held as a secret; `seam-box` already authenticates as the owner,
 so the private tier needs no secret.
 
-### Going public
+### Public repository and private integration
 
-Ghost is private today and is intended to go public once the site is ready.
-**That flip is not just a visibility setting.** `seam-box` is a personal
-desktop that holds an SSH key with read access to two private repositories. A
-public repo accepts pull requests from anyone, a fork's pull request supplies
-its own copy of the workflow file, and GitHub will run it — so attaching a
-public repo to this runner hands strangers code execution on that machine.
+Ghost is public. Automatic pull-request work is therefore restricted to the
+credential-free hosted workflow. The repository requires approval before any
+external contributor workflow runs, grants workflows read-only permissions by
+default, enables secret scanning and push protection, and currently has no
+self-hosted runner assigned to it.
 
-`repo-hygiene` carries a tripwire that fails the run when the repository is
-public. It is a **reminder, not a boundary**: a hostile fork ships its own
-workflow and can delete the step. Before going public, do one of these:
-
-1. **Move CI to hosted runners.** The three credential-free jobs already run
-   without the private SDK; drop the `tests` job or run it only on `push` to
-   `main` from the owner. Nothing then touches the desktop.
-2. **Detach Ghost from the runner group** so the runner will not accept Ghost's
-   jobs at all, regardless of what a fork's workflow file asks for.
-
-In either case also set *Settings → Actions → General → Fork pull request
-workflows from outside collaborators* to require approval. That setting, and
-the runner group's repository list, are the actual controls; the YAML is not.
+The manual private workflow is not a sandbox: a reviewed owner dispatch can
+execute repository code with the authority of its runner account. Register or
+assign a private runner only when that host, repository allowlist, and checked-
+out revision are acceptable for that authority. See the
+[runner security boundary](docs/security/PUBLIC_REPOSITORY_AND_RUNNER.md).
 
 ## Identity
 
