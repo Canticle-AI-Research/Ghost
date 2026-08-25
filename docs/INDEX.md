@@ -24,6 +24,7 @@ idea cannot be mistaken for a shipped capability.
 | What happens before, during, and after a turn? | [Memory lifecycle](operations/MEMORY_LIFECYCLE.md) |
 | How should users, workspaces, projects, and threads be isolated? | [Namespace and scope](operations/NAMESPACE_AND_SCOPE.md) |
 | What must never be trusted or silently promoted? | [Trust boundaries](security/TRUST_BOUNDARIES.md) |
+| How is a public repository kept away from private runners? | [Public repository and runner boundary](security/PUBLIC_REPOSITORY_AND_RUNNER.md) |
 | How will memory quality and safety be measured? | [Memory evaluations](evaluation/MEMORY_EVALS.md) |
 | What should be built next, and in what order? | [Second-brain roadmap](roadmap/SECOND_BRAIN_ROADMAP.md) |
 | Why does SEAM own memory while Ghost owns policy? | [ADR-0001](decisions/0001-seam-memory-boundary.md) |
@@ -31,6 +32,7 @@ idea cannot be mistaken for a shipped capability.
 | What landed on 2026-08-19? | [CI, three defects, and the memory boundary](updates/2026-08-19-ci-and-test-coverage.md) |
 | How does a turn become a verified graph? | [Verified action graph](updates/2026-08-19-verified-action-graph.md) |
 | How does Ghost use the computer? | [Operating system control](updates/2026-08-19-operating-system-control.md) |
+| How was public CI separated from private integration? | [Public runner safety](updates/2026-08-25-public-runner-safety.md) |
 
 ## Current implementation map
 
@@ -66,4 +68,3 @@ Every new Markdown document under `docs/` must be linked from this index.
 Relative links are verified by `tests/test_docs.py`. Architectural changes
 should update the relevant concept or architecture document and, when they
 change a durable boundary, add or supersede an ADR.
-
