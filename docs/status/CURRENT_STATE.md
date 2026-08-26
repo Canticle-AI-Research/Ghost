@@ -8,7 +8,7 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 | Plane | Observed state |
 |---|---|
 | Default branch | `main@620caee333d8ddf22c4fd983475031a3c7e37f21` |
-| Stage 1 evaluation candidate | `feat/stage1-frozen-evals`: 20 frozen cases, BIL-0 smoke/verifier/gate, and step ceiling locally qualified |
+| Stage 1 evaluation candidate | `feat/stage1-frozen-evals`: 20 frozen cases, BIL-0 smoke/verifier/gate, step ceiling, and clean-source baseline locally qualified |
 | Public transport | merged through PR #8; public install and opaque transport source published |
 | Primary working branch | `agent/avatar-u1-temporal-integration`, preserving avatar-only WIP on its earlier reviewed base |
 | Canonical foundation | merged through PRs #6 and #7 |
@@ -54,6 +54,8 @@ This is a status snapshot, not authorization to delete or combine local files.
 
 - `ghost-stage1-frozen-v1` 20-case corpus and immutable manifest.
 - Deterministic two-arm BIL-0 bundle, verifier, and safety gate.
+- Tracked non-claimable baseline bound to clean source `bc18555` and bundle
+  hash `6b16ad74`.
 - `GHOST_MAX_STEPS` runtime superstep ceiling and explicit non-streaming policy.
 
 - `ghost-avatar` WebSocket/HTTP/browser overlay runner.

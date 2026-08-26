@@ -25,6 +25,8 @@ a credential-free BIL-0 sealed smoke runner. It establishes the evaluation
 shape and no-memory comparison arm; because its judge is deterministic and no
 model runs, it is not product-quality evidence. See
 [`STAGE1_FROZEN_SUITE.md`](STAGE1_FROZEN_SUITE.md).
+Its first clean-source bundle is tracked and independently verifiable, while
+remaining explicitly non-claimable.
 
 ## Evaluation layers
 

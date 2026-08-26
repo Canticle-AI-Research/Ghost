@@ -873,3 +873,35 @@ be a baseline. Commit this exact infrastructure, generate a bundle from that
 clean commit, add it in a successor chronology event, and require the hosted
 `stage1-evals` job before merge. Provider/live and release-candidate proof
 remain open and require explicit operator approval.
+
+## HISTORY#040 — Freeze the clean-source Stage 1 BIL-0 baseline
+- Date: `2026-08-25T22:10:35-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `ci, continuity, docs, evaluation, gates, handoff, history, memory, snapshot, status, tests, verification`
+- Commits: `bc18555d364a9ed49ce9be2e6c35378bbad29467`
+- Refs: `evals/runs/stage1/ghost-stage1-frozen-v1-bil0-baseline.json, evals/stage1/MANIFEST.json, docs/evaluation/STAGE1_FROZEN_SUITE.md, docs/handoffs/2026-08-25-stage1-baseline-frozen.md`
+- Supersedes: `HISTORY#039`
+- Verification: `clean-source smoke sealed bundle 6b16ad744b1dc585fc197150d0e0aee4254c985b1e0810619f0ed64f44fb03ad from bc18555; public verifier passed all eleven checks; safety gate passed with zero candidate contract failures, isolation violations, or forbidden effects; claimable false; successor full suite/build and exact-head CI pending`
+
+The first durable Stage 1 evaluation artifact is bound to clean exact source
+`bc18555d364a9ed49ce9be2e6c35378bbad29467`, not an uncommitted worktree. Its
+manifest records `dirty_worktree: false`, 20 frozen cases in each named arm,
+canonical fixture hash
+`4f10f3d8022beeb3ac7adbf3b01bd1b727c81d9db48b8388f8e129b84e3ed61d`,
+and per-case hashes. The complete bundle hash is
+`6b16ad744b1dc585fc197150d0e0aee4254c985b1e0810619f0ed64f44fb03ad`.
+
+Credential-free verification passed bundle version, integrity level, payload
+shape, manifest/result/bundle hashes, and suite/Git/fixture/count/ID cross-
+checks. The safety gate additionally found zero candidate contract failures,
+isolation violations, or forbidden effects. The artifact deliberately records
+`claimable: false`, null provider usage/cost, and a deterministic stub evaluator.
+Its scripted no-memory difference is a harness diagnostic, not evidence of
+model or memory quality.
+
+This event advances the handoff to
+`docs/handoffs/2026-08-25-stage1-baseline-frozen.md`. Full successor-tree tests,
+build, exact-head hosted CI, protected merge, and publication closeout remain.
+No provider/live test, paid judge, release candidate, package release, or
+deployment was run.

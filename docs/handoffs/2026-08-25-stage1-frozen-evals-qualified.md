@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-stage1-frozen-evals-qualified-20260825`
 supersedes: `ghost-public-seam-transport-published-20260825`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#039`
 created_at: `2026-08-25T22:08:42-05:00`
 

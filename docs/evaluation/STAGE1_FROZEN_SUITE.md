@@ -172,6 +172,20 @@ verification, and the gate without credentials or network services. Its bundle
 is ephemeral CI evidence. A tracked baseline is generated only from a clean,
 committed source/fixture revision and records that exact revision.
 
+The first tracked baseline is
+`evals/runs/stage1/ghost-stage1-frozen-v1-bil0-baseline.json`:
+
+- exact source: `bc18555d364a9ed49ce9be2e6c35378bbad29467`;
+- dirty worktree: `false`;
+- fixture hash: `4f10f3d8022beeb3ac7adbf3b01bd1b727c81d9db48b8388f8e129b84e3ed61d`;
+- bundle hash: `6b16ad744b1dc585fc197150d0e0aee4254c985b1e0810619f0ed64f44fb03ad`;
+- candidate contract failures: zero;
+- isolation violations and forbidden effects: zero; and
+- claimable: `false`.
+
+The recorded no-memory difference is a scripted harness diagnostic, not a
+measured model-quality lift.
+
 A provider-backed qualification is a separate operator-gated workflow:
 
 1. select exact Ghost and compatible deployed SEAM revisions;

@@ -12,7 +12,8 @@ single-agent spine, hardened CI, canonical engineering wiki/build history,
 Temporal Chain, licensing foundation, and multi-harness launchers. Exact merge
 head run `32924125667` passed all five hosted jobs. A separate Stage 1 candidate
 adds 20 frozen cases, a BIL-0 sealed verifier/gate, and a hard turn-step ceiling;
-its clean-source baseline and exact-head CI remain pending. The isolated avatar
+its first clean-source BIL-0 baseline is sealed and verified, while exact-head
+CI and protected merge remain pending. The isolated avatar
 remains separate WIP. No package or service is released or deployed, and
 nothing is assigned to a company or counsel-approved.**
 
@@ -61,7 +62,8 @@ incomplete.
 - Engineering quality (Track Q): tests exist to verify behavior, not to reach a
   count; many behaviors remain unverified. 450-line module ceiling enforced.
   Ghost's first BIL-0 sealed contract-smoke infrastructure is locally
-  qualified; no performance claim is admissible from the deterministic stub.
+  qualified with a tracked clean-source baseline; no performance claim is
+  admissible from the deterministic stub.
 - Stage 0 memory spine: landed.
 - Stage 1 dependable single agent: 20-case frozen corpus, smoke verifier/gate,
   and step ceiling are locally qualified; live and release-candidate exit proof

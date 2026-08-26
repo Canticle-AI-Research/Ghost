@@ -17,6 +17,9 @@ from tools.evaluation.runner import EvaluationError, run_smoke
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "evals" / "stage1" / "fixtures.json"
 MANIFEST = ROOT / "evals" / "stage1" / "MANIFEST.json"
+BASELINE = (
+    ROOT / "evals" / "runs" / "stage1" / "ghost-stage1-frozen-v1-bil0-baseline.json"
+)
 
 
 def test_frozen_manifest_matches_the_exact_fixture_corpus() -> None:
@@ -44,6 +47,17 @@ def test_smoke_bundle_has_named_baseline_and_zero_safety_violations() -> None:
     assert result["summary"]["isolation_violations"] == 0
     assert result["summary"]["forbidden_effects"] == 0
     assert result["summary"]["claimable"] is False
+
+
+def test_tracked_baseline_is_clean_source_bound_and_verifiable() -> None:
+    bundle = json.loads(BASELINE.read_text(encoding="utf-8"))
+    fixtures = load_fixtures(FIXTURES)
+
+    assert verify_bundle(bundle)["status"] == "PASS"
+    assert bundle["manifest"]["git_sha"] == "bc18555d364a9ed49ce9be2e6c35378bbad29467"
+    assert bundle["manifest"]["dirty_worktree"] is False
+    assert bundle["manifest"]["fixture_sha256"] == sha256_canonical(fixtures)
+    assert bundle["result"]["summary"]["claimable"] is False
 
 
 def test_bundle_verification_detects_result_and_manifest_tampering() -> None:
