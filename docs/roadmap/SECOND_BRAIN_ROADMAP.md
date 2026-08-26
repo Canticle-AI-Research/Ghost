@@ -478,7 +478,7 @@ Q3 bundle diffed against a named baseline and passing the gate.
 Prerequisites: G1 and G2 exit. Specialists may not invent new memory owners or
 broaden tools implicitly.
 
-Foundation now implemented: provider-free `DelegationEnvelope`, hard budget and
+Foundation published through PR #14: provider-free `DelegationEnvelope`, hard budget and
 scope types, opaque evidence linkage, content-free lifecycle events, and
 normalized success/refusal/timeout/cancellation/failure outcomes. This does not
 register a live specialist, satisfy the prerequisites, or support an
@@ -510,7 +510,7 @@ budgets.
 
 Prerequisites: R4 and G2; G3 only if specialists are part of the candidate.
 
-Foundation now implemented: consistent checkpoint backup, SHA-256 plus SQLite
+Foundation published through PR #14: consistent checkpoint backup, SHA-256 plus SQLite
 verification, non-overwriting restore, fail-closed component health, and the
 redacted specialist-event schema. Hosted endpoints, SEAM backup, migration,
 supervision, dashboards, tenancy, rate limits, and deployed drills remain open.

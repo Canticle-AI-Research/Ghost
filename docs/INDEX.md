@@ -87,7 +87,8 @@ learning surface is [the Ghost engineering wiki](README.md).
 
 | Document | Covers |
 |---|---|
-| [handoffs/2026-08-26-specialist-ops-foundation-qualified.md](handoffs/2026-08-26-specialist-ops-foundation-qualified.md) | current exact resume boundary for the issue-7 foundation candidate |
+| [handoffs/2026-08-26-specialist-ops-foundation-published.md](handoffs/2026-08-26-specialist-ops-foundation-published.md) | current protected-main publication and exact-head evidence |
+| [handoffs/2026-08-26-specialist-ops-foundation-qualified.md](handoffs/2026-08-26-specialist-ops-foundation-qualified.md) | superseded local qualification record for the issue-7 foundation |
 | [history/REPOSITORY_CONTINUITY.md](history/REPOSITORY_CONTINUITY.md) | Temporal Chain history/index/snapshot/handoff model and commands |
 | [history/PATH_MOVES.md](history/PATH_MOVES.md) | ledger that keeps immutable history refs resolvable after a rename |
 | [Temporal Chain template](../templates/temporal-chain/README.md) | reusable standard-library history + git protocol starter for other repositories |
