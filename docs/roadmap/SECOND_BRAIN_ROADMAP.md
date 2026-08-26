@@ -60,7 +60,7 @@ capability gate, and no track closes without its Q gates.
 |---|---|---|
 | T0 core temporal chain | done | merged and exact-head continuity verified through PR #6 |
 | T1 drift gates | done | merged env/script/topic/roadmap/path-move gates passed on exact main |
-| T2 streams and routing | planned | SEAM layer documented but not installed in Ghost |
+| T2 streams and routing | in progress | SEAM layer documented; Ghost-local installation remains open |
 | T3 published chain template | in progress | `templates/temporal-chain/` installs and verifies locally; not released |
 | Q0 quality baseline | done | behavior suite and 450-line ceiling enforced |
 | Q1 behavior verification | in progress | many behaviors still unverified; count is not the measure |
@@ -68,9 +68,9 @@ capability gate, and no track closes without its Q gates.
 | Q3 benchmark and proof standard | planned | no benchmark infrastructure in Ghost; SEAM's standard is the target |
 | R0 documentation/history/wiki | done | PR #6 merged; exact PR and main heads passed hosted gates |
 | R1 public repository/runner | done | PR #5, protected main, hardened settings, zero runners, exact-head hosted run green |
-| R2 exact-head CI | in progress | required public lanes green; private dependency tier deliberately unavailable |
+| R2 exact-head CI | in progress | public-transport candidate runs full hosted suite; exact-head PR/main proof pending |
 | R3 company/IP/licensing | in progress | local PolyForm/Apache/proprietary matrix drafted; counsel/entity/assignment pending |
-| R4 public API/release discipline | planned | current wheel still requires private in-process SDK |
+| R4 public API/release discipline | in progress | HTTP parity + clean public install implemented locally; release/deploy proof pending |
 | G0 verified memory spine | done | landed through `main@25f47c4` |
 | G1 dependable single agent | in progress | mechanisms landed; frozen exit eval absent |
 | G2 deliberate memory | planned | every successful turn still ingested wholesale |
@@ -137,7 +137,7 @@ while its documentation is stale, because a credential-free test fails first.
 
 ### T2 — Streams and routing
 
-**Status: planned**
+**Status: in progress**
 
 Prerequisite: T1, plus enough parallel workstreams to justify the cost.
 
@@ -366,14 +366,16 @@ actual data/system behavior.
 
 ### R4 — Public API, release, and deployment discipline
 
-**Status: planned**
+**Status: in progress**
 
 Prerequisites: R2, R3, and G1 exit.
 
 Deliverables:
 
-- versioned client/API replacement for Ghost's private in-process install path;
-- lifecycle, reasoning, retrieval, provenance, and failure-contract parity;
+- versioned client/API replacement for Ghost's private in-process install path
+  (implemented locally);
+- lifecycle, reasoning, retrieval, provenance, and failure-contract parity
+  (implemented and cross-repo tested locally);
 - artifact membership/metadata/secret/path scans;
 - clean install and console smoke;
 - signed/checksummed immutable candidate;
@@ -392,7 +394,7 @@ rolled back, and audited without private source leakage or undocumented state.
 Delivered:
 
 - DeepAgents/LangChain/LangGraph root agent;
-- exact private SDK dependency;
+- opaque SEAM HTTP dependency with no private source in Ghost;
 - pre-turn mixed recall with graph expansion;
 - transient escaped memory middleware;
 - successful-turn MIRL ingest;
@@ -651,10 +653,10 @@ must not become a second memory or execution authority.
 ```text
 R1 public-runner safety              [done]
   → publish R0/T0/T1 foundation
-  → restore private R2 exact-head integration
+  → restore full hosted R2 exact-head integration
   → publish T3 chain template
   → complete R3 company/IP licensing foundation
-  → implement R4 public API/release boundary
+  → finish R4 protected merge and release/deploy boundary
   → isolate/qualify U1 avatar lane
   → finish G1 frozen evaluations
   → begin G2 deliberate memory

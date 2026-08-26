@@ -28,10 +28,10 @@ Each arrow requires distinct evidence and a history event when material.
 - wheel package: `src/ghost`;
 - console entry: `ghost = ghost.cli:main`;
 - local WIP adds `ghost-avatar = ghost.avatar.runner:main`;
-- runtime dependency includes a private exact Git-over-SSH SDK.
+- runtime dependencies resolve from public package indexes only.
 
-Consequently, `uv build` may succeed while a public installer cannot resolve
-runtime dependencies. Do not upload this metadata to public PyPI.
+The wheel clean-installs publicly, but no PyPI/GitHub release or hosted Ghost
+deployment is implied or authorized by installability.
 
 ## Candidate build
 
@@ -51,8 +51,7 @@ Qualification should inspect:
 - entry points;
 - absence of `.env`, databases, keys, local paths, caches, source candidates,
   and unapproved avatar assets;
-- clean install in an environment with the intended private registry/Git
-  authorization; and
+- clean install on a credential-free disposable environment; and
 - real `ghost --help` plus isolated agent smoke.
 
 ## License and ownership gate
@@ -74,15 +73,12 @@ founder-to-company assignment and is not approved for publication.
 
 ## Public distribution decision
 
-A public Ghost package needs one of these deliberate architectures:
-
-1. depend only on a public opaque Canticle/SEAM client and call a service; or
-2. distribute through an authenticated private package channel that can resolve
-   the private SDK/runtime.
-
-Changing to the public `seam-client` is not a metadata edit; it changes Ghost
-from in-process MIRL/SEAM behavior to an opaque API product and requires an
-architecture/reliability/security evaluation.
+The selected architecture is a public Ghost wheel plus an independently
+authored opaque HTTP adapter. It calls an authenticated hosted SEAM service or a
+compatible licensed local node. Private MIRL/runtime implementation is neither
+packaged nor imported. The agent-turn contract preserves reasoning/action
+parity that `seam-client` 2.x alone does not provide. Publication still awaits
+owner approval, release qualification, and company/legal reconciliation.
 
 ## Deployment prerequisites
 
@@ -103,9 +99,9 @@ Before any production claim:
 
 ## Runner boundary
 
-The local candidate routes automatic public continuity to `ubuntu-latest` and
-makes `seam-box` CI manual-only. It is not a remote control until merged, and
-runner-group/fork settings remain external evidence. Resolve
+Every workflow job targets `ubuntu-latest`; Ghost has no assigned self-hosted
+runner. Paid live work is manual-only and requires service/provider secrets.
+Repository/fork settings remain external evidence. Resolve
 [public repository and runner](../security/PUBLIC_REPOSITORY_AND_RUNNER.md)
 before describing CI as operational.
 

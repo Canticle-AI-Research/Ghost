@@ -1,124 +1,50 @@
-# Canonical invocation: uv run <command>
-#
-# Ghost is a uv project (uv.lock is committed and `uv sync` is the documented
-# setup), so this workflow drives uv where the SEAM template drives pip. Every
-# other convention here is SEAM's: job shape, the self-hosted runner, and
-# comments that record WHY.
-name: Private CI
+name: Live Provider CI
 
 on:
-  # This workflow reaches a privileged personal runner and private Git
-  # dependencies. It is manual-only while Ghost is public. Public pull
-  # requests use public-ci.yml on a GitHub-hosted runner.
   workflow_dispatch:
     inputs:
       run_live:
-        description: Run paid live-provider tests when the key is configured
+        description: Run paid live-provider tests against the configured SEAM service
         required: true
         default: false
         type: boolean
 
-permissions: read-all
+permissions:
+  contents: read
 
-# One CI run per ref; a new push cancels the superseded run. On a single
-# self-hosted runner this stops stale runs from queueing behind fresh ones.
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  group: live-ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# Every job here runs on the seam-box self-hosted runner for exactly one reason:
-# credentials. Ghost's only runtime dependency is `seam-sdk`, pinned to a
-# git+ssh URL, which pulls `seam-runtime` from a second private repository. A
-# hosted runner has read access to neither, so it would need a PAT with read on
-# both repos stored as a secret -- a standing credential for two private repos,
-# held by a PUBLIC repo, where any workflow change could exfiltrate it. seam-box
-# already authenticates to GitHub as the owner, so the private tier needs no
-# secret at all. That is the whole reason it is worth the runner.
-#
-# Cost used to be a second reason, and no longer is: Ghost is public, so
-# GitHub-hosted minutes are free. Every job that does NOT need the private SDK
-# therefore moved to public-ci.yml on ubuntu-latest, where it runs on every
-# push and pull request instead of waiting for a manual dispatch. What remains
-# here is only what genuinely cannot run without the private dependency.
 jobs:
-  tests:
-    # The private tier: everything that imports `ghost` and therefore needs the
-    # SEAM SDK. The credential-free gates it used to wait on now live in
-    # public-ci.yml on hosted infrastructure, where they run automatically on
-    # every push and pull request -- so they have already reported by the time
-    # anyone dispatches this workflow. A `needs:` cannot cross workflows.
-    runs-on: [self-hosted, seam-box]
-    strategy:
-      fail-fast: false
-      matrix:
-        # The floor and the development version. `requires-python` claims
-        # >=3.11,<3.15; nothing verified the floor until now.
-        python-version: ["3.11", "3.13"]
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v6
-        with:
-          enable-cache: true
-
-      - name: Verify the lock file matches pyproject
-        # uv.lock is committed and pins two private git revisions. A hand-edited
-        # pyproject that never re-locked would install a different SEAM than the
-        # one the README names as reviewed.
-        run: uv lock --check
-
-      - name: Install project and development dependencies
-        run: uv sync --frozen --python ${{ matrix.python-version }}
-
-      - name: Run the full test suite
-        # Strict no-skip (tests/conftest.py) is on by default and fails the run
-        # on any unexplained skip, so a test cannot quietly stop executing here.
-        run: uv run --frozen python -m pytest --durations=10
-
-      - name: Smoke the installed console script
-        # The credential-free package-smoke job can only inspect the wheel. This
-        # is the first point in CI where the whole import chain -- ghost ->
-        # deepagents -> langchain -> seam_sdk -> seam_runtime -- is proven to
-        # load, which is exactly the chain the private pins can break.
-        run: uv run --frozen ghost --help
-
-  live-key-present:
-    # Secrets are not readable from a job-level `if:`, so the gate is its own
-    # job. It makes an unconfigured repository show `live` as SKIPPED rather
-    # than failed -- a missing key is a configuration state, not a defect.
-    runs-on: [self-hosted, seam-box]
+  live-config-present:
+    # Secrets cannot be read in a job-level condition. This hosted preflight
+    # turns an unconfigured deployment into a visible skip, not a failure.
+    runs-on: ubuntu-latest
     outputs:
       available: ${{ steps.check.outputs.available }}
     steps:
-      - name: Check for a provider key
+      - name: Check live-provider and SEAM service configuration
         id: check
         env:
           PROVIDER_KEY: ${{ secrets.GHOST_LIVE_OPENAI_API_KEY }}
+          SEAM_URL: ${{ secrets.GHOST_LIVE_SEAM_BASE_URL }}
+          SEAM_TOKEN: ${{ secrets.GHOST_LIVE_SEAM_API_TOKEN }}
         run: |
-          if [ -n "${PROVIDER_KEY}" ]; then
+          if [ -n "${PROVIDER_KEY}" ] && [ -n "${SEAM_URL}" ] && [ -n "${SEAM_TOKEN}" ]; then
             echo "available=true" >> "$GITHUB_OUTPUT"
           else
             echo "available=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::GHOST_LIVE_OPENAI_API_KEY is not set; the live agent tests will not run."
+            echo "::notice::Live provider or SEAM service configuration is incomplete."
           fi
 
   live:
-    # The only job that proves Ghost actually works. Everything else fakes the
-    # model, so nothing else can tell a working agent from one whose model
-    # call, middleware injection, or ingest path is broken.
-    #
-    # Not run on pull requests: it costs real money per run and a PR cannot
-    # change what it proves about main. `workflow_dispatch` is there so a
-    # dependency bump can be checked against a real provider on demand.
-    needs:
-      - tests
-      - live-key-present
+    # Paid and stateful by design: never automatic on public pull requests.
+    needs: live-config-present
     if: >-
       inputs.run_live == true &&
-      needs.live-key-present.outputs.available == 'true'
-    runs-on: [self-hosted, seam-box]
+      needs.live-config-present.outputs.available == 'true'
+    runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -128,12 +54,12 @@ jobs:
         with:
           enable-cache: true
 
-      - name: Install project and development dependencies
+      - name: Install public project dependencies
         run: uv sync --frozen
 
-      - name: Run the live agent tests
-        # `-m live` selects back what pyproject's addopts deselects. Each test
-        # writes to its own tmp store, never the operator's SEAM database.
+      - name: Run live agent tests
         env:
           OPENAI_API_KEY: ${{ secrets.GHOST_LIVE_OPENAI_API_KEY }}
+          SEAM_BASE_URL: ${{ secrets.GHOST_LIVE_SEAM_BASE_URL }}
+          SEAM_API_TOKEN: ${{ secrets.GHOST_LIVE_SEAM_API_TOKEN }}
         run: uv run --frozen python -m pytest -m live -v

@@ -22,8 +22,8 @@ from ghost.tools import (
     make_search_repo,
 )
 
-# Every SeamSDK method that changes the store. None may be reachable from a tool.
-MUTATING_SDK_METHODS = (
+# Private-runtime mutation names must never become public tool methods.
+MUTATING_MEMORY_METHODS = (
     "apply_delete",
     "apply_promotion",
     "batch_ingest",
@@ -155,9 +155,9 @@ def test_search_repo_caps_its_output(tree: Path) -> None:
 # --- seam_recall -----------------------------------------------------------
 
 
-def test_seam_recall_returns_records_with_provenance(tmp_path: Path) -> None:
+def test_seam_recall_returns_records_with_provenance(tmp_path: Path, seam_http) -> None:
     settings = _settings(tmp_path / "g.db")
-    with SeamMemory(settings, allow_pgvector_env=False) as memory:
+    with SeamMemory(settings, client=seam_http) as memory:
         turn = memory.begin_turn("seed")
         memory.complete_turn(
             turn,
@@ -175,18 +175,18 @@ def test_seam_recall_returns_records_with_provenance(tmp_path: Path) -> None:
     assert any("ultramarine" in p["memory"] for p in payloads)
 
 
-def test_seam_recall_on_a_cold_store_says_so(tmp_path: Path) -> None:
+def test_seam_recall_on_a_cold_store_says_so(tmp_path: Path, seam_http) -> None:
     settings = _settings(tmp_path / "g.db")
-    with SeamMemory(settings, allow_pgvector_env=False) as memory:
+    with SeamMemory(settings, client=seam_http) as memory:
         tool = make_seam_recall(memory, namespace=settings.namespace, scope=settings.scope)
         assert "No memory matched" in tool.invoke({"query": "anything"})
 
 
-def test_seam_recall_escapes_the_memory_fence(tmp_path: Path) -> None:
+def test_seam_recall_escapes_the_memory_fence(tmp_path: Path, seam_http) -> None:
     """Tool output lands in the same context as fenced memory, so a record must
     not be able to close the fence from inside a tool result either."""
     settings = _settings(tmp_path / "g.db")
-    with SeamMemory(settings, allow_pgvector_env=False) as memory:
+    with SeamMemory(settings, client=seam_http) as memory:
         turn = memory.begin_turn("seed")
         memory.complete_turn(
             turn,
@@ -202,18 +202,18 @@ def test_seam_recall_escapes_the_memory_fence(tmp_path: Path) -> None:
     assert "<" not in out and ">" not in out
 
 
-def test_seam_recall_rejects_an_empty_query(tmp_path: Path) -> None:
+def test_seam_recall_rejects_an_empty_query(tmp_path: Path, seam_http) -> None:
     settings = _settings(tmp_path / "g.db")
-    with SeamMemory(settings, allow_pgvector_env=False) as memory:
+    with SeamMemory(settings, client=seam_http) as memory:
         tool = make_seam_recall(memory, namespace=settings.namespace, scope=settings.scope)
         assert "query is required" in refusal(tool, {"query": "   "})
 
 
-def test_seam_recall_cannot_reach_a_mutating_sdk_call() -> None:
+def test_seam_recall_cannot_reach_a_private_mutation_call() -> None:
     """The property that keeps a prompt injection from deleting memory.
 
     The tool is handed a `SeamMemory`, whose only query path is
-    `query_knowledge`. If the tool module ever names a mutating SDK method, or
+    `query_knowledge`. If the tool module ever names a private mutation method, or
     `SeamMemory` grows one, this fails.
     """
     import ghost.tools as tools_module
@@ -222,11 +222,11 @@ def test_seam_recall_cannot_reach_a_mutating_sdk_call() -> None:
     code = "\n".join(
         line for line in source.splitlines() if not line.strip().startswith(("*", "#"))
     )
-    called = [m for m in MUTATING_SDK_METHODS if f".{m}(" in code]
-    assert not called, f"ghost.tools calls mutating SDK methods: {called}"
+    called = [m for m in MUTATING_MEMORY_METHODS if f".{m}(" in code]
+    assert not called, f"ghost.tools calls private mutation methods: {called}"
 
-    exposed = [m for m in MUTATING_SDK_METHODS if hasattr(SeamMemory, m)]
-    assert not exposed, f"SeamMemory exposes mutating SDK methods to tools: {exposed}"
+    exposed = [m for m in MUTATING_MEMORY_METHODS if hasattr(SeamMemory, m)]
+    assert not exposed, f"SeamMemory exposes private mutation methods: {exposed}"
 
 
 # --- assembly --------------------------------------------------------------

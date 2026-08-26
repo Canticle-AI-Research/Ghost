@@ -7,19 +7,20 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 
 | Plane | Observed state |
 |---|---|
-| Default branch | `main@a5997c616e946496875a3ba4772ab9759b46f2d7` |
-| Primary working branch | `agent/avatar-u1-temporal-integration`, fast-forwarded to main and preserving avatar-only WIP |
-| Canonical foundation | merged through PR #6 |
+| Default branch | `main@10a2b45eeed68bdc9aeb4fca5f1d066982192fcf` |
+| Public transport candidate | `feat/public-seam-transport`, based on exact main and locally qualified |
+| Primary working branch | `agent/avatar-u1-temporal-integration`, preserving avatar-only WIP on its earlier reviewed base |
+| Canonical foundation | merged through PRs #6 and #7 |
 | Preserved local work | avatar source/tests/assets/tools plus CLI/package/lock changes in the primary checkout |
 | Remote visibility | public |
-| Merged PRs | PR #1, PR #5, and PR #6 |
+| Merged PRs | PR #1, PR #5, PR #6, and PR #7 |
 | Open PRs | Dependabot #2 and #4 |
-| Exact-head public CI | run `32918733013` green on `a5997c6`; all three required jobs passed |
-| Private integration CI | not run; Ghost has no assigned self-hosted runner |
+| Exact-head public CI | run `32919476787` green on `10a2b45`; all three current required jobs passed |
+| Public transport local proof | 200 provider-free tests, Ruff, build, clean wheel install, and real `ghost --help` passed; 8 live tests deselected |
 
 This is a status snapshot, not authorization to delete or combine local files.
 
-## Landed capability at `main@a5997c6`
+## Landed capability at `main@10a2b45`
 
 - DeepAgents root agent with provider routing through LangChain.
 - OpenAI reasoning-model use through the Responses API.
@@ -44,6 +45,12 @@ This is a status snapshot, not authorization to delete or combine local files.
   foundation, and multi-harness launcher tooling.
 
 ## Local-only capability
+
+- Public `httpx` SEAM adapter with begin/actions/complete/fail/recall routes.
+- Public dependency graph with no private Git or SEAM implementation package.
+- Automatic full hosted tests plus clean wheel install/CLI smoke candidate.
+- Coordinated private SEAM server PR #231; source exists but no compatible
+  hosted deployment or release is claimed.
 
 - `ghost-avatar` WebSocket/HTTP/browser overlay runner.
 - GTK desktop pet using the selected B2 art direction.

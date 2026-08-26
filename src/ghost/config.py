@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 
@@ -13,6 +13,17 @@ def _bounded_int(name: str, default: int, *, minimum: int, maximum: int) -> int:
         value = int(raw)
     except ValueError as exc:
         raise ValueError(f"{name} must be an integer") from exc
+    if not minimum <= value <= maximum:
+        raise ValueError(f"{name} must be between {minimum} and {maximum}")
+    return value
+
+
+def _bounded_float(name: str, default: float, *, minimum: float, maximum: float) -> float:
+    raw = os.environ.get(name, str(default))
+    try:
+        value = float(raw)
+    except ValueError as exc:
+        raise ValueError(f"{name} must be a number") from exc
     if not minimum <= value <= maximum:
         raise ValueError(f"{name} must be between {minimum} and {maximum}")
     return value
@@ -64,6 +75,9 @@ class GhostSettings:
     seam_db: Path
     namespace: str
     scope: str
+    seam_base_url: str = "http://127.0.0.1:8765"
+    seam_api_token: str | None = field(default=None, repr=False)
+    seam_timeout: float = 30.0
     recall_budget: int = 8
     graph_hops: int = 2
     agent_id: str = "ghost"
@@ -98,8 +112,15 @@ class GhostSettings:
             ).expanduser(),
             namespace=os.environ.get("GHOST_SEAM_NAMESPACE", "ghost.default"),
             scope=os.environ.get("GHOST_SEAM_SCOPE", "thread"),
+            seam_base_url=os.environ.get(
+                "SEAM_BASE_URL", "http://127.0.0.1:8765"
+            ).rstrip("/"),
+            seam_api_token=os.environ.get("SEAM_API_TOKEN") or None,
+            seam_timeout=_bounded_float(
+                "GHOST_SEAM_TIMEOUT", 30.0, minimum=0.1, maximum=300.0
+            ),
             recall_budget=_bounded_int(
-                "GHOST_RECALL_BUDGET", 8, minimum=1, maximum=64
+                "GHOST_RECALL_BUDGET", 8, minimum=1, maximum=50
             ),
             graph_hops=_bounded_int("GHOST_GRAPH_HOPS", 2, minimum=0, maximum=3),
             tool_roots=_tool_roots(),

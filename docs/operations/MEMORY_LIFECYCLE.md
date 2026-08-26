@@ -24,18 +24,19 @@ turn ID, while LangGraph receives a thread ID.
 
 ### 2. Open a reasoning run
 
-`SeamSDK.start_reasoning()` binds the objective to Ghost's namespace, scope,
-agent ID, model, and provider.
+`POST /v1/agent/turns/begin` binds the objective to Ghost's public namespace,
+scope, agent ID, model, and provider. The service derives any principal/tenant
+boundary and returns an opaque turn handle.
 
 ### 3. Recall
 
-`ReasoningSession.retrieve()` performs bounded mixed retrieval with a configured
-record budget and graph-hop limit. The selected record IDs become the turn's
-evidence references.
+The service performs bounded mixed retrieval with the configured record budget
+and graph-hop limit. Ghost receives public text and opaque `mem_...` evidence
+handles, never canonical record IDs or ranking internals.
 
 ### 4. Inject context
 
-Selected MIRL records are rendered as bounded JSON Lines. Angle brackets are
+Selected public memories are rendered as bounded JSON Lines. Angle brackets are
 escaped, and middleware labels the payload as untrusted evidence rather than
 instructions. The payload is added transiently to the model request and does
 not become checkpoint history.
@@ -43,25 +44,28 @@ not become checkpoint history.
 ### 5. Run Ghost
 
 DeepAgents and LangGraph execute the model and any framework tools. Current
-execution is synchronous and uses an in-memory checkpoint saver.
+execution is synchronous and uses a persistent SQLite checkpoint saver.
 
 ### 6. Ingest only a completed turn
 
-After Ghost produces a result, the user input and assistant output are passed
-to `SeamSDK.ingest()`. SEAM stores source evidence, compiles MIRL, and updates
-derived indexes. Recall happens before this write, preventing the current answer
-from retrieving itself.
+After Ghost produces a result, tool attempts go to
+`POST /v1/agent/turns/actions`. The completed user input and assistant output
+then go to `POST /v1/agent/turns/complete`. SEAM derives selected evidence and
+passed checks from server state, stores source evidence, compiles MIRL, and
+updates derived indexes. Recall precedes this write, preventing self-citation.
 
 ### 7. Finalize provenance
 
-Ghost reopens the reasoning run and records a bounded completion outcome linked
-to retrieved evidence and newly stored knowledge record IDs.
+SEAM accepts the outcome against server-derived evidence and checks, then
+returns only an opaque receipt. Ghost cannot forge evidence or verification
+support by sending client-selected IDs.
 
 ## Idempotency
 
-The source reference is derived from namespace, scope, thread ID, and turn ID.
-Retrying the same completed turn identity and content yields stable stored record
-IDs. A caller that wants retry safety should preserve the original turn ID.
+The service owns the authoritative turn identity and deterministic receipt.
+Repeating an accepted completion returns the same receipt with `replayed=true`;
+actions after a terminal outcome conflict. A failed terminal replay remains
+rejected and does not ingest.
 
 ## Planned admission lifecycle
 
@@ -104,10 +108,11 @@ deletion. It should:
 5. remove or repair derived graph/vector state; and
 6. retain an auditable receipt without retaining deleted content improperly.
 
-## Failure lifecycle gap
+## Failure lifecycle
 
-If model or tool execution fails today, the turn is not ingested, which is
-correct, but the opened reasoning run is not explicitly finalized as failed.
-Ghost needs a bounded failure outcome carrying error class, stage, and retry
-relationship without raw provider payloads, secrets, or hidden reasoning.
-
+If model, tool, or checkpoint execution raises, Ghost calls
+`POST /v1/agent/turns/fail` with only the exception class. Exception text,
+traceback, provider payload, partial assistant output, and hidden reasoning do
+not cross the boundary. SEAM records a rejected outcome and does not compile or
+ingest the failed exchange; Ghost then re-raises the original failure to its
+operator or supervisor.

@@ -1,33 +1,27 @@
 # Installation and first run
 
-Ghost currently requires private SEAM repository access. A clone without that
-authorization can read the public code/docs and run credential-free doc/brand/
-package checks, but it cannot install the complete runtime dependency graph.
+Ghost installs from its public repository without access to private SEAM
+source. Runtime use requires a reachable SEAM service implementing the opaque
+`/v1/memories/recall` and `/v1/agent/turns/*` contracts. Repository access,
+software licensing, service authorization, and provider credentials are four
+separate controls.
 
-These commands install the current internal/developer topology. Ghost's local
-PolyForm Shield candidate does not grant private-repository credentials. A
-public installation path requires the planned thin client/API or a licensed
-local SEAM Node.
-
-## Supported development range
+## Supported range
 
 - Python `>=3.11,<3.15`;
 - `uv` package/environment manager;
-- Git with SSH access to GitHub;
 - Linux is the primary tested operator environment;
-- an OpenAI key is required only when invoking the default model or live tests.
+- a SEAM service URL and, outside trusted loopback, a bearer token;
+- a model-provider credential only when invoking that provider.
 
-## 1. Install system prerequisites
-
-Required commands:
+## 1. Install prerequisites
 
 ```bash
 git --version
-ssh -V
 uv --version
 ```
 
-Optional asset checks:
+Optional brand/avatar tools:
 
 ```bash
 command -v google-chrome || command -v chromium
@@ -35,38 +29,19 @@ command -v fc-match
 command -v ffmpeg
 ```
 
-The avatar's direct GTK path is local WIP and additionally needs system Python,
-GTK 3 GObject bindings, and Pillow visible to that system interpreter. It is
-not required for the landed Ghost agent.
+The experimental GTK avatar is not part of the landed core-agent install.
 
-## 2. Verify private Git access
-
-Do not print keys or tokens. Verify the GitHub identity:
+## 2. Clone and reconcile
 
 ```bash
-ssh -T git@github.com
-```
-
-Then verify read access without cloning another copy:
-
-```bash
-git ls-remote git@github.com:Canticle-AI-Research/Seam_SDK.git HEAD
-```
-
-The SDK resolves its own exact private runtime dependency. An authorization
-failure here is not a Python packaging defect.
-
-## 3. Clone and reconcile
-
-```bash
-git clone git@github.com:Canticle-AI-Research/Ghost.git
+git clone https://github.com/Canticle-AI-Research/Ghost.git
 cd Ghost
 git status --short --branch
 git fetch --prune origin
 git rev-parse HEAD origin/main
 ```
 
-Read the repository protocol before changing files:
+Before contributing, read:
 
 ```bash
 sed -n '1,260p' AGENTS.md
@@ -75,63 +50,89 @@ sed -n '1,260p' REPO_LEDGER.md
 sed -n '1,220p' HISTORY_INDEX.md
 ```
 
-## 4. Install the frozen environment
+## 3. Install the frozen public environment
 
 ```bash
 uv lock --check
 uv sync --frozen
-```
-
-`--frozen` refuses to rewrite `uv.lock`. That matters because the lock records
-reviewed private Git revisions; a silent re-resolution changes the memory
-substrate under the agent.
-
-Smoke the import and console entry:
-
-```bash
 uv run ghost --help
 ```
 
-## 5. Configure local state
+`--frozen` refuses to rewrite the reviewed lock. `pyproject.toml` and `uv.lock`
+must contain no `git+ssh`, `seam-sdk`, or private runtime source. Automatic CI
+tests that invariant and clean-installs the built wheel on a disposable hosted
+runner.
 
-Create an ignored configuration file:
+## 4. Configure the SEAM service
+
+Copy the ignored template:
 
 ```bash
 cp .env.example .env.local
 chmod 600 .env.local
 ```
 
-Edit `.env.local` without committing it. Minimum model-backed configuration:
+Minimum service configuration:
 
 ```text
-OPENAI_API_KEY=<set locally>
-GHOST_MODEL=openai:gpt-5.6-terra
-GHOST_SEAM_DB=~/.local/share/ghost/seam.db
+SEAM_BASE_URL=http://127.0.0.1:8765
+SEAM_API_TOKEN=
+GHOST_SEAM_NAMESPACE=ghost.default
+GHOST_SEAM_SCOPE=thread
 GHOST_CHECKPOINT_DB=~/.local/share/ghost/checkpoints.db
 ```
 
-Keep the two databases separate. The first is semantic memory; the second is
-conversation execution state.
+Use HTTPS and a bearer token for any non-loopback service. Do not put the token
+in command history, documentation, issues, logs, or committed environment
+files. `GhostSettings` excludes it from `repr`.
 
-## 6. Run provider-free verification
+The service must provide:
+
+```text
+POST /v1/memories/recall
+POST /v1/agent/turns/begin
+POST /v1/agent/turns/actions
+POST /v1/agent/turns/complete
+POST /v1/agent/turns/fail
+```
+
+Ghost does not open a MIRL database or configure SEAM storage. The legacy
+`GHOST_SEAM_DB` variable remains only to derive a default checkpoint path for
+older configurations; set `GHOST_CHECKPOINT_DB` directly in new deployments.
+
+## 5. Verify service readiness without provider spend
+
+Do not print the bearer value. This request checks reachability only:
+
+```bash
+curl --fail --silent --show-error "${SEAM_BASE_URL%/}/v1/health"
+```
+
+For an authenticated contract probe, use a throwaway namespace and send the
+token through the header. Do not point experiments at an operator's production
+namespace.
+
+## 6. Run provider-free repository verification
 
 ```bash
 uv run ruff check .
 uv run pytest
 uv build
-uv run pytest tests/test_docs.py tests/test_history_tools.py -q
 uv run python -m tools.history.verify_continuity
 ```
 
-The default pytest configuration deselects tests marked `live`. Record that
-boundary when reporting results.
+The default pytest configuration deselects `live` tests. It uses a stateful
+HTTP contract fake and contacts neither a provider nor a SEAM deployment.
+Record that boundary with any test report.
 
-## 7. First model-backed turn
+## 7. Configure and run the model
 
-This uses provider credit:
+For the default provider:
 
 ```bash
-uv run ghost "State your role and explain which system owns your durable memory."
+export OPENAI_API_KEY="<set locally>"
+export GHOST_MODEL="openai:gpt-5.6-terra"
+uv run ghost "State your role and explain which service owns durable memory."
 ```
 
 Interactive mode:
@@ -145,54 +146,81 @@ Type `/exit` or `/quit` to stop.
 ## 8. Prove checkpoint restart
 
 ```bash
-uv run ghost --thread-id restart-proof "Remember that the rebuild marker is cobalt."
-uv run ghost --thread-id restart-proof "What marker did I give you?"
+uv run ghost --thread-id restart-proof \
+  "I will name three fruits: apple, banana, cherry. Reply only with ok."
+uv run ghost --thread-id restart-proof \
+  "What was the second one I named?"
 ```
 
-This test touches both checkpoint and semantic memory. A response alone is not
-a formal memory-quality evaluation; use isolated paths and inspect the named
-test suite for qualification.
+This proves LangGraph conversation execution state survives process teardown.
+It is distinct from SEAM semantic recall, which can cross thread IDs within the
+same configured namespace and scope.
 
-## Clean-room install notes
+## 9. Prove durable memory across agent instances
 
-- Do not install from the repository root with pip and assume the lock was
-  honored; use uv's frozen environment.
-- Do not replace the SDK with `seam-client` to make installation public.
-- Do not describe PolyForm Shield as access to private SEAM runtime source;
-  repository access and software licensing are separate controls.
-- Do not point first-run tests at an operator's existing canonical SEAM store.
-- Do not run the live test marker without explicit spend approval.
-- Do not treat a successful wheel build as permission to upload to PyPI.
+Use a unique, non-secret marker:
+
+```bash
+marker="ghost-install-cobalt-$(date +%s)"
+uv run ghost "Remember this installation marker exactly: ${marker}"
+uv run ghost "What is the installation marker? Answer with the marker."
+```
+
+Then use `seam_recall` in the interactive agent or an authorized direct recall
+request to confirm the service returns a `mem_...` opaque evidence handle.
+Response text alone is not a formal benchmark.
+
+## Clean-room wheel proof
+
+```bash
+uv build
+tmp_dir="$(mktemp -d)"
+uv venv "${tmp_dir}/venv"
+uv pip install --python "${tmp_dir}/venv/bin/python" dist/*.whl
+"${tmp_dir}/venv/bin/ghost" --help
+```
+
+Remove the temporary directory afterward using your normal recoverable cleanup
+workflow. A successful build/install proves package reachability, not permission
+to publish an artifact or access a SEAM deployment.
 
 ## Troubleshooting
 
-### Private dependency authentication fails
+### `Connection refused` or timeout
 
-```bash
-ssh -T git@github.com
-git ls-remote git@github.com:Canticle-AI-Research/Seam_SDK.git HEAD
-```
+- verify `SEAM_BASE_URL` and `/v1/health`;
+- confirm the service is running and reachable from this host;
+- keep loopback for local development; and
+- increase `GHOST_SEAM_TIMEOUT` only after diagnosing latency.
 
-Repair SSH authorization; do not rewrite `pyproject.toml` to a local absolute
-path in a commit.
+### HTTP 401 or 403
+
+The service rejected `SEAM_API_TOKEN`. Repair service authorization without
+printing or copying the credential. Ghost does not mint service credentials.
+
+### HTTP 404 from an agent-turn route
+
+Either the deployed service predates the additive agent-turn contract or the
+opaque turn belongs to another principal/partition. Upgrade the service or
+correct namespace/scope; never parse, reuse across tenants, or synthesize turn
+handles.
+
+### HTTP 409
+
+The turn is already finalized in an incompatible state, or an action write was
+attempted after completion. Treat this as a lifecycle conflict, not a request
+to retry with a fabricated handle.
 
 ### `python: command not found`
 
-Ghost's documented commands use `uv run python`. A bare `python` executable is
-not required on this machine.
+Use `uv run python`; a bare `python` executable is not required.
 
 ### OpenAI function tools fail through Chat Completions
 
-Ghost sets `use_responses_api=True` for OpenAI models. Verify the provider is
-parsed from a `provider:model` string and do not bypass `_init_model`.
-
-### PgVector dependency error
-
-The package uses `seam-sdk[pgvector]`. Verify `uv lock --check` and
-`uv sync --frozen`; do not silently remove the extra.
+Ghost sets `use_responses_api=True` for OpenAI models. Verify the
+`provider:model` setting and do not bypass `_init_model`.
 
 ### GTK avatar import fails
 
-The direct desktop pet uses system GTK bindings, not the normal uv environment.
-This is an unmerged optional lane. The core agent install is still valid when
-the avatar is absent.
+The avatar uses system GTK bindings and remains a separate experimental lane.
+Core Ghost installation is valid without it.

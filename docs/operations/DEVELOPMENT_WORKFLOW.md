@@ -113,10 +113,10 @@ Before staging:
 
 ## 7. Branch and PR
 
-Use a focused feature branch. The local candidate routes public continuity to
-hosted infrastructure and makes private CI manual-only, but the default branch
-still contains the old topology. Review GitHub's effective workflow and runner
-settings before opening a PR; do not use a PR as the safety experiment.
+Use a focused feature branch. Automatic provider-free work and clean package
+installation belong on hosted infrastructure; paid provider/service validation
+is manual-only. Review GitHub's effective workflow and runner settings before
+opening a PR; do not use a PR as the safety experiment.
 
 A PR body records:
 
@@ -146,9 +146,9 @@ uv run --no-project --with 'pytest>=8.3,<10' \
   pytest tests/test_docs.py tests/test_history_tools.py -q
 ```
 
-`tests/test_ci_contract.py` must require both credential-free files to run in a
-credential-free lane. Continuity verification uses only the standard library
-and repository data, so it must not depend on private SDK availability.
+`tests/test_ci_contract.py` must keep the full provider-free suite automatic,
+hosted, and free of private source dependencies. Continuity verification uses
+only the standard library and repository data.
 
 ## Periodic documentation audit
 

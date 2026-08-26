@@ -111,6 +111,35 @@ jobs:
           uv run --no-project --with 'pytest>=8.3,<10' --with 'pillow>=11,<14'
           pytest tests/test_brand_assets.py -q
 
+  tests:
+    # Ghost's public wheel has no private source dependency. The complete
+    # provider-free suite therefore runs automatically on disposable hosted
+    # runners for every PR and main push.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.13"]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Verify lock and install public dependencies
+        run: |
+          uv lock --check
+          uv sync --frozen --python ${{ matrix.python-version }}
+
+      - name: Run the complete provider-free suite
+        run: uv run --frozen python -m pytest --durations=10
+
+      - name: Smoke the installed command
+        run: uv run --frozen ghost --help
+
   package-smoke:
     runs-on: ubuntu-latest
     steps:
@@ -123,32 +152,15 @@ jobs:
           enable-cache: true
 
       - name: Build wheel and source distribution
-        # hatchling does not resolve runtime dependencies to build, so this
-        # proves the package is publishable without private-repo access.
+        # Building and clean-installing the artifact proves its dependency
+        # graph is fully public and the console command imports successfully.
         run: uv build
 
-      - name: Verify the wheel ships the package and the entry point
-        # Inspected rather than installed: `ghost --help` imports deepagents and
-        # seam_sdk, so it cannot run in a credential-free job. The private tier
-        # smokes the real command; this proves the artifact is well-formed.
+      - name: Clean-install and smoke the wheel
         run: |
           set -euo pipefail
-          uv run --no-project --with 'pytest>=8.3,<10' python - <<'PY'
-          import sys, zipfile
-          from pathlib import Path
-
-          wheels = sorted(Path("dist").glob("*.whl"))
-          assert len(wheels) == 1, f"expected exactly one wheel, got {wheels}"
-          assert sorted(Path("dist").glob("*.tar.gz")), "no source distribution built"
-
-          with zipfile.ZipFile(wheels[0]) as zf:
-              names = zf.namelist()
-              entry_points = next(n for n in names if n.endswith("entry_points.txt"))
-              declared = zf.read(entry_points).decode()
-
-          missing = [m for m in ("ghost/__init__.py", "ghost/cli.py", "ghost/seam_memory.py")
-                     if m not in names]
-          assert not missing, f"wheel is missing modules: {missing}"
-          assert "ghost = ghost.cli:main" in declared, f"console script missing:\n{declared}"
-          print(f"{wheels[0].name}: {len(names)} members, entry point OK")
-          PY
+          test -n "$(find dist -maxdepth 1 -name '*.whl' -print -quit)"
+          test -n "$(find dist -maxdepth 1 -name '*.tar.gz' -print -quit)"
+          uv venv "${RUNNER_TEMP}/ghost-wheel"
+          uv pip install --python "${RUNNER_TEMP}/ghost-wheel/bin/python" dist/*.whl
+          "${RUNNER_TEMP}/ghost-wheel/bin/ghost" --help

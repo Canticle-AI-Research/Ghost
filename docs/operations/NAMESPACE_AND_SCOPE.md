@@ -16,10 +16,11 @@ GHOST_SEAM_NAMESPACE=ghost.default
 GHOST_SEAM_SCOPE=thread
 ```
 
-Every reasoning run, retrieval, and ingest uses that same pair. This is suitable
-for private single-operator dogfooding. It is not a multi-user tenancy model,
-and the current `thread` label does not itself partition data by LangGraph
-thread ID.
+Every reasoning run, retrieval, and ingest uses that same pair. The SEAM
+service may additionally derive a principal/tenant boundary from the bearer
+credential; Ghost never supplies that identity as JSON. Token-only trusted
+mode remains suitable only for single-operator use and is not tenancy. In both
+modes, the `thread` label does not itself partition by LangGraph thread ID.
 
 ## Planned logical dimensions
 
@@ -62,8 +63,7 @@ not be copied into a broader scope merely because they were retrieved.
 
 ## Migration requirement
 
-Before Ghost moves beyond private single-user use, existing `ghost.default`
-memory must be inventoried and migrated deliberately. Changing the default
-namespace without a migration would strand old memories; searching both old and
-new namespaces by default would defeat isolation.
-
+Before a deployment changes principal or namespace structure, existing
+`ghost.default` memory must be inventoried and migrated deliberately. Changing
+the default without migration strands old memories; searching old and new
+boundaries together by default defeats isolation.

@@ -12,11 +12,11 @@ assert that no tool quietly becomes a write.
 
 The read-only guarantees:
 
-* `seam_recall` touches only the SDK's query surface. `SeamSDK` also exposes
-  `apply_delete`, `plan_delete`, `ingest`, `batch_ingest`, `apply_promotion`,
-  `reverse_promotion`, and `lifecycle_operation`; none of them is reachable
-  from here, and `tests/test_tools.py` fails if that changes. A tool that can
+* `seam_recall` touches only the opaque service's recall route. Completion,
+  failure, action, and administrative lifecycle routes are not reachable from
+  here, and `tests/test_tools.py` fails if that changes. A tool that can
   delete memory is a tool that lets a prompt injection delete memory.
+  Administrative mutation stays behind the application lifecycle boundary.
 * the filesystem tools resolve every path and refuse anything outside their
   configured roots, so a traversal or a symlink cannot walk out of the tree.
 

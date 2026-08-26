@@ -38,8 +38,8 @@ uv lock --check
 
 ### `uv sync --frozen`
 
-Installs the exact locked project and development dependencies. Requires
-private SDK/runtime Git access.
+Installs the exact locked public project and development dependencies. It does
+not contact a SEAM service or require private source access.
 
 ```bash
 uv sync --frozen

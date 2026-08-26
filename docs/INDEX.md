@@ -30,7 +30,8 @@ learning surface is [the Ghost engineering wiki](README.md).
 | Document | Covers |
 |---|---|
 | [architecture/COMPLETE_SYSTEM_BLUEPRINT.md](architecture/COMPLETE_SYSTEM_BLUEPRINT.md) | every major component and end-to-end ASCII flows |
-| [architecture/RUNTIME_LAYERS.md](architecture/RUNTIME_LAYERS.md) | SDK, lifecycle, adapter, interface separation |
+| [architecture/RUNTIME_LAYERS.md](architecture/RUNTIME_LAYERS.md) | service, lifecycle, adapter, interface separation |
+| [architecture/SEAM_HTTP_CONTRACT.md](architecture/SEAM_HTTP_CONTRACT.md) | exact opaque turn/recall routes, payloads, errors, and proof split |
 | [architecture/SYSTEM_MAP.md](architecture/SYSTEM_MAP.md) | framework and data-flow map |
 | [architecture/MEMORY_LAYERS.md](architecture/MEMORY_LAYERS.md) | RAW/MIRL/derived/checkpoint ownership |
 | [architecture/KNOWLEDGE_GRAPH.md](architecture/KNOWLEDGE_GRAPH.md) | knowledge, reasoning, and execution graphs |
@@ -41,7 +42,7 @@ learning surface is [the Ghost engineering wiki](README.md).
 
 | Document | Covers |
 |---|---|
-| [operations/INSTALLATION.md](operations/INSTALLATION.md) | prerequisites, private access, install, smoke tests, troubleshooting |
+| [operations/INSTALLATION.md](operations/INSTALLATION.md) | prerequisites, public install, service setup, smoke tests, troubleshooting |
 | [operations/COMMAND_REFERENCE.md](operations/COMMAND_REFERENCE.md) | every runtime, verification, continuity, brand, and local-avatar command |
 | [operations/HOW_TO.md](operations/HOW_TO.md) | task-oriented operator recipes |
 | [operations/CONFIGURATION.md](operations/CONFIGURATION.md) | every environment variable and precedence rule |
@@ -61,6 +62,7 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [decisions/0002-canonical-build-history.md](decisions/0002-canonical-build-history.md) | append-only repository continuity decision |
 | [decisions/0003-documentation-is-the-blueprint.md](decisions/0003-documentation-is-the-blueprint.md) | code/documentation co-change contract |
 | [decisions/0004-open-edge-shielded-product-proprietary-core.md](decisions/0004-open-edge-shielded-product-proprietary-core.md) | Apache edge, PolyForm products, proprietary core decision |
+| [decisions/0005-opaque-seam-service-boundary.md](decisions/0005-opaque-seam-service-boundary.md) | public Ghost transport with server-owned reasoning and opaque IDs |
 
 ## Legal and company readiness
 
@@ -86,7 +88,8 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [history/PATH_MOVES.md](history/PATH_MOVES.md) | ledger that keeps immutable history refs resolvable after a rename |
 | [Temporal Chain template](../templates/temporal-chain/README.md) | reusable standard-library history + git protocol starter for other repositories |
 | [handoffs/INDEX.md](handoffs/INDEX.md) | canonical single-head handoff registry |
-| [handoffs/2026-08-25-canonical-foundation-merged.md](handoffs/2026-08-25-canonical-foundation-merged.md) | current merged-foundation and public-API resume boundary |
+| [handoffs/2026-08-25-public-seam-transport-qualified.md](handoffs/2026-08-25-public-seam-transport-qualified.md) | current locally qualified public-transport merge boundary |
+| [handoffs/2026-08-25-canonical-foundation-merged.md](handoffs/2026-08-25-canonical-foundation-merged.md) | superseded merged-foundation and public-API resume boundary |
 | [handoffs/2026-08-25-canonical-foundation-candidate.md](handoffs/2026-08-25-canonical-foundation-candidate.md) | superseded isolated canonical-foundation publication boundary |
 | [handoffs/2026-08-25-public-runner-closed.md](handoffs/2026-08-25-public-runner-closed.md) | superseded safety closure and foundation-publication boundary |
 | [handoffs/2026-08-25-temporal-chain-named.md](handoffs/2026-08-25-temporal-chain-named.md) | superseded Temporal Chain naming and documentation-gate candidate |

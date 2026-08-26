@@ -1,4 +1,4 @@
-# Public repository and private-runner boundary
+# Public repository and hosted-runner boundary
 
 Ghost is public. Public pull requests must never receive automatic code
 execution on a personal or privileged self-hosted runner that can read private
@@ -11,24 +11,26 @@ public pull request or main push
         │
         ▼
 GitHub-hosted Public CI
-        ├─ no project install
-        ├─ no private dependency resolution
+        ├─ frozen public project install
+        ├─ full provider-free suite
+        ├─ clean wheel install + command smoke
         ├─ no repository secrets
         └─ no self-hosted runner
 
 reviewed owner decision
         │ explicit workflow dispatch
         ▼
-manual Private CI
-        ├─ private SEAM dependency
-        ├─ self-hosted runner, only if deliberately assigned
-        └─ paid live lane only with run_live=true and a configured key
+manual Live Provider CI
+        ├─ disposable GitHub-hosted runner
+        ├─ paid live lane only with run_live=true
+        └─ provider + SEAM endpoint credentials required
 ```
 
 `.github/workflows/public-ci.yml` owns automatic fork-safe verification.
-`.github/workflows/ci.yml` permits exactly `workflow_dispatch`; its jobs target
-`[self-hosted, seam-box]` and its paid lane additionally requires
-`run_live=true`. `tests/test_ci_contract.py` fails if these boundaries drift.
+`.github/workflows/ci.yml` permits exactly `workflow_dispatch`; its jobs also
+target `ubuntu-latest`, and its paid lane additionally requires `run_live=true`
+plus explicit provider and SEAM service configuration.
+`tests/test_ci_contract.py` fails if these boundaries drift.
 
 ## GitHub controls verified on 2026-08-25
 
@@ -42,7 +44,7 @@ manual Private CI
 - runners assigned to Ghost: zero; and
 - `main`: pull requests required, administrators enforced, conversations
   resolved, force pushes/deletions blocked, and exact hosted checks
-  `repo-hygiene`, `brand-assets`, and `package-smoke` required with strict
+  `repo-hygiene`, `brand-assets`, `tests`, and `package-smoke` required with strict
   up-to-date status.
 
 Organization runner-group inventory requires organization-admin authority and
@@ -58,18 +60,18 @@ three Public CI jobs in Actions run
 [`32907313331`](https://github.com/Canticle-AI-Research/Ghost/actions/runs/32907313331).
 Private CI did not auto-dispatch.
 
-This proves the public workflow and settings boundary. It does not prove the
-private SDK integration lane, because no self-hosted runner is assigned and no
-owner dispatch was made.
+That run proves the earlier public workflow and settings boundary. The later
+public-transport candidate must produce its own exact-head four-job evidence
+before merge; no paid live run is implied.
 
 ## Operator rules
 
-- Never add any trigger besides `workflow_dispatch` to Private CI.
+- Never add any trigger besides `workflow_dispatch` to Live Provider CI.
 - Never move an automatic public job to `self-hosted`.
-- Never install Ghost or resolve `seam-sdk` in Public CI.
+- Never add a private source dependency to Ghost or its lock.
 - Never store a broad private-repository credential in this public repository.
-- Treat a private workflow dispatch as authorizing the checked-out revision to
-  act with the runner account's filesystem, network, and credential authority.
+- Treat a live workflow dispatch as authorizing the checked-out revision to
+  spend provider credit and act through the configured SEAM principal.
 - Keep paid live-provider tests behind the explicit `run_live` input.
 - Reconcile GitHub settings again before assigning any runner or widening
   allowed Actions.

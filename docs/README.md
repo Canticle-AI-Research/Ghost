@@ -46,7 +46,7 @@ The wiki distinguishes four kinds of claim:
 │                             ┌───────────────────────────────────────────────┐  │
 │                             │ recall → execute → verify → ingest/fail      │  │
 │                             └──────────────────────┬────────────────────────┘  │
-│                                                    │ private exact SDK          │
+│                                                    │ authenticated HTTP         │
 │                                                    ▼                            │
 │                             ┌───────────────────────────────────────────────┐  │
 │                             │ SEAM                                         │  │
@@ -68,6 +68,7 @@ checkpoints remember where a conversation got to; they are not semantic memory.
 - [Canticle product and licensing structure](product/CANTICLE_PRODUCT_AND_LICENSING_STRUCTURE.md)
 - [Complete system blueprint](architecture/COMPLETE_SYSTEM_BLUEPRINT.md)
 - [Runtime layers](architecture/RUNTIME_LAYERS.md)
+- [Ghost-SEAM HTTP contract](architecture/SEAM_HTTP_CONTRACT.md)
 - [System map](architecture/SYSTEM_MAP.md)
 - [Memory layers](architecture/MEMORY_LAYERS.md)
 - [Knowledge and reasoning graphs](architecture/KNOWLEDGE_GRAPH.md)
@@ -89,6 +90,7 @@ checkpoints remember where a conversation got to; they are not semantic memory.
 
 - [Trust boundaries](security/TRUST_BOUNDARIES.md)
 - [Public repository and runner](security/PUBLIC_REPOSITORY_AND_RUNNER.md)
+- [Opaque SEAM service decision](decisions/0005-opaque-seam-service-boundary.md)
 - [Memory evaluations](evaluation/MEMORY_EVALS.md)
 - [Testing and qualification](evaluation/TESTING_AND_QUALIFICATION.md)
 - [Roadmap](roadmap/SECOND_BRAIN_ROADMAP.md)

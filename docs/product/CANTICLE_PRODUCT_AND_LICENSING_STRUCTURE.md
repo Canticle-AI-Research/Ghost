@@ -100,24 +100,21 @@ review, provenance scan, artifact scan, and history record.
 
 ## Ghost migration boundary
 
-Ghost currently imports the in-process SEAM SDK at an exact private Git
-revision. That is implemented behavior and remains the internal development
-path. It is not the final public installation topology.
+Ghost's current candidate uses an independently authored opaque HTTP adapter.
+It contains no private SEAM import or Git dependency and preserves the full
+reasoning/action lifecycle through additive service routes.
 
 ```text
-CURRENT INTERNAL PATH
-Ghost ──direct import──► SEAM SDK ──direct import──► private SEAM runtime
-
-TARGET PUBLIC PATH
-Ghost ──open client──► authenticated Canticle API ──► private SDK/runtime
+CURRENT PUBLIC PATH
+Ghost ──HTTP adapter──► authenticated SEAM API ──► private SDK/runtime
 
 TARGET ENTERPRISE PATH
 Ghost ──open client──► licensed local SEAM node ──► private runtime package
 ```
 
-The target path is planned. Ghost must not remove the internal adapter or claim
-public installability until a versioned API supports the lifecycle, reasoning,
-retrieval, and provenance operations its current adapter actually uses.
+The code/API path is implemented but is not yet a published package or hosted
+deployment. Those claims require protected merge, immutable artifact
+qualification, an available compatible service, and the deployment gates below.
 
 ## Canticle Core boundary
 

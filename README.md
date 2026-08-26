@@ -1,8 +1,9 @@
 # Ghost
 
-Ghost is a DeepAgent whose durable memory is provided by the private SEAM SDK.
-SEAM compiles completed turns into MIRL, retrieves bounded evidence before the
-next turn, and records which memories supported each agent run.
+Ghost is a DeepAgent whose durable memory is provided by an authenticated,
+opaque SEAM service. Ghost contains no private SEAM/MIRL implementation: it
+uses bounded `/v1` HTTP routes to recall evidence, record action checks, accept
+completed turns, and reject failed ones.
 
 A knowledge graph is one part of Ghost's intended second brain, not the whole
 system. RAW evidence and MIRL remain canonical truth; graph, vector, and context
@@ -37,6 +38,7 @@ sufficient to install, operate, verify, and rebuild Ghost. The exhaustive
 - [Complete command reference](docs/operations/COMMAND_REFERENCE.md)
 - [Operator and developer how-tos](docs/operations/HOW_TO.md)
 - [Complete system blueprint](docs/architecture/COMPLETE_SYSTEM_BLUEPRINT.md)
+- [Ghost-SEAM HTTP contract](docs/architecture/SEAM_HTTP_CONTRACT.md)
 - [Rebuild blueprint](docs/product/REBUILD_BLUEPRINT.md)
 - [Current state](docs/status/CURRENT_STATE.md)
 - [Second brain and knowledge graph](docs/concepts/SECOND_BRAIN.md)
@@ -52,11 +54,13 @@ sufficient to install, operate, verify, and rebuild Ghost. The exhaustive
 
 ```mermaid
 flowchart LR
-    U[User message] --> R[SEAM reasoning retrieval]
+    U[User message] --> H[Ghost public HTTP adapter]
+    H --> R[SEAM reasoning retrieval]
     R --> M[Transient MIRL context]
     M --> G[Ghost DeepAgent]
     G --> A[Assistant response]
-    A --> I[SEAM ingest]
+    A --> H
+    H --> I[SEAM ingest]
     I --> D[(MIRL store)]
     A --> P[Reasoning outcome + evidence refs]
 ```
@@ -69,43 +73,31 @@ used as a DeepAgents filesystem backend.
 
 - Python 3.11 or newer
 - `uv`
-- Read access to the private SEAM repository
+- a reachable SEAM service implementing `/v1/agent/turns/*`
 - `OPENAI_API_KEY` in the process environment or an ignored `.env.local`
 
 OpenAI-backed models are sent through the Responses API so reasoning models can
 use DeepAgents' function tools.
 
-`pyproject.toml` depends on the SEAM SDK, pinned to an exact reviewed commit:
-
-```text
-Canticle-AI-Research/Seam_SDK@294ab08919646a03dcdceb3c777dfd7d8eabc624
-```
-
-`seam-sdk` is currently the source-available in-process SDK. It pulls the private SEAM runtime
-transitively, so read access to the private SEAM repository is still required.
-Do not replace it with the legacy public `seam-runtime` package, and do not
-substitute Apache-licensed `seam-client` — that is the opaque `/v1` HTTP client
-and cannot reach `SeamSDK` or MIRL. For editable SDK development, explicitly
-replace that Git source locally with a path to your private SDK checkout before
-running `uv sync`; do not commit the machine-specific path.
-The `pgvector` extra is installed because Ghost honors the operator's existing
-`SEAM_PGVECTOR_DSN` when one is configured.
+`pyproject.toml` contains only public package dependencies. `SeamMemory` uses
+`httpx` directly so the product lifecycle can use additive agent-turn routes
+without importing the private runtime or pretending the legacy `seam-client`
+2.x memory-only API provides reasoning parity. The service owns MIRL, storage,
+graph, retrieval, correction, and lifecycle policy.
 
 ## Setup
 
 ```bash
 uv sync
+export SEAM_BASE_URL="http://127.0.0.1:8765"
+export SEAM_API_TOKEN="<set locally when the service requires it>"
 uv run ghost "What do you remember about this project?"
 ```
 
-Ghost uses an operator-local MIRL database by default:
-
-```text
-~/.local/share/ghost/seam.db
-```
-
-Set `GHOST_SEAM_DB` explicitly if Ghost should participate in an existing
-unified SEAM store.
+Ghost never opens a semantic-memory database. The configured SEAM service owns
+that state. `GHOST_SEAM_DB` remains only as a legacy path from which the default
+checkpoint location is derived; new deployments should set
+`GHOST_CHECKPOINT_DB` directly.
 
 Conversation checkpoints are persistent and live in a **separate** database
 (`GHOST_CHECKPOINT_DB`, defaulting beside the SEAM store), so `--thread-id`
@@ -118,7 +110,9 @@ Override configuration through environment variables when needed:
 
 ```bash
 export GHOST_MODEL="openai:gpt-5.6-terra"
-export GHOST_SEAM_DB="/path/to/seam.db"
+export SEAM_BASE_URL="https://seam.example"
+export SEAM_API_TOKEN="<secret>"
+export GHOST_CHECKPOINT_DB="$PWD/.state/checkpoints.db"
 export GHOST_SEAM_NAMESPACE="ghost.default"
 export GHOST_SEAM_SCOPE="thread"
 ```
@@ -145,10 +139,9 @@ Ghost's tools are read-only, built to the contract in
 
 `seam_recall` is a deliberate mid-turn lookup, distinct from the automatic
 pre-turn recall the middleware performs. It reaches SEAM only through
-`SeamMemory.query_knowledge`, so the SDK's `ingest`, `apply_delete`,
-`apply_promotion`, and `lifecycle_operation` are unreachable from a tool — a
-tool that can delete memory is a tool a prompt injection can delete memory
-with.
+`SeamMemory.query_knowledge`, so completion, failure, action, deletion, and
+administrative routes are unreachable from a model tool — a tool that can
+delete memory is a tool a prompt injection can delete memory with.
 
 The filesystem tools are absent unless the operator names readable roots:
 
@@ -196,12 +189,14 @@ durable memory.
 
 For every successful root turn, Ghost:
 
-1. opens a private SEAM reasoning run;
-2. retrieves a bounded `mix` result with graph expansion;
-3. injects selected MIRL records transiently into model context;
+1. asks the SEAM service to open a reasoning-backed turn;
+2. receives bounded public memories selected with graph expansion;
+3. injects that bounded text transiently into model context;
 4. runs the DeepAgent;
-5. ingests the completed user/assistant turn through `SeamSDK.ingest()`; and
-6. finalizes the reasoning run with exact evidence and stored-record refs.
+5. sends tool attempts for server-side decision/check recording;
+6. completes the turn through the public API, where SEAM derives passed checks
+   and evidence server-side before ingest; or
+7. sends only the exception class to reject a failed turn without ingest.
 
 Recall happens before the current turn is ingested, so a response cannot cite
 its own newly written memory. Retrieved text is labeled as untrusted evidence,
@@ -209,8 +204,8 @@ not instructions, and does not accumulate in the LangGraph checkpoint.
 
 ## Verification
 
-Tests use temporary SQLite databases and do not touch the unified SEAM store or
-make live model calls:
+Tests use an opaque in-memory HTTP contract fake and do not contact a SEAM
+deployment or make live model calls:
 
 ```bash
 uv run pytest
@@ -223,32 +218,28 @@ local run only; CI must not skip.
 
 ### Continuous integration
 
-Ghost separates public-safe and private execution:
+Ghost separates automatic provider-free validation from explicit paid work:
 
 - `.github/workflows/public-ci.yml` automatically runs history, docs,
-  CI-contract, lint, diff, and secret checks on GitHub-hosted infrastructure;
-- `.github/workflows/ci.yml` is manual-only on `seam-box` and runs the private
-  dependency, full-test, and optional live-provider lanes.
+  CI-contract, lint, diff, secret, full-test, build, clean-install, and command
+  smoke checks on GitHub-hosted infrastructure;
+- `.github/workflows/ci.yml` is manual-only and runs only the paid live-provider
+  suite against an explicitly configured SEAM service.
 
-The private workflow remains split by what each job needs to reach:
+The two CI workflows divide automatic and explicitly paid work as follows:
 
-| Job | Needs the private SEAM repos? | Covers |
+| Job | Automatic? | Covers |
 |---|---|---|
-| `repo-hygiene` (public) | no | ruff, docs/history, CI contract, diff and secret scans |
-| `brand-assets` (public) | no | vendored brand toolkit on hosted Chrome/fontconfig |
-| `package-smoke` (public) | no | wheel/sdist build and artifact membership |
-| `tests` (private) | yes | full suite on Python 3.11 and 3.13, plus `ghost --help` |
-| `live` (private, opt-in) | yes | paid provider/live integration |
+| `repo-hygiene` | yes | ruff, docs/history, CI contract, diff and secret scans |
+| `brand-assets` | yes | vendored brand toolkit on hosted Chrome/fontconfig |
+| `tests` | yes | full provider-free suite on Python 3.11 and 3.13 |
+| `package-smoke` | yes | wheel/sdist build, clean install, and `ghost --help` |
+| `live` | no | paid provider plus configured SEAM service integration |
 
-The split is deliberate. Ghost's only runtime dependency is pinned to a private
-`git+ssh` URL, so a single-tier CI would say nothing at all whenever those
-repositories are unreachable. `tests/test_ci_contract.py` enforces the split: it
-derives from the test tree which files need the private SDK and fails if a
-credential-free test file runs only in the private tier.
-
-The self-hosted runner makes the private tier possible without storing another
-broad repository credential. It is therefore manual-only, restricted to
-reviewed `main`, and paid live tests require the explicit `run_live` input.
+`tests/test_ci_contract.py` fails if a private source dependency returns, the
+full suite leaves hosted automatic CI, the clean wheel is no longer installed,
+or paid live tests become automatic. No Ghost workflow targets a self-hosted
+runner.
 
 ### Public repository boundary
 

@@ -28,9 +28,9 @@ may grant additional rights to PolyForm Shield work.
 ## Consequences
 
 - PolyForm components must be called source-available, not open source.
-- Ghost's current private in-process dependency remains an internal topology;
-  public distribution requires a complete API/client path or licensed local
-  node.
+- ADR-0005 implements Ghost's public HTTP boundary; distribution and hosted use
+  still require a qualified artifact plus a compatible authorized service or
+  licensed local node.
 - External contributions need inbound terms sufficient for commercial
   relicensing.
 - Current founder-owned IP must be assigned in writing after the company is
