@@ -7,21 +7,21 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 
 | Plane | Observed state |
 |---|---|
-| Default branch | `main@620caee333d8ddf22c4fd983475031a3c7e37f21` |
-| Stage 1 evaluation candidate | `feat/stage1-frozen-evals`: 20 frozen cases, real-lifecycle BIL-0 smoke/verifier/gate, step ceiling; eight CodeRabbit findings repaired, final clean baseline qualified |
+| Default branch | `main@86774efb45c4f93b7e83272c9f1ce638e8c46fb7` |
+| Stage 1 evaluation substrate | merged through PR #10: 20 frozen cases, real-lifecycle BIL-0 smoke/verifier/gate, step ceiling, final clean baseline |
 | Public transport | merged through PR #8; public install and opaque transport source published |
 | Primary working branch | `agent/avatar-u1-temporal-integration`, preserving avatar-only WIP on its earlier reviewed base |
 | Canonical foundation | merged through PRs #6 and #7 |
 | Preserved local work | avatar source/tests/assets/tools plus CLI/package/lock changes in the primary checkout |
 | Remote visibility | public |
-| Merged PRs | PR #1, PR #5, PR #6, PR #7, PR #8, and documentation PR #9 |
+| Merged PRs | PR #1 and PRs #5 through #10 |
 | Open PRs | Dependabot #2 and #4 |
-| Exact-head public CI | run `32924345004` green on `620caee`; all five current required jobs passed |
+| Exact-head public CI | run `32927031615` green on `86774ef`; all six required jobs passed |
 | Public transport proof | 200 provider-free tests, Ruff, build, clean wheel install, real `ghost --help`, and protected PR/main CI passed; 8 live tests deselected |
 
 This is a status snapshot, not authorization to delete or combine local files.
 
-## Landed capability at `main@620caee`
+## Landed capability at `main@86774ef`
 
 - DeepAgents root agent with provider routing through LangChain.
 - OpenAI reasoning-model use through the Responses API.
@@ -49,9 +49,6 @@ This is a status snapshot, not authorization to delete or combine local files.
   and real command smoke, all required by protected main.
 - Coordinated SEAM server source through SEAM PR #231; this is not a hosted
   deployment claim.
-
-## Local-only capability
-
 - `ghost-stage1-frozen-v1` 20-case corpus and immutable manifest.
 - Deterministic two-arm BIL-0 bundle, verifier, and safety gate.
 - Tracked non-claimable baseline bound to clean source `bc18555` and bundle
@@ -61,6 +58,8 @@ This is a status snapshot, not authorization to delete or combine local files.
 - Final post-review artifact bound to clean source `ee4f63b` and bundle hash
   `57ca22ea`; this supersedes earlier artifacts for current comparisons.
 - `GHOST_MAX_STEPS` runtime superstep ceiling and explicit non-streaming policy.
+
+## Local-only capability
 
 - `ghost-avatar` WebSocket/HTTP/browser overlay runner.
 - GTK desktop pet using the selected B2 art direction.
@@ -113,17 +112,15 @@ closeout is recorded in the latest history entry after completion.
    documentation/history foundation.
 3. A tracked repository-root `checkpoints.db` is generated execution state and
    should be removed in a dedicated reviewed cleanup.
-4. The current wheel depends on private Git-over-SSH sources and is not fit for
-   public PyPI.
-5. Stage 1 lacks frozen task/memory exit qualification.
-6. Selective memory admission, correction, forgetting, and principal isolation
+4. Stage 1 provider-live and exact release-candidate qualification remain open;
+   the frozen deterministic artifact is explicitly non-claimable.
+5. Selective memory admission, correction, forgetting, and principal isolation
    remain absent.
-7. The API/client path needed for a publicly installable Ghost is planned, not
-   implemented; current Ghost still imports the in-process SDK.
-8. The license structure needs counsel review and a written founder IP
+6. The license structure needs counsel review and a written founder IP
     assignment after the company is legally formed.
 
 ## Next issue
 
-Design and qualify the public API/client distribution boundary while preserving
-the avatar candidate in its isolated primary working branch.
+Implement and qualify deliberate memory admission, correction, forgetting, and
+principal isolation against the frozen Stage 1 baseline while preserving the
+avatar candidate in its isolated primary working branch.

@@ -1071,3 +1071,29 @@ Live reconciliation also closed the stale PR #9 status: exact current
 PR must expose and pass `stage1-evals`, then protected main must add it as the
 sixth required context without weakening existing policy. No paid/provider,
 release-candidate, package release, or deployment qualification ran.
+
+## HISTORY#046 — Publish the frozen Stage 1 evaluation substrate
+- Date: `2026-08-25T22:38:20-05:00`
+- Agent: `codex`
+- Status: `done`
+- Topics: `ci, continuity, docs, evaluation, gates, handoff, history, memory, roadmap, security, status, verification`
+- Commits: `cbdd190e864213d4b0c45dcdf36667817872addf, 86774efb45c4f93b7e83272c9f1ce638e8c46fb7`
+- Refs: `https://github.com/Canticle-AI-Research/Ghost/pull/10, https://github.com/Canticle-AI-Research/Ghost/actions/runs/32926952876, https://github.com/Canticle-AI-Research/Ghost/actions/runs/32927031615, docs/handoffs/2026-08-25-stage1-frozen-published.md`
+- Supersedes: `HISTORY#045`
+- Verification: `exact PR head cbdd190 passed repo-hygiene, brand-assets, tests (3.11), tests (3.13), package-smoke, and stage1-evals in run 32926952876; branch protection narrowly added stage1-evals while preserving strict status, administrator enforcement, conversation resolution, and force-push/deletion blocks; PR #10 merged as 86774ef; exact main run 32927031615 passed the same six jobs`
+
+The frozen Stage 1 evaluation substrate is now protected-main source rather
+than a local candidate. PR #10 published the 20-case corpus, actual-lifecycle
+two-arm BIL-0 runner, canonical seals and verifier, derived gate, step ceiling,
+CI lane, and rebuild/operator documentation after all review findings were
+repaired.
+
+The new `stage1-evals` context first existed and passed on the exact PR head.
+It was then added as the sixth required context through the narrow status-check
+endpoint; no other protection setting was weakened. Exact merge-head CI passed
+all six jobs.
+
+This closes the provider-free frozen-substrate issue, not the whole Stage 1
+product gate. The deterministic artifact remains non-claimable. Provider-live,
+paid judge, exact release-candidate, package release, and deployment proof
+remain open. Deliberate memory governance is the next implementation issue.

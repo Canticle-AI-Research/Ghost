@@ -44,9 +44,8 @@ plus explicit provider and SEAM service configuration.
 - runners assigned to Ghost: zero; and
 - `main`: pull requests required, administrators enforced, conversations
   resolved, force pushes/deletions blocked, and exact hosted checks
-  `repo-hygiene`, `brand-assets`, `tests (3.11)`, `tests (3.13)`, and
-  `package-smoke` required with strict up-to-date status. The Stage 1 candidate
-  adds hosted `stage1-evals`; branch protection must require it before merge.
+  `repo-hygiene`, `brand-assets`, `tests (3.11)`, `tests (3.13)`,
+  `package-smoke`, and `stage1-evals` required with strict up-to-date status.
 
 Organization runner-group inventory requires organization-admin authority and
 was not queried. Zero repository-visible assigned runners is the current
@@ -62,9 +61,10 @@ three Public CI jobs in Actions run
 Private CI did not auto-dispatch.
 
 That run proves the earlier public workflow and settings boundary. PR #8 later
-passed the five-job public-transport boundary on exact PR and merge heads. The
-Stage 1 candidate must add `stage1-evals` as a sixth required hosted context
-before merge; no paid live run is implied.
+passed the five-job public-transport boundary on exact PR and merge heads. PR
+#10 added `stage1-evals` as the sixth required hosted context without weakening
+the existing policy; exact merge run `32927031615` passed all six jobs. No paid
+live run is implied.
 
 ## Operator rules
 

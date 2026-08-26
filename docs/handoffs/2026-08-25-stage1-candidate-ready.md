@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-stage1-candidate-ready-20260825`
 supersedes: `ghost-stage1-final-baseline-qualified-20260825`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#045`
 created_at: `2026-08-25T22:29:49-05:00`
 
