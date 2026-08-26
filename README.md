@@ -47,6 +47,7 @@ sufficient to install, operate, verify, and rebuild Ghost. The exhaustive
 - [Memory lifecycle](docs/operations/MEMORY_LIFECYCLE.md)
 - [Trust boundaries](docs/security/TRUST_BOUNDARIES.md)
 - [Evaluation plan](docs/evaluation/MEMORY_EVALS.md)
+- [Stage 1 frozen evaluation suite](docs/evaluation/STAGE1_FROZEN_SUITE.md)
 - [Second-brain roadmap](docs/roadmap/SECOND_BRAIN_ROADMAP.md)
 - [Canonical build history](HISTORY_INDEX.md)
 

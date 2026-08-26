@@ -28,6 +28,7 @@ def _clear(monkeypatch) -> None:
         "GHOST_SEAM_TIMEOUT",
         "GHOST_RECALL_BUDGET",
         "GHOST_GRAPH_HOPS",
+        "GHOST_MAX_STEPS",
     ):
         monkeypatch.delenv(name, raising=False)
 
@@ -40,6 +41,7 @@ def test_defaults_are_operator_local_and_conservative(monkeypatch) -> None:
     assert settings.scope == "thread"
     assert settings.recall_budget == 8
     assert settings.graph_hops == 2
+    assert settings.max_steps == 25
     assert settings.agent_id == "ghost"
     assert settings.seam_base_url == "http://127.0.0.1:8765"
     assert settings.seam_api_token is None
@@ -55,6 +57,7 @@ def test_environment_overrides_are_honoured(monkeypatch) -> None:
     monkeypatch.setenv("GHOST_SEAM_SCOPE", "project")
     monkeypatch.setenv("GHOST_RECALL_BUDGET", "16")
     monkeypatch.setenv("GHOST_GRAPH_HOPS", "0")
+    monkeypatch.setenv("GHOST_MAX_STEPS", "40")
     monkeypatch.setenv("SEAM_BASE_URL", "https://seam.example/")
     monkeypatch.setenv("SEAM_API_TOKEN", "operator-token")
     monkeypatch.setenv("GHOST_SEAM_TIMEOUT", "12.5")
@@ -66,6 +69,7 @@ def test_environment_overrides_are_honoured(monkeypatch) -> None:
     assert settings.scope == "project"
     assert settings.recall_budget == 16
     assert settings.graph_hops == 0
+    assert settings.max_steps == 40
     assert settings.seam_base_url == "https://seam.example"
     assert settings.seam_api_token == "operator-token"
     assert settings.seam_timeout == 12.5
@@ -85,6 +89,8 @@ def test_seam_db_path_expands_user(monkeypatch) -> None:
         ("GHOST_RECALL_BUDGET", "51"),  # above public API maximum
         ("GHOST_GRAPH_HOPS", "-1"),
         ("GHOST_GRAPH_HOPS", "4"),  # above maximum: unbounded graph expansion
+        ("GHOST_MAX_STEPS", "1"),
+        ("GHOST_MAX_STEPS", "101"),
         ("GHOST_SEAM_TIMEOUT", "0"),
         ("GHOST_SEAM_TIMEOUT", "301"),
     ],
@@ -96,7 +102,9 @@ def test_out_of_range_bounds_are_rejected(monkeypatch, name, value) -> None:
         GhostSettings.from_env()
 
 
-@pytest.mark.parametrize("name", ["GHOST_RECALL_BUDGET", "GHOST_GRAPH_HOPS"])
+@pytest.mark.parametrize(
+    "name", ["GHOST_RECALL_BUDGET", "GHOST_GRAPH_HOPS", "GHOST_MAX_STEPS"]
+)
 def test_non_integer_bounds_are_rejected(monkeypatch, name) -> None:
     """Fail at startup, not with a confusing TypeError deep inside the SDK."""
     _clear(monkeypatch)

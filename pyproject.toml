@@ -98,3 +98,6 @@ select = [
 "tools/history/closeout.py" = ["S603"]
 "tools/history/model.py" = ["S603", "S607"]
 "tools/history/write_snapshot.py" = ["S603", "S607"]
+# Evaluation identity invokes only fixed read-only Git commands. Fixture and
+# model text never becomes an executable or argument.
+"tools/evaluation/runner.py" = ["S603", "S607"]

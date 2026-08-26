@@ -124,7 +124,10 @@ def test_lifecycle_can_drive_a_graph_that_is_not_langchain() -> None:
     class NotLangChain:
         def invoke(self, input, *, context, config):
             calls.append("invoked")
-            assert config == {"configurable": {"thread_id": "t-1"}}
+            assert config == {
+                "configurable": {"thread_id": "t-1"},
+                "recursion_limit": 25,
+            }
             return {"messages": [type("M", (), {"content": "answered"})()]}
 
     class Memory:
@@ -150,6 +153,29 @@ def test_lifecycle_can_drive_a_graph_that_is_not_langchain() -> None:
         "recall must happen before the turn is written, so an answer cannot "
         f"cite the memory it creates; got {calls}"
     )
+
+
+def test_lifecycle_rejects_an_invalid_step_budget_before_recall() -> None:
+    from ghost.lifecycle import run_turn
+
+    class Memory:
+        def __init__(self) -> None:
+            self.events: list[str] = []
+
+        def begin_turn(self, user_input):
+            self.events.append("begin")
+
+    memory = Memory()
+    with pytest.raises(ValueError, match="max_steps must be between"):
+        run_turn(
+            memory=memory,
+            graph=object(),
+            user_input="question",
+            thread_id="t-1",
+            max_steps=1,
+        )
+
+    assert memory.events == []
 
 
 MODULE_LINE_CEILING = 450

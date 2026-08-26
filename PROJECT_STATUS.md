@@ -6,11 +6,13 @@
 
 ## Current headline
 
-**2026-08-25 — `main@66841fc` publishes Ghost's public-only install boundary
+**2026-08-25 — `main@620caee` publishes Ghost's public-only install boundary
 and opaque SEAM lifecycle through PR #8, alongside the verified memory-backed
 single-agent spine, hardened CI, canonical engineering wiki/build history,
 Temporal Chain, licensing foundation, and multi-harness launchers. Exact merge
-head run `32924125667` passed all five hosted jobs. The isolated desktop avatar
+head run `32924125667` passed all five hosted jobs. A separate Stage 1 candidate
+adds 20 frozen cases, a BIL-0 sealed verifier/gate, and a hard turn-step ceiling;
+its clean-source baseline and exact-head CI remain pending. The isolated avatar
 remains separate WIP. No package or service is released or deployed, and
 nothing is assigned to a company or counsel-approved.**
 
@@ -58,11 +60,12 @@ incomplete.
   layers are merged; SEAM streams/routing and artifact release remain open.
 - Engineering quality (Track Q): tests exist to verify behavior, not to reach a
   count; many behaviors remain unverified. 450-line module ceiling enforced.
-  Ghost has no benchmark infrastructure yet; Q3 adopts SEAM's sealed-bundle
-  proof standard, and no performance claim is admissible until it exists.
+  Ghost's first BIL-0 sealed contract-smoke infrastructure is locally
+  qualified; no performance claim is admissible from the deterministic stub.
 - Stage 0 memory spine: landed.
-- Stage 1 dependable single agent: most mechanisms landed; exit evaluation and
-  bounded-product qualification remain incomplete.
+- Stage 1 dependable single agent: 20-case frozen corpus, smoke verifier/gate,
+  and step ceiling are locally qualified; live and release-candidate exit proof
+  remain incomplete.
 - Stage 2 deliberate memory: not implemented.
 - Stage 3 graph-aware specialists: not implemented.
 - Stage 4 measured product: exploratory.

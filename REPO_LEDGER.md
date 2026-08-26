@@ -117,6 +117,13 @@ chronology, transient branch state, or duplicated implementation narratives.
   git SHA), diffed against a prior run, pass the benchmark gate, and stay
   separated from publish-only holdout runs. This is SEAM's standard; Ghost
   adopts it rather than defining a second one.
+- `ghost-stage1-frozen-v1` is immutable once cited. Its deterministic runner is
+  BIL-0 contract smoke only, always names the no-memory arm, records null
+  provider cost/tokens, and sets `claimable: false`. Fixture, case, manifest,
+  stable-result, and whole-bundle hashes are credential-free to verify.
+- `GHOST_MAX_STEPS` is the per-turn LangGraph superstep ceiling (default 25,
+  accepted 2–100). Cancellation or an escaping failure rejects the SEAM turn;
+  Ghost exposes no partial-answer streaming contract today.
 - No performance, capability, or comparison claim may appear in documentation,
   history, the roadmap, or any public surface without a sealed bundle that
   another person can re-run, naming its baseline and integrity level.

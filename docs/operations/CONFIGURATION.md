@@ -26,6 +26,7 @@ process environment  highest precedence
 | `GHOST_SEAM_SCOPE` | `thread` | SEAM scope label; not automatic thread-ID isolation |
 | `GHOST_RECALL_BUDGET` | `8` | integer 1–50 selected records/public API bound |
 | `GHOST_GRAPH_HOPS` | `2` | integer 0–3 graph expansion |
+| `GHOST_MAX_STEPS` | `25` | integer 2–100 LangGraph recursion/superstep ceiling per turn |
 
 ## Read-tool variables
 
@@ -67,6 +68,11 @@ uv run ghost "Run the narrow provider-free test for the CLI and report the resul
 
 `GHOST_SHELL_APPROVAL=0` is appropriate only for a separately isolated,
 deliberate unattended environment. It does not create a sandbox.
+
+`GHOST_MAX_STEPS` bounds the model/tool graph independently of
+`GHOST_SHELL_TIMEOUT`. The first limits how many graph supersteps a turn may
+take; the second limits one spawned command. A future provider-wide wall-clock
+deadline must be an additional bound, not a replacement for either.
 
 ## SEAM service variables
 

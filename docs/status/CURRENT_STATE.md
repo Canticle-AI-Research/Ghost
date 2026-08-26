@@ -7,20 +7,21 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 
 | Plane | Observed state |
 |---|---|
-| Default branch | `main@66841fc3450b93a275b5e13e4fa82e9531be93b7` |
+| Default branch | `main@620caee333d8ddf22c4fd983475031a3c7e37f21` |
+| Stage 1 evaluation candidate | `feat/stage1-frozen-evals`: 20 frozen cases, BIL-0 smoke/verifier/gate, and step ceiling locally qualified |
 | Public transport | merged through PR #8; public install and opaque transport source published |
 | Primary working branch | `agent/avatar-u1-temporal-integration`, preserving avatar-only WIP on its earlier reviewed base |
 | Canonical foundation | merged through PRs #6 and #7 |
 | Preserved local work | avatar source/tests/assets/tools plus CLI/package/lock changes in the primary checkout |
 | Remote visibility | public |
-| Merged PRs | PR #1, PR #5, PR #6, PR #7, and PR #8 |
+| Merged PRs | PR #1, PR #5, PR #6, PR #7, PR #8, and documentation PR #9 |
 | Open PRs | Dependabot #2 and #4 |
-| Exact-head public CI | run `32924125667` green on `66841fc`; all five required jobs passed |
+| Exact-head public CI | run `32924125667` green on `66841fc`; all five then-required jobs passed; PR #9 merge-head refresh pending reconciliation |
 | Public transport proof | 200 provider-free tests, Ruff, build, clean wheel install, real `ghost --help`, and protected PR/main CI passed; 8 live tests deselected |
 
 This is a status snapshot, not authorization to delete or combine local files.
 
-## Landed capability at `main@66841fc`
+## Landed capability at `main@620caee`
 
 - DeepAgents root agent with provider routing through LangChain.
 - OpenAI reasoning-model use through the Responses API.
@@ -50,6 +51,10 @@ This is a status snapshot, not authorization to delete or combine local files.
   deployment claim.
 
 ## Local-only capability
+
+- `ghost-stage1-frozen-v1` 20-case corpus and immutable manifest.
+- Deterministic two-arm BIL-0 bundle, verifier, and safety gate.
+- `GHOST_MAX_STEPS` runtime superstep ceiling and explicit non-streaming policy.
 
 - `ghost-avatar` WebSocket/HTTP/browser overlay runner.
 - GTK desktop pet using the selected B2 art direction.

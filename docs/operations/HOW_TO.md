@@ -101,6 +101,22 @@ git diff --check
 
 Report live tests as deselected unless separately run.
 
+## Reproduce the frozen Stage 1 contract baseline
+
+From a clean committed checkout:
+
+```bash
+uv run python -m tools.evaluation validate-fixtures
+uv run python -m tools.evaluation smoke --output /tmp/ghost-stage1-smoke.json
+uv run python -m tools.evaluation verify /tmp/ghost-stage1-smoke.json
+uv run python -m tools.evaluation gate /tmp/ghost-stage1-smoke.json
+```
+
+Record the printed bundle hash and exact Git SHA. Do not call the resulting
+BIL-0 stub score a capability result. For corpus schema, failure attribution,
+provider-backed successor requirements, and immutable-version rules, follow
+[the Stage 1 frozen suite](../evaluation/STAGE1_FROZEN_SUITE.md).
+
 ## Run approved live tests
 
 After confirming model, key source, expected call count, and spend boundary:

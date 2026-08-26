@@ -228,6 +228,7 @@ class GhostAgent:
             user_input=user_input,
             thread_id=thread_id,
             turn_id=turn_id,
+            max_steps=self.settings.max_steps,
             extract_attempts=extract_tool_attempts,
         )
 

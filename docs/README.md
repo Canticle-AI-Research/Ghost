@@ -24,6 +24,7 @@ The wiki distinguishes four kinds of claim:
 | Launch Ghost in another agent client | [Agent harnesses](operations/AGENT_HARNESSES.md) |
 | Configure models, memory, tools, or shell | [Configuration](operations/CONFIGURATION.md) |
 | Develop or change Ghost | [Development workflow](operations/DEVELOPMENT_WORKFLOW.md) |
+| Reproduce the frozen Stage 1 evaluation | [Stage 1 frozen suite](evaluation/STAGE1_FROZEN_SUITE.md) |
 | Understand current state | [Current state](status/CURRENT_STATE.md) |
 | See what comes next | [Roadmap](roadmap/SECOND_BRAIN_ROADMAP.md) |
 | Recover interrupted work | [Handoff registry](handoffs/INDEX.md) |

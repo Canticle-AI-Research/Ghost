@@ -170,3 +170,26 @@ jobs:
           uv venv "${RUNNER_TEMP}/ghost-wheel"
           uv pip install --python "${RUNNER_TEMP}/ghost-wheel/bin/python" dist/*.whl
           "${RUNNER_TEMP}/ghost-wheel/bin/ghost" --help
+
+  stage1-evals:
+    # Deterministic BIL-0 only: this proves the frozen corpus, comparison arms,
+    # safety gate, and bundle integrity. It never contacts a model or service.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Seal and verify Stage 1 contract smoke
+        run: |
+          uv run --no-project python -m tools.evaluation validate-fixtures
+          uv run --no-project python -m tools.evaluation smoke \
+            --output "${RUNNER_TEMP}/ghost-stage1-smoke.json"
+          uv run --no-project python -m tools.evaluation verify \
+            "${RUNNER_TEMP}/ghost-stage1-smoke.json"
+          uv run --no-project python -m tools.evaluation gate \
+            "${RUNNER_TEMP}/ghost-stage1-smoke.json"

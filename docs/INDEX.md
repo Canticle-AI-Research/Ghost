@@ -78,6 +78,7 @@ learning surface is [the Ghost engineering wiki](README.md).
 | Document | Covers |
 |---|---|
 | [evaluation/MEMORY_EVALS.md](evaluation/MEMORY_EVALS.md) | planned memory-quality fixtures and measures |
+| [evaluation/STAGE1_FROZEN_SUITE.md](evaluation/STAGE1_FROZEN_SUITE.md) | frozen 20-case corpus, BIL-0 bundle/verifier/gate, commands, and live successor boundary |
 | [evaluation/TESTING_AND_QUALIFICATION.md](evaluation/TESTING_AND_QUALIFICATION.md) | test lanes, exact commands, evidence meanings, release gates |
 
 ## Continuity and evidence
@@ -88,7 +89,8 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [history/PATH_MOVES.md](history/PATH_MOVES.md) | ledger that keeps immutable history refs resolvable after a rename |
 | [Temporal Chain template](../templates/temporal-chain/README.md) | reusable standard-library history + git protocol starter for other repositories |
 | [handoffs/INDEX.md](handoffs/INDEX.md) | canonical single-head handoff registry |
-| [handoffs/2026-08-25-public-seam-transport-published.md](handoffs/2026-08-25-public-seam-transport-published.md) | current protected-main public-transport boundary |
+| [handoffs/2026-08-25-stage1-frozen-evals-qualified.md](handoffs/2026-08-25-stage1-frozen-evals-qualified.md) | current locally qualified Stage 1 frozen-evaluation boundary |
+| [handoffs/2026-08-25-public-seam-transport-published.md](handoffs/2026-08-25-public-seam-transport-published.md) | superseded protected-main public-transport boundary |
 | [handoffs/2026-08-25-public-seam-transport-ci-repaired.md](handoffs/2026-08-25-public-seam-transport-ci-repaired.md) | superseded exact-head public-CI repair boundary |
 | [handoffs/2026-08-25-public-seam-transport-qualified.md](handoffs/2026-08-25-public-seam-transport-qualified.md) | superseded locally qualified public-transport boundary |
 | [handoffs/2026-08-25-canonical-foundation-merged.md](handoffs/2026-08-25-canonical-foundation-merged.md) | superseded merged-foundation and public-API resume boundary |

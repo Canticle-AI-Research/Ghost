@@ -111,9 +111,9 @@ Record:
 
 Never log the API key.
 
-## Stage 1 frozen evaluation (required, not yet complete)
+## Stage 1 frozen evaluation
 
-Create at least 20 immutable fixtures across:
+`ghost-stage1-frozen-v1` now contains 20 immutable fixtures across:
 
 1. source-grounded research synthesis;
 2. repository question answering;
@@ -128,6 +128,12 @@ Create at least 20 immutable fixtures across:
 
 Each fixture defines inputs, allowed tools/roots, step/time budget, expected
 evidence, forbidden effects, success criteria, and memory assertions.
+
+Automatic CI runs a BIL-0 deterministic contract smoke and a no-memory arm.
+This freezes and verifies the evaluation substrate; it does not close G1's live
+answer-quality or exact release-candidate qualification. The complete commands,
+bundle schema, integrity boundary, and successor workflow are in
+[`STAGE1_FROZEN_SUITE.md`](STAGE1_FROZEN_SUITE.md).
 
 ## Required measures
 

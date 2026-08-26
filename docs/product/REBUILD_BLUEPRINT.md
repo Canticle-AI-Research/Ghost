@@ -57,7 +57,9 @@ dependency scans must agree before distribution.
 8. Regenerate one brand asset and compare its dimensions/format through the
    brand tests.
 9. Rebuild and verify the repository history index.
-10. Run a package build and inspect the wheel entry point.
+10. Validate, seal, verify, and gate the frozen Stage 1 BIL-0 smoke through
+    [the evaluation blueprint](../evaluation/STAGE1_FROZEN_SUITE.md).
+11. Run a package build and inspect the wheel entry point.
 
 ## Behavioral components to recreate
 
@@ -73,6 +75,7 @@ dependency scans must agree before distribution.
 | Checkpoints | `application.py` + SQLite saver | restart persistence test |
 | Branding | `branding/` + `tools/branding/` | font/render/ICO tests |
 | Continuity | `HISTORY.md` + `tools/history/` | index/handoff/snapshot verification |
+| Frozen evaluation | `evals/stage1/` + `tools/evaluation/` | fixture hash, two-arm BIL-0 bundle, verifier, safety gate |
 | Avatar | `src/ghost/avatar/` local WIP | local tests and actual rendered review; not mainline |
 
 ## No hidden source rule
@@ -97,6 +100,7 @@ The rebuild is successful only when:
 
 - the frozen public dependency graph installs without re-resolution;
 - provider-free tests and Ruff pass;
+- the frozen Stage 1 corpus validates and its sealed BIL-0 smoke verifies/gates;
 - the wheel/sdist clean install and console-entry smoke pass;
 - one isolated live model/memory turn passes when explicitly authorized;
 - history, handoffs, docs, and local links verify;

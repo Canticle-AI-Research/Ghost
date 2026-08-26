@@ -77,6 +77,20 @@ time/step/authority budgets.
 Existing mechanisms satisfy parts of this contract. They do not yet satisfy the
 frozen end-to-end evaluation gate.
 
+### Frozen Stage 1 output contract
+
+For each bounded research or repository task, Ghost must return an answer that
+distinguishes observed evidence from inference, cites the evidence identifiers
+that support material claims, reports failed/refused/timed-out tools honestly,
+states what remains unverified, and makes no claim beyond the named evaluation
+integrity level. The execution record must include terminal state, selected
+evidence, tool attempts, step/tool/context budgets, forbidden-effect verdicts,
+and provider tokens/cost when a provider actually runs.
+
+`ghost-stage1-frozen-v1` is the immutable first corpus for this contract. Its
+automatic BIL-0 stub freezes shape and safety gates only; live answer quality
+and release-candidate proof remain required for Stage 1 exit.
+
 ## Long-term product hypothesis
 
 A useful persistent agent should compound operator knowledge without requiring

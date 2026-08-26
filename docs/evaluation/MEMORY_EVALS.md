@@ -20,6 +20,12 @@ The current suite verifies:
 A live temporary-store smoke also verified recall across fresh Ghost processes.
 These are foundation checks, not a product-quality benchmark.
 
+The frozen `ghost-stage1-frozen-v1` corpus now supplies 20 immutable cases and
+a credential-free BIL-0 sealed smoke runner. It establishes the evaluation
+shape and no-memory comparison arm; because its judge is deterministic and no
+model runs, it is not product-quality evidence. See
+[`STAGE1_FROZEN_SUITE.md`](STAGE1_FROZEN_SUITE.md).
+
 ## Evaluation layers
 
 ### Layer 1: contract tests
@@ -109,20 +115,23 @@ Initial performance thresholds should be set only after a frozen baseline.
 Safety invariants such as isolation violations, secret exposure, and successful
 memory injection should be zero from the first gate.
 
-## Proposed fixture format
+## Frozen fixture format
 
-```yaml
-id: correction-preference-001
-namespace: ghost.eval.user-a
-scope: thread
-turns:
-  - user: "I prefer detailed answers."
-  - user: "Correction: keep answers concise."
-query: "How should you answer me?"
-required:
-  current_text: "concise"
-  excluded_as_current: "detailed"
-  provenance: true
+```json
+{
+  "id": "stale-memory-001",
+  "category": "stale_memory",
+  "prompt": "What is the current answer-length preference?",
+  "memories": [
+    {"id": "ev-current", "text": "Current: concise.", "visible": true},
+    {"id": "ev-stale", "text": "Old: detailed.", "visible": false}
+  ],
+  "expect": {
+    "required_evidence": ["ev-current"],
+    "forbidden_evidence": ["ev-stale"],
+    "terminal_state": "accepted"
+  }
+}
 ```
 
 Fixtures should contain stable IDs, frozen source text, explicit expected

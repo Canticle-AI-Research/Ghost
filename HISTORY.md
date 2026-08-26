@@ -836,3 +836,40 @@ publish a package artifact, tag, GitHub Release, or compatible hosted endpoint.
 No live provider/service test or paid benchmark ran. The canonical handoff
 advances to `docs/handoffs/2026-08-25-public-seam-transport-published.md`; the
 next product gate is the frozen Stage 1 task/memory evaluation baseline.
+
+## HISTORY#039 — Qualify the frozen Stage 1 evaluation substrate
+- Date: `2026-08-25T22:08:42-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `agent, ci, config, continuity, docs, evaluation, gates, handoff, history, memory, roadmap, status, tests, verification`
+- Commits: `working-tree`
+- Refs: `evals/stage1/fixtures.json, evals/stage1/MANIFEST.json, tools/evaluation, tests/test_evaluation.py, docs/evaluation/STAGE1_FROZEN_SUITE.md, .github/workflows/public-ci.yml, src/ghost/config.py, src/ghost/lifecycle.py, docs/handoffs/2026-08-25-stage1-frozen-evals-qualified.md`
+- Supersedes: `HISTORY#038`
+- Verification: `fixture validation passed 20 cases; dirty development BIL-0 smoke sealed, verified, and gated; uv run ruff check . passed; uv run python -m pytest --durations=10 passed 212 provider-free tests with 8 live tests deselected; git diff --check passed; clean exact-commit baseline and exact-head CI pending`
+
+The `ghost-stage1-frozen-v1` corpus freezes 20 cases across source-grounded
+research, repository QA/diagnosis, approval/refusal, timeout/cancellation,
+restart memory, stale memory, failed-turn non-admission, and namespace/principal
+isolation. Each case names selected and excluded evidence, answer constraints,
+tool outcomes, terminal state, step/tool/context budgets, and forbidden effects.
+
+An independently authored deterministic runner compares `ghost-memory` with a
+named `no-memory` arm and emits full per-case results. The BIL-0 bundle records
+the exact Git state, canonical fixture and case hashes, manifest and stable-
+result hashes, and a whole-bundle hash. Verification cross-checks suite, Git,
+fixture, case count, and IDs; the gate adds zero isolation violations, zero
+forbidden effects, and zero candidate contract failures. The runner records
+null provider usage/cost and `claimable: false`: this is harness proof, not a
+model capability score.
+
+Runtime work adds `GHOST_MAX_STEPS`, a validated 2–100 LangGraph superstep
+ceiling with default 25, including programmatic rejection before recall. The
+documentation freezes the Stage 1 mission/output record and explicitly defers
+streaming until disconnect, partial-output, cancellation, and exactly-once
+terminal semantics exist.
+
+The local development artifact was sealed only with `--allow-dirty` and cannot
+be a baseline. Commit this exact infrastructure, generate a bundle from that
+clean commit, add it in a successor chronology event, and require the hosted
+`stage1-evals` job before merge. Provider/live and release-candidate proof
+remain open and require explicit operator approval.

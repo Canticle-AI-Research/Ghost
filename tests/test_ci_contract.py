@@ -11,7 +11,13 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parents[1]
 LIVE_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "ci.yml"
 PUBLIC_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "public-ci.yml"
-HOSTED_PUBLIC_JOBS = ("repo-hygiene", "brand-assets", "tests", "package-smoke")
+HOSTED_PUBLIC_JOBS = (
+    "repo-hygiene",
+    "brand-assets",
+    "tests",
+    "package-smoke",
+    "stage1-evals",
+)
 _LIVE_MARKER = "pytest" ".mark.live"
 
 
@@ -65,6 +71,22 @@ def test_wheel_is_clean_installed_and_command_is_smoked(public_workflow) -> None
     assert "uv build" in commands
     assert "uv pip install" in commands
     assert 'bin/ghost" --help' in commands
+
+
+def test_stage1_smoke_is_sealed_verified_and_gated(public_workflow) -> None:
+    job = public_workflow["jobs"]["stage1-evals"]
+    commands = _job_commands(public_workflow, "stage1-evals")
+    assert job["runs-on"] == "ubuntu-latest"
+    assert job["steps"][0].get("with", {}).get("fetch-depth") == 0
+    for marker in (
+        "tools.evaluation validate-fixtures",
+        "tools.evaluation smoke",
+        "tools.evaluation verify",
+        "tools.evaluation gate",
+    ):
+        assert marker in commands
+    assert "SEAM_API_TOKEN" not in commands
+    assert "PROVIDER_KEY" not in commands
 
 
 def test_lock_file_is_verified_before_public_install(public_workflow) -> None:

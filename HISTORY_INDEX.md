@@ -3,12 +3,13 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `47c1e9f6c0cc63e4cfcdba217f2f0b3e6e3a345bc1788359e77c3caa87422770`
-- Entries: `38`
-- Latest: `HISTORY#038`
+- Source SHA-256: `130687eebb30a1d415e5f11ac4125731345b1cb0d737df8eec79e6b7f3375c38`
+- Entries: `39`
+- Latest: `HISTORY#039`
 
 | ID | Date | Status | Commit | Topics | Supersedes | Event |
 |---:|---|---|---|---|---|---|
+| 039 | 2026-08-25 | in-progress | `working-tree` | agent, ci, config, continuity, docs, evaluation, gates, handoff, history, memory, roadmap, status, tests, verification | #038 | Qualify the frozen Stage 1 evaluation substrate |
 | 038 | 2026-08-25 | done | `7a8228a7de82` | architecture, ci, continuity, handoff, history, packaging, repository, sdk, security, status, tests, verification | #037 | Publish the public Ghost-to-SEAM transport |
 | 037 | 2026-08-25 | in-progress | `working-tree` | ci, continuity, handoff, history, packaging, sdk, tests, verification | #036 | Repair exact-head public transport CI |
 | 036 | 2026-08-25 | in-progress | `working-tree` | architecture, ci, config, continuity, docs, handoff, history, installation, ledger, memory, packaging, sdk, security, status, tests, trust, verification, wiki | #035 | Qualify the public Ghost-to-SEAM transport candidate |
