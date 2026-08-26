@@ -128,3 +128,102 @@ next, not what the world contains.
 A derived semantic-search index over canonical memory units. It improves
 similarity retrieval but is not a canonical store.
 
+## Repository and evidence terms
+
+### Implemented
+
+Present in source code. This does not imply the change is committed, pushed,
+merged, released, deployed, or qualified.
+
+### Landed
+
+Reachable from the default `main` branch at a named commit. Landed behavior may
+still lack a green exact-head CI run or release qualification.
+
+### Exact-head verification
+
+Verification whose recorded source SHA exactly matches the candidate being
+judged. A result from an ancestor or a dirty descendant is not exact-head.
+
+### Temporal chain
+
+The SEAM-derived protocol that governs how a repository records build history
+and how git work is conducted around it. The chain is the ordered, verified
+sequence of history entries and handoffs: each entry follows the last, each
+handoff supersedes exactly one predecessor, and the derived index is rebuilt
+from the chain rather than maintained beside it. Ghost runs the chain natively
+and ships it as the repository-neutral
+[Temporal Chain template](../templates/temporal-chain/README.md).
+
+### Canonical build history
+
+Ghost's append-only `HISTORY.md` event stream: intent, state boundary,
+verification, failures, refs, and supersession. Git remains the byte-level diff
+authority; history is the temporal and operational authority.
+
+### History index
+
+The generated `HISTORY_INDEX.md` route map. It is derived from canonical
+history and can be regenerated. It intentionally omits full event bodies.
+
+### Handoff
+
+A tracked recovery document registered in `docs/handoffs/INDEX.md`. Ghost has
+one current handoff head and one linear supersession chain; an unregistered
+dated note is not a canonical handoff.
+
+### Snapshot
+
+An ignored, bounded local recovery JSON containing Git identity, dirty-path
+names, recent history labels, and current handoff. It is not a source archive
+or public evidence artifact.
+
+### Blueprint
+
+The code-coupled documentation required to reconstruct and operate Ghost:
+architecture, installation, commands, configuration, how-tos, trust,
+evaluation, roadmap, history, and current state.
+
+### Qualification
+
+Evidence that a named implementation satisfies a declared gate under exact
+fixtures, commands, dependencies, models, budgets, and boundaries. A demo is
+not qualification.
+
+## Company and distribution terms
+
+### Canticle Core
+
+The planned agent-native operating environment on Linux using Ghost mediation
+and SEAM truth. It is an architecture scaffold, not an implemented OS.
+
+### SEAM-U
+
+The approved name for the planned first SEAM-native language model. No
+implemented or qualified model is currently recorded.
+
+### Open integration edge
+
+Apache-2.0 thin clients, protocols, examples, and connectors that contain no
+private implementation.
+
+### Source-available product
+
+Source distributed with use restrictions. Ghost, Canticle Core, and
+source-distributed SDK/node products use PolyForm Shield.
+
+### PolyForm Shield
+
+A source-available license permitting use, modification, and redistribution for
+purposes other than providing competing products under its exact terms. It is
+not an OSI-approved open-source license.
+
+### Proprietary core
+
+Undistributed SEAM/MIRL internals, SEAM-U assets, cloud control planes,
+confidential data, and other All Rights Reserved material.
+
+### Commercial license
+
+A separate written grant that may authorize rights not provided by PolyForm
+Shield, such as competing, OEM, or enterprise delivery.

@@ -32,5 +32,6 @@ Exploratory) is only allowed to move on the evidence of a report.
 |---|---|---|
 | 2026-08-25 | [Public repository and runner safety](2026-08-25-public-runner-safety.md) | Hosted automatic CI; manual-only private integration |
 | 2026-08-19 | [CI, three defects, and the memory boundary](2026-08-19-ci-and-test-coverage.md) | Roadmap slice item 6; tests 18 → 81 |
-| 2026-08-19 | [Turns become verified reasoning graphs](2026-08-19-verified-action-graph.md) | Stage 1 complete; foundation for write tools |
+| 2026-08-19 | [Turns become verified reasoning graphs](2026-08-19-verified-action-graph.md) | Verified-action mechanism; its Stage 1 completion claim is corrected below |
 | 2026-08-19 | [Ghost can use the computer](2026-08-19-operating-system-control.md) | First write tool; shell access, opt-in and verified |
+| 2026-08-25 | [Stage 1 status correction](2026-08-25-stage1-status-correction.md) | Corrects the earlier complete-stage claim; mechanisms landed, frozen exit eval open |

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Claude Code gives exported API credentials precedence over the cached
+# Claude.ai subscription login. Remove them only in this child process.
+unset ANTHROPIC_API_KEY
+unset ANTHROPIC_AUTH_TOKEN
+
+exec claude --agent canticle-ghost "$@"

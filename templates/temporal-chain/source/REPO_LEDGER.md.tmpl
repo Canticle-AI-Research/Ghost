@@ -1,0 +1,15 @@
+# {{PROJECT_NAME}} repository ledger
+
+## Continuity invariants
+
+- `HISTORY.md` is the append-only chronological authority.
+- `HISTORY_INDEX.md` is derived and disposable.
+- Historical corrections use a new entry and `Supersedes`; prior bytes remain.
+- Exactly one tracked handoff is current.
+- Local, committed, pushed, merged, released, and deployed are distinct states.
+- Snapshots are ignored because they may contain local paths and dirty-state data.
+
+## Project decisions
+
+Add stable, project-specific decisions here. Routine implementation events
+belong in `HISTORY.md`.

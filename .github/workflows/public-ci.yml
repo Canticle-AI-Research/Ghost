@@ -13,14 +13,13 @@ concurrency:
   group: public-ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# This workflow is deliberately credential-free. It must never install Ghost,
-# resolve the private SEAM SDK, use repository secrets, or target a self-hosted
-# runner. Private integration lives in the manual-only Private CI workflow.
 jobs:
   repo-hygiene:
+    # This lane is intentionally credential-free and safe for a public fork.
+    # It must never install Ghost or contact the private SEAM repositories.
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
+      - name: Check out repository history
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -41,13 +40,29 @@ jobs:
           fi
           git diff --check "${BASE_SHA}" "${HEAD_SHA}"
 
-      - name: Lint
-        run: uv run --no-project --with 'ruff>=0.15,<1' ruff check .
+      - name: Verify append-only history
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          set -euo pipefail
+          if [ -z "${BASE_SHA}" ] || [ "${BASE_SHA}" = "0000000000000000000000000000000000000000" ]; then
+            echo "No prior revision with HISTORY.md; append-only comparison is not applicable."
+          else
+            uv run --no-project python -m tools.history.verify_append_only --base-ref "${BASE_SHA}"
+          fi
 
-      - name: Verify documentation and CI contracts
-        run: >-
-          uv run --no-project --with 'pytest>=8.3,<10' --with 'pyyaml>=6,<7'
-          pytest tests/test_docs.py tests/test_ci_contract.py -q
+      - name: Verify continuity and rebuild documentation
+        run: |
+          uv run --no-project python -m tools.history.verify_continuity
+          uv run --no-project --with 'pytest>=8.3,<10' --with 'pyyaml>=6,<7' \
+            pytest tests/test_docs.py tests/test_history_tools.py tests/test_licensing.py \
+            tests/test_temporal_chain.py tests/test_ci_contract.py \
+            tests/test_recorded_facts.py tests/test_local_gates.py -q
+
+      - name: Lint (correctness + import order)
+        # The whole tree, not a subset: a narrowed lint scope is how a finding
+        # in an unlisted path stays green forever.
+        run: uv run --no-project --with 'ruff>=0.15,<1' ruff check .
 
       - name: Secret scan
         env:
@@ -73,6 +88,11 @@ jobs:
           enable-cache: true
 
       - name: Preflight brand renderers
+        # Their absence has to be a loud, named failure. Otherwise a runner
+        # image change surfaces as
+        # "render_png produced a blank canvas", which reads as a brand bug.
+        # fc-match matters specifically: check_fonts() returns {} without it and
+        # the font test then fails with a message about the toolkit, not the box.
         run: |
           set -euo pipefail
           missing=""
@@ -82,8 +102,11 @@ jobs:
             echo "::error::runner is missing brand renderers:${missing}"
             exit 1
           fi
+          echo "renderers present: $(command -v google-chrome || command -v chromium), $(command -v fc-match)"
 
       - name: Verify brand asset toolkit
+        # Pillow only -- the brand tier needs no private dependency, so it stays
+        # green even when the private repos are unreachable.
         run: >-
           uv run --no-project --with 'pytest>=8.3,<10' --with 'pillow>=11,<14'
           pytest tests/test_brand_assets.py -q
@@ -100,24 +123,32 @@ jobs:
           enable-cache: true
 
       - name: Build wheel and source distribution
+        # hatchling does not resolve runtime dependencies to build, so this
+        # proves the package is publishable without private-repo access.
         run: uv build
 
-      - name: Verify package members and entry point
+      - name: Verify the wheel ships the package and the entry point
+        # Inspected rather than installed: `ghost --help` imports deepagents and
+        # seam_sdk, so it cannot run in a credential-free job. The private tier
+        # smokes the real command; this proves the artifact is well-formed.
         run: |
           set -euo pipefail
-          uv run --no-project python - <<'PY'
-          import zipfile
+          uv run --no-project --with 'pytest>=8.3,<10' python - <<'PY'
+          import sys, zipfile
           from pathlib import Path
 
           wheels = sorted(Path("dist").glob("*.whl"))
-          assert len(wheels) == 1, f"expected one wheel, got {wheels}"
+          assert len(wheels) == 1, f"expected exactly one wheel, got {wheels}"
           assert sorted(Path("dist").glob("*.tar.gz")), "no source distribution built"
-          with zipfile.ZipFile(wheels[0]) as archive:
-              names = archive.namelist()
-              entry_points = next(name for name in names if name.endswith("entry_points.txt"))
-              declared = archive.read(entry_points).decode()
-          required = ("ghost/__init__.py", "ghost/cli.py", "ghost/seam_memory.py")
-          missing = [name for name in required if name not in names]
+
+          with zipfile.ZipFile(wheels[0]) as zf:
+              names = zf.namelist()
+              entry_points = next(n for n in names if n.endswith("entry_points.txt"))
+              declared = zf.read(entry_points).decode()
+
+          missing = [m for m in ("ghost/__init__.py", "ghost/cli.py", "ghost/seam_memory.py")
+                     if m not in names]
           assert not missing, f"wheel is missing modules: {missing}"
-          assert "ghost = ghost.cli:main" in declared
+          assert "ghost = ghost.cli:main" in declared, f"console script missing:\n{declared}"
+          print(f"{wheels[0].name}: {len(names)} members, entry point OK")
           PY

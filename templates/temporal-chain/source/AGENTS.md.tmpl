@@ -1,0 +1,94 @@
+# {{PROJECT_NAME}} repository protocol
+
+This is the Temporal Chain protocol: how history is recorded and how git work
+is conducted. It applies to every coding agent and human operator. Tool-specific
+files may point here but must not create a competing process.
+
+## Session start
+
+Read `PROJECT_STATUS.md`, `REPO_LEDGER.md`, and `HISTORY_INDEX.md`, then the
+current document named by `docs/handoffs/INDEX.md`. Do not read all of
+`HISTORY.md`; use `python -m tools.history.build_context_pack`.
+
+Reconcile the working tree, branch, remote head, pull requests, and CI before
+claiming that work is committed, merged, released, or deployed:
+
+```bash
+git status --short --branch
+git fetch --prune origin
+git rev-parse HEAD origin/main
+git worktree list
+```
+
+Separate these states in every report: local working tree, committed branch,
+remote branch, merged default branch, released package, deployed service, and
+planned work. A local demo is not a merged capability.
+
+## Temporal continuity
+
+- `HISTORY.md` is append-only. Corrections are new entries with `Supersedes`.
+- `HISTORY_INDEX.md` is generated and must never be edited manually.
+- `PROJECT_STATUS.md` is current state, not an archive.
+- `REPO_LEDGER.md` contains stable decisions and invariants.
+- The handoff registry has exactly one current head and one linear chain.
+- Snapshots are local recovery state and remain ignored.
+
+Every material change appends exactly one entry:
+
+```text
+## HISTORY#NNN — Event title
+- Date: {{TIMESTAMP}}
+- Agent: operator or tool identity
+- Status: planned | in-progress | done | changed | deferred | abandoned
+- Topics: comma-separated controlled tags
+- Commits: exact commit SHA(s), working-tree, or none
+- Refs: repository-relative paths or durable public URLs
+- Supersedes: HISTORY#NNN or none
+- Verification: exact commands and scope, or not run with reason
+```
+
+Do not store raw model reasoning, provider payloads, secrets, local environment
+values, session URLs, or private conversation links.
+
+## Git protocol
+
+- Use a focused feature branch and pull request for material work.
+- Do not direct-push the default branch unless the operator explicitly
+  authorizes an emergency bypass.
+- Preserve unrelated dirty work. Stage explicit paths; never default to
+  `git add -A`.
+- Exclude databases, `.env*`, local caches, unapproved large binaries, and
+  private session URLs from every candidate.
+- Before calling a PR ready: verify the exact pushed head, scan candidate files
+  for secret-shaped material, and make the history/index/handoff chain current.
+- A push, merge, package publication, release, and deployment are distinct
+  events. Record each separately.
+
+A PR body records scope, docs changed, exact local verification and
+deselections, the exact pushed head, remaining risks and excluded WIP, and the
+history entry.
+
+## Cut-off recovery
+
+Before stopping with a dirty runtime change:
+
+1. run the relevant tests;
+2. identify every changed/untracked path and what owns it;
+3. append an `in-progress` history entry;
+4. write a successor handoff with exact resume commands and unresolved risks;
+5. rebuild and verify continuity.
+
+## Session close
+
+After every material change, append one history entry, update the current
+handoff when the recovery boundary changed, then run:
+
+```bash
+python -m tools.history.closeout --agent <agent-name>
+git diff --check
+```
+
+The closeout rebuilds the index, verifies the handoff chain, writes an ignored
+snapshot, and verifies continuity. A wrapper success does not override a
+failing lint, test, or build result. Record skipped or failing verification
+honestly.

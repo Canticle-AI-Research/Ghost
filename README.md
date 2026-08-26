@@ -8,10 +8,37 @@ A knowledge graph is one part of Ghost's intended second brain, not the whole
 system. RAW evidence and MIRL remain canonical truth; graph, vector, and context
 representations are derived and traceable views.
 
+## License and product boundary
+
+Ghost's software is source-available under the
+[PolyForm Shield License 1.0.0](LICENSE). It may be used, modified, and
+redistributed for permitted purposes, but the license does not permit using
+Ghost to provide a product that competes with Ghost or another product the
+licensor provides using it. Read [NOTICE](NOTICE) for the required copyright
+notice, line of business, trademark boundary, and excluded brand assets.
+See the interim [trademark policy](TRADEMARKS.md) and
+[contribution policy](CONTRIBUTING.md) for the pre-company boundary.
+
+PolyForm Shield is not an OSI-approved open-source license. Canticle uses
+separate licenses by layer: thin HTTP clients and integration protocols are
+Apache-2.0; user-runnable source-available products use PolyForm Shield; and
+undistributed SEAM internals, MIRL implementation, planned SEAM-U model assets,
+and cloud control planes remain proprietary. The canonical matrix and API
+migration boundary are documented in
+[Canticle product and licensing structure](docs/product/CANTICLE_PRODUCT_AND_LICENSING_STRUCTURE.md).
+
 ## Documentation
 
-Start with the [documentation map](docs/INDEX.md). The main routes are:
+Start with the [Ghost engineering wiki](docs/README.md). It is intended to be
+sufficient to install, operate, verify, and rebuild Ghost. The exhaustive
+[documentation index](docs/INDEX.md) is machine-checked. Primary routes:
 
+- [Installation and first run](docs/operations/INSTALLATION.md)
+- [Complete command reference](docs/operations/COMMAND_REFERENCE.md)
+- [Operator and developer how-tos](docs/operations/HOW_TO.md)
+- [Complete system blueprint](docs/architecture/COMPLETE_SYSTEM_BLUEPRINT.md)
+- [Rebuild blueprint](docs/product/REBUILD_BLUEPRINT.md)
+- [Current state](docs/status/CURRENT_STATE.md)
 - [Second brain and knowledge graph](docs/concepts/SECOND_BRAIN.md)
 - [System architecture](docs/architecture/SYSTEM_MAP.md)
 - [Memory layers and truth ownership](docs/architecture/MEMORY_LAYERS.md)
@@ -19,6 +46,7 @@ Start with the [documentation map](docs/INDEX.md). The main routes are:
 - [Trust boundaries](docs/security/TRUST_BOUNDARIES.md)
 - [Evaluation plan](docs/evaluation/MEMORY_EVALS.md)
 - [Second-brain roadmap](docs/roadmap/SECOND_BRAIN_ROADMAP.md)
+- [Canonical build history](HISTORY_INDEX.md)
 
 ## Architecture
 
@@ -53,7 +81,7 @@ use DeepAgents' function tools.
 Canticle-AI-Research/Seam_SDK@294ab08919646a03dcdceb3c777dfd7d8eabc624
 ```
 
-`seam-sdk` (BUSL-1.1) is the in-process SDK. It pulls the private SEAM runtime
+`seam-sdk` is currently the source-available in-process SDK. It pulls the private SEAM runtime
 transitively, so read access to the private SEAM repository is still required.
 Do not replace it with the legacy public `seam-runtime` package, and do not
 substitute Apache-licensed `seam-client` — that is the opaque `/v1` HTTP client
@@ -195,24 +223,22 @@ local run only; CI must not skip.
 
 ### Continuous integration
 
-Ghost separates public-safe verification from private integration:
+Ghost separates public-safe and private execution:
 
-- `.github/workflows/public-ci.yml` runs automatically on pull requests and
-  `main` pushes using GitHub-hosted runners. It never installs Ghost, resolves
-  private dependencies, reads repository secrets, or targets self-hosted
-  infrastructure.
-- `.github/workflows/ci.yml` is manual-only. It targets `seam-box` for the
-  private SEAM dependency, and paid live tests additionally require the
-  operator to select `run_live` explicitly.
+- `.github/workflows/public-ci.yml` automatically runs history, docs,
+  CI-contract, lint, diff, and secret checks on GitHub-hosted infrastructure;
+- `.github/workflows/ci.yml` is manual-only on `seam-box` and runs the private
+  dependency, full-test, and optional live-provider lanes.
 
 The private workflow remains split by what each job needs to reach:
 
 | Job | Needs the private SEAM repos? | Covers |
 |---|---|---|
-| `repo-hygiene` | no | ruff, docs routing and links, CI contract, secret scan |
-| `brand-assets` | no | the vendored brand toolkit, against real Chrome and fontconfig |
-| `package-smoke` | no | wheel and sdist build, shipped modules, console-script entry point |
-| `tests` | yes | the full suite on Python 3.11 and 3.13, plus a real `ghost --help` |
+| `repo-hygiene` (public) | no | ruff, docs/history, CI contract, diff and secret scans |
+| `brand-assets` (public) | no | vendored brand toolkit on hosted Chrome/fontconfig |
+| `package-smoke` (public) | no | wheel/sdist build and artifact membership |
+| `tests` (private) | yes | full suite on Python 3.11 and 3.13, plus `ghost --help` |
+| `live` (private, opt-in) | yes | paid provider/live integration |
 
 The split is deliberate. Ghost's only runtime dependency is pinned to a private
 `git+ssh` URL, so a single-tier CI would say nothing at all whenever those
@@ -220,24 +246,22 @@ repositories are unreachable. `tests/test_ci_contract.py` enforces the split: it
 derives from the test tree which files need the private SDK and fails if a
 credential-free test file runs only in the private tier.
 
-The self-hosted runner is what makes the private tier possible without storing a
-credential. A hosted runner would need a token with read access to two private
-repositories, held as a secret; `seam-box` already authenticates as the owner,
-so the private tier needs no secret.
+The self-hosted runner makes the private tier possible without storing another
+broad repository credential. It is therefore manual-only, restricted to
+reviewed `main`, and paid live tests require the explicit `run_live` input.
 
-### Public repository and private integration
+### Public repository boundary
 
-Ghost is public. Automatic pull-request work is therefore restricted to the
-credential-free hosted workflow. The repository requires approval before any
-external contributor workflow runs, grants workflows read-only permissions by
-default, enables secret scanning and push protection, and currently has no
-self-hosted runner assigned to it.
+Ghost is public. Automatic workflows run only on GitHub-hosted infrastructure,
+external contributors require workflow approval, repository Actions have
+read-only defaults, secret scanning and push protection are enabled, and no
+self-hosted runner is assigned to Ghost. Protected `main` requires the three
+hosted jobs above. Private CI cannot start automatically and paid live tests
+require an additional explicit input.
 
-The manual private workflow is not a sandbox: a reviewed owner dispatch can
-execute repository code with the authority of its runner account. Register or
-assign a private runner only when that host, repository allowlist, and checked-
-out revision are acceptable for that authority. See the
-[runner security boundary](docs/security/PUBLIC_REPOSITORY_AND_RUNNER.md).
+The full threat model, exact merge/run evidence, settings boundary, and rules
+for any later private-runner assignment are in
+[`docs/security/PUBLIC_REPOSITORY_AND_RUNNER.md`](docs/security/PUBLIC_REPOSITORY_AND_RUNNER.md).
 
 ## Identity
 

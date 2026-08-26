@@ -1,0 +1,29 @@
+# Path-move ledger
+
+`HISTORY.md` is append-only. A merged entry's `Refs` can never be corrected in
+place, so when a referenced path is renamed or deleted the reference would
+otherwise dangle forever — and the repository would face a false choice between
+a failing continuity gate and an illegal edit to history.
+
+This ledger resolves that. Each row records where an old path went. Continuity
+verification follows the chain from a historical reference to its current
+location before checking that the file exists, so documentation and source can
+be reorganized as Ghost upgrades without rewriting the past.
+
+## Rules
+
+- Add a row in the same change that moves or deletes the path.
+- `New path` is the current repository-relative location, or `removed` when the
+  path was deliberately deleted and has no successor.
+- `Recorded in` names the history entry that performed the move.
+- Chains are followed transitively; a cycle is a verification failure.
+- Never delete a row. A row that is wrong is corrected by moving the path again
+  and adding the newer row.
+
+## Moves
+
+| Old path | New path | Recorded in |
+|---|---|---|
+| `templates/repository-continuity/README.md` | `templates/temporal-chain/README.md` | HISTORY#028 |
+| `templates/repository-continuity/install.py` | `templates/temporal-chain/install.py` | HISTORY#028 |
+| `tests/test_continuity_template.py` | `tests/test_temporal_chain.py` | HISTORY#028 |
