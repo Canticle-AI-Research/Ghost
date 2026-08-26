@@ -439,7 +439,7 @@ naming its no-memory baseline and integrity level, not a reported score.
 
 ### G2 — Deliberate and correctable memory
 
-**Status: in progress**
+**Status: planned**
 
 Prerequisite: G1 exit and current SEAM SDK lifecycle contract review.
 
@@ -509,7 +509,7 @@ observability, cost, and rollback gates on the exact release candidate.
 
 ### Q3 — Benchmark and proof standard
 
-**Status: planned**
+**Status: in progress**
 
 Prerequisite: Q1 for the behaviors under measurement. Required before any G1,
 G2, or G3 exit claim, and before any public performance claim.

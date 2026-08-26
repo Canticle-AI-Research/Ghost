@@ -975,3 +975,32 @@ Advance the handoff to
 successor-tree qualification, push, require the hosted evaluation context, and
 merge through protected main. Provider/live and release-candidate proof were
 not run.
+
+## HISTORY#043 — Repair all Stage 1 evaluation review findings
+- Date: `2026-08-25T22:23:34-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `ci, correction, docs, evaluation, gates, handoff, history, roadmap, security, tests, verification`
+- Commits: `working-tree`
+- Refs: `tools/evaluation/fixtures.py, tools/evaluation/runner.py, tools/evaluation/integrity.py, tools/evaluation/__main__.py, tests/test_evaluation.py, README.md, REPO_LEDGER.md, docs/security/PUBLIC_REPOSITORY_AND_RUNNER.md, docs/evaluation/MEMORY_EVALS.md, docs/evaluation/STAGE1_FROZEN_SUITE.md, docs/roadmap/SECOND_BRAIN_ROADMAP.md, docs/handoffs/2026-08-25-stage1-review-repaired.md`
+- Supersedes: `HISTORY#042`
+- Verification: `CodeRabbit CLI 0.7.5 full review completed over 44 changed files with eight findings, four major and four minor; all eight reproduced and repaired; focused evaluation and CI-contract tests passed; final clean-source bundle, full suite/build, exact-head CI, and protected merge pending`
+
+The delayed CodeRabbit review completed after the earlier free-allowance rate
+limit and returned eight valid findings. Fixture budgets allowed `max_steps=1`
+even though `run_turn` rejects below two. Observed effects were treated as a
+truthy aggregate rather than typed and compared to each case's forbidden set.
+The gate trusted summary failure counts instead of exact per-case two-arm
+coverage and outcomes. An outside-repository fixture path raised raw
+`ValueError`. All four major findings now fail closed with regressions.
+
+Four documentation findings were also repaired. The Q3 detail status now
+matches the in-progress table while G2 remains planned. Accepted lifecycle text
+makes action recording conditional. The fixture example is explicitly marked
+abbreviated. README and the security/ledger boundary now name `stage1-evals`
+as the automatic job that must become the sixth protected context before merge.
+
+The current clean-source lifecycle baseline remains valid for its exact prior
+runner, but it predates these repairs. Preserve it and generate a separately
+named final bundle from the committed review-repair source. No provider/live,
+paid judge, release-candidate, release, or deployment work ran.

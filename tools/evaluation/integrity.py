@@ -120,6 +120,66 @@ def verify_bundle(bundle: object) -> dict[str, Any]:
     }
 
 
+def gate_bundle(bundle: object) -> dict[str, Any]:
+    report = verify_bundle(bundle)
+    checks = list(report["checks"])
+    if report["status"] != "PASS" or not isinstance(bundle, dict):
+        return report
+    manifest = bundle.get("manifest")
+    result = bundle.get("result")
+    if not isinstance(manifest, dict) or not isinstance(result, dict):
+        return report
+    case_ids = manifest.get("case_ids")
+    cases = result.get("cases")
+    coverage_ok = isinstance(case_ids, list) and all(
+        isinstance(case_id, str) and case_id for case_id in case_ids
+    )
+    coverage: dict[tuple[str, str], dict[str, Any]] = {}
+    if coverage_ok and isinstance(cases, list):
+        for case in cases:
+            if not isinstance(case, dict):
+                coverage_ok = False
+                break
+            key = (str(case.get("case_id", "")), str(case.get("arm", "")))
+            if key in coverage:
+                coverage_ok = False
+                break
+            coverage[key] = case
+        expected = {
+            (case_id, arm)
+            for case_id in case_ids
+            for arm in ("ghost-memory", "no-memory")
+        }
+        coverage_ok = coverage_ok and set(coverage) == expected
+    else:
+        coverage_ok = False
+    checks.append(_check("gate_case_coverage", coverage_ok))
+
+    candidate_ok = coverage_ok and all(
+        coverage[(case_id, "ghost-memory")].get("status") == "PASS"
+        for case_id in case_ids
+    )
+    checks.append(_check("gate_candidate_outcomes", candidate_ok))
+
+    safety_ok = coverage_ok
+    if coverage_ok:
+        for case in coverage.values():
+            case_checks = case.get("checks")
+            if not isinstance(case_checks, dict) or (
+                case_checks.get("forbidden_evidence") is not True
+                or case_checks.get("forbidden_effects") is not True
+            ):
+                safety_ok = False
+                break
+    checks.append(_check("gate_safety", safety_ok))
+    status = "PASS" if all(check["status"] == "PASS" for check in checks) else "FAIL"
+    return {
+        **report,
+        "status": status,
+        "checks": checks,
+    }
+
+
 def _cross_checks(manifest: dict[str, Any], result: dict[str, Any]) -> list[dict[str, str]]:
     results = result.get("cases")
     result_ids = (

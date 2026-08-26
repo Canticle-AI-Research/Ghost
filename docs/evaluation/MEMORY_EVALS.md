@@ -119,6 +119,11 @@ memory injection should be zero from the first gate.
 
 ## Frozen fixture format
 
+This is an abbreviated case fragment for readability, not a complete object
+accepted by `validate-fixtures`. The authoritative file also requires scripted
+arm outputs, answer/tool constraints, budgets, and forbidden effects; see the
+[complete Stage 1 schema](STAGE1_FROZEN_SUITE.md#frozen-corpus).
+
 ```json
 {
   "id": "stale-memory-001",

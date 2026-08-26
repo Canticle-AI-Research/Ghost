@@ -10,9 +10,19 @@ from pathlib import Path
 
 import pytest
 
-from tools.evaluation.fixtures import REQUIRED_CATEGORIES, load_fixtures
-from tools.evaluation.integrity import seal_bundle, sha256_canonical, verify_bundle
-from tools.evaluation.runner import EvaluationError, run_smoke
+from tools.evaluation.fixtures import (
+    REQUIRED_CATEGORIES,
+    FixtureError,
+    load_fixtures,
+    validate_fixtures,
+)
+from tools.evaluation.integrity import (
+    gate_bundle,
+    seal_bundle,
+    sha256_canonical,
+    verify_bundle,
+)
+from tools.evaluation.runner import EvaluationError, _evaluate_case, run_smoke
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "evals" / "stage1" / "fixtures.json"
@@ -119,6 +129,42 @@ def test_bundle_verification_detects_result_and_manifest_tampering() -> None:
     assert verify_bundle(malformed)["status"] == "FAIL"
 
 
+def test_gate_derives_exact_coverage_and_outcomes_from_case_records() -> None:
+    bundle = run_smoke(FIXTURES, repo_root=ROOT, allow_dirty=True)
+    tampered_result = copy.deepcopy(bundle["result"])
+    candidate = next(
+        case
+        for case in tampered_result["cases"]
+        if case["arm"] == "ghost-memory"
+    )
+    candidate["status"] = "FAIL"
+    tampered_result["summary"]["arms"]["ghost-memory"]["failed"] = 0
+    resealed = seal_bundle(result=tampered_result, manifest=bundle["manifest"])
+    assert gate_bundle(resealed)["status"] == "FAIL"
+
+    missing_result = copy.deepcopy(bundle["result"])
+    missing_result["cases"].pop()
+    resealed = seal_bundle(result=missing_result, manifest=bundle["manifest"])
+    assert gate_bundle(resealed)["status"] == "FAIL"
+
+
+def test_fixture_budget_matches_the_runtime_step_floor() -> None:
+    fixtures = load_fixtures(FIXTURES)
+    invalid = copy.deepcopy(fixtures)
+    invalid["cases"][0]["budgets"]["max_steps"] = 1
+    with pytest.raises(FixtureError, match="max_steps must be between 2 and 100"):
+        validate_fixtures(invalid)
+
+
+def test_forbidden_effect_gate_uses_the_case_specific_intersection() -> None:
+    case = copy.deepcopy(load_fixtures(FIXTURES)["cases"][0])
+    case["script"]["observed_effects"] = ["terminal_output"]
+    assert _evaluate_case(case, arm="ghost-memory")["checks"]["forbidden_effects"]
+
+    case["script"]["observed_effects"] = [case["forbidden_effects"][0]]
+    assert not _evaluate_case(case, arm="ghost-memory")["checks"]["forbidden_effects"]
+
+
 def test_volatile_timing_does_not_change_the_result_hash() -> None:
     bundle = run_smoke(FIXTURES, repo_root=ROOT, allow_dirty=True)
     changed = copy.deepcopy(bundle["result"])
@@ -134,6 +180,13 @@ def test_runner_refuses_a_dirty_source_without_an_explicit_smoke_override(
     monkeypatch.setattr("tools.evaluation.runner.git_identity", lambda root: ("a" * 40, True))
     with pytest.raises(EvaluationError, match="dirty worktree"):
         run_smoke(FIXTURES, repo_root=ROOT)
+
+
+def test_runner_rejects_a_fixture_outside_the_repository(tmp_path: Path) -> None:
+    outside = tmp_path / "fixtures.json"
+    outside.write_text(FIXTURES.read_text(encoding="utf-8"), encoding="utf-8")
+    with pytest.raises(EvaluationError, match="inside the repository"):
+        run_smoke(outside, repo_root=ROOT, allow_dirty=True)
 
 
 def test_cli_smoke_verify_and_gate_round_trip(tmp_path: Path) -> None:

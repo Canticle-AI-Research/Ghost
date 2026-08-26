@@ -19,10 +19,11 @@ run must preserve the same fixture IDs, record full-fidelity outputs and usage,
 use a qualified judge, and pass a separately reviewed higher-integrity lane.
 
 The stub does execute Ghost's real framework-free `run_turn` lifecycle against
-deterministic graph and memory doubles. Accepted scenarios must traverse
-`begin → record_actions → complete`; rejected scenarios must traverse
-`begin → fail`. Answers and tool outcomes remain scripted, so this strengthens
-lifecycle proof without changing the BIL-0 capability boundary.
+deterministic graph and memory doubles. Accepted scenarios traverse
+`begin → complete`, with `record_actions` between them when a scenario produces
+actions; rejected scenarios traverse `begin → fail`. Answers and tool outcomes
+remain scripted, so this strengthens lifecycle proof without changing the
+BIL-0 capability boundary.
 
 ## Frozen corpus
 

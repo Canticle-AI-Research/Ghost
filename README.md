@@ -235,6 +235,7 @@ The two CI workflows divide automatic and explicitly paid work as follows:
 | `brand-assets` | yes | vendored brand toolkit on hosted Chrome/fontconfig |
 | `tests` | yes | full provider-free suite on Python 3.11 and 3.13 |
 | `package-smoke` | yes | wheel/sdist build, clean install, and `ghost --help` |
+| `stage1-evals` | yes | frozen fixture validation, BIL-0 seal/verify, and safety gate |
 | `live` | no | paid provider plus configured SEAM service integration |
 
 `tests/test_ci_contract.py` fails if a private source dependency returns, the

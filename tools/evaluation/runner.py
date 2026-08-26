@@ -128,7 +128,13 @@ def run_smoke(
     repo_root: Path,
     allow_dirty: bool = False,
 ) -> dict[str, Any]:
-    fixtures = load_fixtures(fixture_path)
+    resolved_root = repo_root.resolve()
+    resolved_fixture = fixture_path.resolve()
+    try:
+        fixture_relative = resolved_fixture.relative_to(resolved_root).as_posix()
+    except ValueError as exc:
+        raise EvaluationError("fixture path must resolve inside the repository") from exc
+    fixtures = load_fixtures(resolved_fixture)
     git_sha, dirty = git_identity(repo_root)
     if dirty and not allow_dirty:
         raise EvaluationError("refusing to seal an evaluation from a dirty worktree")
@@ -158,7 +164,7 @@ def run_smoke(
         "suite_id": fixtures["suite_id"],
         "git_sha": git_sha,
         "dirty_worktree": dirty,
-        "fixture_path": fixture_path.relative_to(repo_root).as_posix(),
+        "fixture_path": fixture_relative,
         "fixture_sha256": fixture_sha,
         "case_count": len(fixtures["cases"]),
         "case_ids": sorted(case["id"] for case in fixtures["cases"]),
@@ -220,7 +226,9 @@ def _evaluate_case(case: dict[str, Any], *, arm: str) -> dict[str, Any]:
             if memory["id"] in selected
         )
         <= case["budgets"]["max_context_chars"],
-        "forbidden_effects": not script.get("observed_effects"),
+        "forbidden_effects": set(script.get("observed_effects", [])).isdisjoint(
+            case["forbidden_effects"]
+        ),
     }
     passed = all(checks.values())
     return {

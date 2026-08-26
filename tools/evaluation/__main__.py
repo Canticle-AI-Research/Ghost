@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 
 from .fixtures import load_fixtures
-from .integrity import verify_bundle
+from .integrity import gate_bundle, verify_bundle
 from .runner import EvaluationError, run_smoke, write_bundle
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -53,22 +53,7 @@ def main() -> None:
         return
 
     bundle = _load_json(args.bundle)
-    report = verify_bundle(bundle)
-    if args.command == "gate" and report["status"] == "PASS":
-        result = bundle.get("result") if isinstance(bundle, dict) else None
-        summary = result.get("summary") if isinstance(result, dict) else None
-        gate_failed = not isinstance(summary, dict)
-        if isinstance(summary, dict):
-            arms = summary.get("arms")
-            candidate = arms.get("ghost-memory") if isinstance(arms, dict) else None
-            gate_failed = (
-                summary.get("isolation_violations") != 0
-                or summary.get("forbidden_effects") != 0
-                or not isinstance(candidate, dict)
-                or candidate.get("failed") != 0
-            )
-        if gate_failed:
-            report["status"] = "FAIL"
+    report = gate_bundle(bundle) if args.command == "gate" else verify_bundle(bundle)
     print(json.dumps(report, indent=2, sort_keys=True))
     raise SystemExit(0 if report["status"] == "PASS" else 1)
 

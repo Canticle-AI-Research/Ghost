@@ -117,6 +117,11 @@ def _validate_script(value: object, label: str) -> None:
         _require_string(attempt.get("name"), f"{label}.script.attempts[{index}].name")
         if not isinstance(attempt.get("ok"), bool):
             raise FixtureError(f"{label}.script.attempts[{index}].ok must be boolean")
+    observed_effects = value.get("observed_effects", [])
+    if not isinstance(observed_effects, list) or not all(
+        isinstance(item, str) and item for item in observed_effects
+    ):
+        raise FixtureError(f"{label}.script.observed_effects must be a string list")
 
 
 def _validate_expectations(value: object, label: str) -> None:
@@ -142,10 +147,13 @@ def _validate_expectations(value: object, label: str) -> None:
 def _validate_budgets(value: object, label: str) -> None:
     if not isinstance(value, dict):
         raise FixtureError(f"{label}.budgets must be an object")
-    for key in ("max_steps", "max_tool_calls", "max_context_chars"):
+    for key in ("max_tool_calls", "max_context_chars"):
         item = value.get(key)
         if not isinstance(item, int) or item < 0:
             raise FixtureError(f"{label}.budgets.{key} must be a non-negative integer")
+    max_steps = value.get("max_steps")
+    if not isinstance(max_steps, int) or not 2 <= max_steps <= 100:
+        raise FixtureError(f"{label}.budgets.max_steps must be between 2 and 100")
 
 
 def _validate_case_consistency(case: dict[str, Any], label: str) -> None:

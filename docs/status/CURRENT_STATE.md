@@ -8,7 +8,7 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 | Plane | Observed state |
 |---|---|
 | Default branch | `main@620caee333d8ddf22c4fd983475031a3c7e37f21` |
-| Stage 1 evaluation candidate | `feat/stage1-frozen-evals`: 20 frozen cases, real-lifecycle BIL-0 smoke/verifier/gate, step ceiling, and repaired clean-source successor baseline qualified |
+| Stage 1 evaluation candidate | `feat/stage1-frozen-evals`: 20 frozen cases, real-lifecycle BIL-0 smoke/verifier/gate, step ceiling; eight CodeRabbit findings repaired, final clean baseline pending |
 | Public transport | merged through PR #8; public install and opaque transport source published |
 | Primary working branch | `agent/avatar-u1-temporal-integration`, preserving avatar-only WIP on its earlier reviewed base |
 | Canonical foundation | merged through PRs #6 and #7 |
