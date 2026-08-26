@@ -64,7 +64,10 @@ def test_agent_recall_invoke_and_persist_order() -> None:
 
     assert answer == "A grounded answer."
     assert graph.context == GhostTurnContext(seam_memory='{"record_id":"clm:1"}')
-    assert graph.config == {"configurable": {"thread_id": "thread-7"}}
+    assert graph.config == {
+        "configurable": {"thread_id": "thread-7"},
+        "recursion_limit": 25,
+    }
     assert memory.completed is not None
     assert memory.completed["assistant_output"] == answer
     assert memory.completed["thread_id"] == "thread-7"

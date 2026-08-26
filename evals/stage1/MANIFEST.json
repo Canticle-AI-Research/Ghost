@@ -1,0 +1,30 @@
+{
+  "version": "GHOST-STAGE1-FIXTURE-MANIFEST/1",
+  "suite_id": "ghost-stage1-frozen-v1",
+  "status": "frozen",
+  "fixture": "evals/stage1/fixtures.json",
+  "fixture_sha256": "4f10f3d8022beeb3ac7adbf3b01bd1b727c81d9db48b8388f8e129b84e3ed61d",
+  "case_count": 20,
+  "case_ids": [
+    "approval-action-001",
+    "approval-action-002",
+    "boundary-isolation-001",
+    "boundary-isolation-002",
+    "failed-nonadmission-001",
+    "failed-nonadmission-002",
+    "memory-restart-001",
+    "memory-restart-002",
+    "refusal-recovery-001",
+    "refusal-recovery-002",
+    "repository-diagnosis-001",
+    "repository-diagnosis-002",
+    "repository-qa-001",
+    "repository-qa-002",
+    "research-source-001",
+    "research-source-002",
+    "stale-memory-001",
+    "stale-memory-002",
+    "timeout-restart-001",
+    "timeout-restart-002"
+  ]
+}

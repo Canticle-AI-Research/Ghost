@@ -80,6 +80,9 @@ class GhostSettings:
     seam_timeout: float = 30.0
     recall_budget: int = 8
     graph_hops: int = 2
+    # LangGraph recursion/superstep ceiling. This is the hard model/tool-loop
+    # budget for one turn; a provider timeout is a separate transport bound.
+    max_steps: int = 25
     agent_id: str = "ghost"
     # Directories the filesystem tools may read. Empty by default: Ghost should
     # not be able to read arbitrary files just because it was started, so the
@@ -123,6 +126,7 @@ class GhostSettings:
                 "GHOST_RECALL_BUDGET", 8, minimum=1, maximum=50
             ),
             graph_hops=_bounded_int("GHOST_GRAPH_HOPS", 2, minimum=0, maximum=3),
+            max_steps=_bounded_int("GHOST_MAX_STEPS", 25, minimum=2, maximum=100),
             tool_roots=_tool_roots(),
             enable_shell=_flag("GHOST_ENABLE_SHELL", default=False),
             shell_approval=_flag("GHOST_SHELL_APPROVAL", default=True),

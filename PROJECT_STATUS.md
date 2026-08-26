@@ -6,15 +6,21 @@
 
 ## Current headline
 
-**2026-08-25 — `main@66841fc` publishes Ghost's public-only install boundary
+**2026-08-25 — `main@620caee` publishes Ghost's public-only install boundary
 and opaque SEAM lifecycle through PR #8, alongside the verified memory-backed
 single-agent spine, hardened CI, canonical engineering wiki/build history,
-Temporal Chain, licensing foundation, and multi-harness launchers. Exact merge
-head run `32924125667` passed all five hosted jobs. The isolated desktop avatar
+Temporal Chain, licensing foundation, and multi-harness launchers. Latest exact
+main run `32924345004` passed all five protected jobs at `620caee`. A separate Stage 1 candidate
+adds 20 frozen cases, a BIL-0 sealed verifier/gate, and a hard turn-step ceiling;
+its first clean-source BIL-0 baseline is sealed and verified. Review then
+strengthened the smoke to execute Ghost's real framework-free lifecycle and
+fail closed on malformed bundle shapes. CodeRabbit then completed and all eight
+findings were repaired and the final clean-source baseline is sealed, verified,
+and gated. Exact-head CI and protected merge remain pending. The isolated avatar
 remains separate WIP. No package or service is released or deployed, and
 nothing is assigned to a company or counsel-approved.**
 
-PRs #6, #7, and #8 and their exact merge-head Public CI are green. SEAM PR #231
+PRs #6, #7, #8, and #9 and their exact merge-head Public CI are green. SEAM PR #231
 is protected-main server source; Ghost PR #8 is protected-main client source.
 This proves public installability and contract parity, not a compatible hosted
 endpoint, package release, or deployment. See `docs/status/CURRENT_STATE.md`,
@@ -26,7 +32,8 @@ Live GitHub reconciliation on 2026-08-25 established:
 - PR #5 merged the hosted automatic/manual-private workflow boundary;
 - PR #6 merged the canonical wiki/history/licensing/launcher foundation;
 - PR #7 merged the canonical follow-up through `main@10a2b45`;
-- exact `main@66841fc` passed all five hosted required checks;
+- exact `main@620caee` passed all five hosted required checks in run
+  `32924345004`;
 - all external-contributor workflows require approval;
 - secret scanning and push protection are enabled;
 - Ghost has no repository secret and no assigned runner; and
@@ -58,11 +65,13 @@ incomplete.
   layers are merged; SEAM streams/routing and artifact release remain open.
 - Engineering quality (Track Q): tests exist to verify behavior, not to reach a
   count; many behaviors remain unverified. 450-line module ceiling enforced.
-  Ghost has no benchmark infrastructure yet; Q3 adopts SEAM's sealed-bundle
-  proof standard, and no performance claim is admissible until it exists.
+  Ghost's first BIL-0 sealed contract-smoke infrastructure is locally
+  qualified with a tracked clean-source baseline; no performance claim is
+  admissible from the deterministic stub.
 - Stage 0 memory spine: landed.
-- Stage 1 dependable single agent: most mechanisms landed; exit evaluation and
-  bounded-product qualification remain incomplete.
+- Stage 1 dependable single agent: 20-case frozen corpus, smoke verifier/gate,
+  and step ceiling are locally qualified; live and release-candidate exit proof
+  remain incomplete.
 - Stage 2 deliberate memory: not implemented.
 - Stage 3 graph-aware specialists: not implemented.
 - Stage 4 measured product: exploratory.

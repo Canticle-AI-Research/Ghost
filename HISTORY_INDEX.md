@@ -3,12 +3,19 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `47c1e9f6c0cc63e4cfcdba217f2f0b3e6e3a345bc1788359e77c3caa87422770`
-- Entries: `38`
-- Latest: `HISTORY#038`
+- Source SHA-256: `8b3391cb997cba03d4e951c3fbe4c88040cd7bdbf0a2b6a5300509eef20f991d`
+- Entries: `45`
+- Latest: `HISTORY#045`
 
 | ID | Date | Status | Commit | Topics | Supersedes | Event |
 |---:|---|---|---|---|---|---|
+| 045 | 2026-08-25 | in-progress | `bc18555d364a` | ci, continuity, docs, evaluation, gates, handoff, history, roadmap, security, status, tests, verification | #044 | Qualify the Stage 1 evaluation candidate for publication |
+| 044 | 2026-08-25 | in-progress | `ee4f63b5b2be` | ci, continuity, evaluation, gates, handoff, history, memory, snapshot, status, tests, verification | #043 | Freeze the final post-review Stage 1 baseline |
+| 043 | 2026-08-25 | in-progress | `working-tree` | ci, correction, docs, evaluation, gates, handoff, history, roadmap, security, tests, verification | #042 | Repair all Stage 1 evaluation review findings |
+| 042 | 2026-08-25 | in-progress | `78a5035929f0` | agent, ci, continuity, evaluation, gates, handoff, history, memory, snapshot, status, tests, verification | #041 | Freeze the lifecycle-executing Stage 1 baseline |
+| 041 | 2026-08-25 | in-progress | `working-tree` | agent, ci, correction, docs, evaluation, gates, handoff, history, memory, tests, verification | #040 | Repair the Stage 1 smoke to execute Ghost's lifecycle |
+| 040 | 2026-08-25 | in-progress | `bc18555d364a` | ci, continuity, docs, evaluation, gates, handoff, history, memory, snapshot, status, tests, verification | #039 | Freeze the clean-source Stage 1 BIL-0 baseline |
+| 039 | 2026-08-25 | in-progress | `working-tree` | agent, ci, config, continuity, docs, evaluation, gates, handoff, history, memory, roadmap, status, tests, verification | #038 | Qualify the frozen Stage 1 evaluation substrate |
 | 038 | 2026-08-25 | done | `7a8228a7de82` | architecture, ci, continuity, handoff, history, packaging, repository, sdk, security, status, tests, verification | #037 | Publish the public Ghost-to-SEAM transport |
 | 037 | 2026-08-25 | in-progress | `working-tree` | ci, continuity, handoff, history, packaging, sdk, tests, verification | #036 | Repair exact-head public transport CI |
 | 036 | 2026-08-25 | in-progress | `working-tree` | architecture, ci, config, continuity, docs, handoff, history, installation, ledger, memory, packaging, sdk, security, status, tests, trust, verification, wiki | #035 | Qualify the public Ghost-to-SEAM transport candidate |

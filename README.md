@@ -47,6 +47,7 @@ sufficient to install, operate, verify, and rebuild Ghost. The exhaustive
 - [Memory lifecycle](docs/operations/MEMORY_LIFECYCLE.md)
 - [Trust boundaries](docs/security/TRUST_BOUNDARIES.md)
 - [Evaluation plan](docs/evaluation/MEMORY_EVALS.md)
+- [Stage 1 frozen evaluation suite](docs/evaluation/STAGE1_FROZEN_SUITE.md)
 - [Second-brain roadmap](docs/roadmap/SECOND_BRAIN_ROADMAP.md)
 - [Canonical build history](HISTORY_INDEX.md)
 
@@ -234,6 +235,7 @@ The two CI workflows divide automatic and explicitly paid work as follows:
 | `brand-assets` | yes | vendored brand toolkit on hosted Chrome/fontconfig |
 | `tests` | yes | full provider-free suite on Python 3.11 and 3.13 |
 | `package-smoke` | yes | wheel/sdist build, clean install, and `ghost --help` |
+| `stage1-evals` | yes | frozen fixture validation, BIL-0 seal/verify, and safety gate |
 | `live` | no | paid provider plus configured SEAM service integration |
 
 `tests/test_ci_contract.py` fails if a private source dependency returns, the

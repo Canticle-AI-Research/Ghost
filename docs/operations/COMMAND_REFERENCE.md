@@ -97,6 +97,51 @@ test monkeypatch targets, security suppressions, and local WIP.
 git diff --check
 ```
 
+## Frozen evaluation commands
+
+All commands below are credential-free. They exercise the deterministic BIL-0
+contract runner, not a live model.
+
+### Validate Stage 1 fixtures
+
+```bash
+uv run python -m tools.evaluation validate-fixtures
+```
+
+Options: `--fixtures PATH` selects a successor or experimental corpus. The
+default is `evals/stage1/fixtures.json`.
+
+### Seal the Stage 1 smoke bundle
+
+```bash
+uv run python -m tools.evaluation smoke \
+  --output /tmp/ghost-stage1-smoke.json
+```
+
+Required: `--output PATH`. Optional: `--fixtures PATH`. The command refuses a
+dirty worktree. `--allow-dirty` is for harness development only and records the
+dirty state, making the artifact unsuitable as a baseline.
+
+### Verify an evaluation bundle
+
+```bash
+uv run python -m tools.evaluation verify /tmp/ghost-stage1-smoke.json
+```
+
+Exit 0 means the bundle version, integrity block, shapes, manifest/result/bundle
+hashes, and cross-payload suite/Git/fixture/case identities agree. It does not
+mean the result is live-model evidence.
+
+### Gate the Stage 1 smoke
+
+```bash
+uv run python -m tools.evaluation gate /tmp/ghost-stage1-smoke.json
+```
+
+The gate includes verification and requires zero candidate contract failures,
+zero isolation violations, and zero forbidden effects. It preserves the BIL-0
+claim boundary.
+
 ## Canonical continuity commands
 
 ### Rebuild history index

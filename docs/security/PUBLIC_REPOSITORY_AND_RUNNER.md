@@ -44,8 +44,9 @@ plus explicit provider and SEAM service configuration.
 - runners assigned to Ghost: zero; and
 - `main`: pull requests required, administrators enforced, conversations
   resolved, force pushes/deletions blocked, and exact hosted checks
-  `repo-hygiene`, `brand-assets`, `tests`, and `package-smoke` required with strict
-  up-to-date status.
+  `repo-hygiene`, `brand-assets`, `tests (3.11)`, `tests (3.13)`, and
+  `package-smoke` required with strict up-to-date status. The Stage 1 candidate
+  adds hosted `stage1-evals`; branch protection must require it before merge.
 
 Organization runner-group inventory requires organization-admin authority and
 was not queried. Zero repository-visible assigned runners is the current
@@ -60,8 +61,9 @@ three Public CI jobs in Actions run
 [`32907313331`](https://github.com/Canticle-AI-Research/Ghost/actions/runs/32907313331).
 Private CI did not auto-dispatch.
 
-That run proves the earlier public workflow and settings boundary. The later
-public-transport candidate must produce its own exact-head four-job evidence
+That run proves the earlier public workflow and settings boundary. PR #8 later
+passed the five-job public-transport boundary on exact PR and merge heads. The
+Stage 1 candidate must add `stage1-evals` as a sixth required hosted context
 before merge; no paid live run is implied.
 
 ## Operator rules

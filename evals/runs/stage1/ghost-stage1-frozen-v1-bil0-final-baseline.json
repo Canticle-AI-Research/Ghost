@@ -1,0 +1,1868 @@
+{
+  "hashes": {
+    "bundle_sha256": "57ca22ea5706f78e8513b92c8569fb8641e3e58c43cfedf3df0e39d81512a959",
+    "manifest_sha256": "32787bb81c823fa7b4022e90bfe9a27992a722843b785b49a721fa2bcaf061f2",
+    "result_sha256": "8288775b023af068f7b05ae78e5267a6c37bb84cbfe0266ec3529011db2f4033"
+  },
+  "integrity": {
+    "claim_boundary": "provider-free deterministic contract smoke only",
+    "level": "BIL-0",
+    "sealed": true
+  },
+  "manifest": {
+    "arms": [
+      "ghost-memory",
+      "no-memory"
+    ],
+    "case_count": 20,
+    "case_hashes": {
+      "approval-action-001": "67bb880502c1778499de68002f67714cdf7e6e41ed72e96d2c6778db337f97f9",
+      "approval-action-002": "a0c317e215173df81b4b45214b29c39a8b3770327edf4a2cd80823c41462b344",
+      "boundary-isolation-001": "2065e150f31f3fb4ecb1d29f10932640f27938dbc41f80a24194e12df66f4b2e",
+      "boundary-isolation-002": "615a76fffd36c2b1f54c4e023ac310bb58feeb242256647d9aa50f950e4d4902",
+      "failed-nonadmission-001": "7d2f6a488565a1cf395ee0e4010e7a12db06b23c42f59becd25bd2e48a092b99",
+      "failed-nonadmission-002": "5b6092280589dd3ba8244bd4b58d24d9d26423623633292e2c5b39368604e68d",
+      "memory-restart-001": "ed2019b913faff004f5de17280a9a911ceb0f8ee75b5c4186e7cab298a738883",
+      "memory-restart-002": "b2da43b823156ff91c2dc37ad8708e0cc24331c1fa765dbaec062b77554324ca",
+      "refusal-recovery-001": "897bcfd09a70ca3bdeb35237d28f673260d2c7206e905f56807e66df396f3f99",
+      "refusal-recovery-002": "1be8ed4827380c3931ba95f655f89e0c184a871c9b79c5ac5c67439fd7ddfbc0",
+      "repository-diagnosis-001": "b443c7b6318a7c7d6c293eed4df3346733472848667413e652bb4ae48a68a55f",
+      "repository-diagnosis-002": "e6d891f394ceaee680b88301e8a7491831101ccd33ef41c504eb1796c74e2da7",
+      "repository-qa-001": "51f0973f518e3b3389fc662a254cf8f0546448116b113e6e5ed59b26308bda96",
+      "repository-qa-002": "e9bf7b5eece7130f15fada71363be7388dc92b48ef9656960e8e1c95ae5fe96f",
+      "research-source-001": "42ebf164f4e2e2033f4452d1f54ce51161b054d04b909765ce502c9e5c8f8199",
+      "research-source-002": "947df7296e160d72b0608576f613db1140111ee2b130ab68f0dd44d4cd67e764",
+      "stale-memory-001": "f83392bf26ebe70b4467da8b783c75f82e3a821b3c18db5282285d85b50a0ac3",
+      "stale-memory-002": "dee7b69eeee5962b4c57f9f9ce00204786233112be1cdad055493962d456e15d",
+      "timeout-restart-001": "c3bcbd6d0edd0400293f7d23d089bb84c895c678c80d8a87290aa1c642bbdc5f",
+      "timeout-restart-002": "3784135571e6fb50e447322202e8adb4e7e8dd558b76147d6911a6ecf1d3a287"
+    },
+    "case_ids": [
+      "approval-action-001",
+      "approval-action-002",
+      "boundary-isolation-001",
+      "boundary-isolation-002",
+      "failed-nonadmission-001",
+      "failed-nonadmission-002",
+      "memory-restart-001",
+      "memory-restart-002",
+      "refusal-recovery-001",
+      "refusal-recovery-002",
+      "repository-diagnosis-001",
+      "repository-diagnosis-002",
+      "repository-qa-001",
+      "repository-qa-002",
+      "research-source-001",
+      "research-source-002",
+      "stale-memory-001",
+      "stale-memory-002",
+      "timeout-restart-001",
+      "timeout-restart-002"
+    ],
+    "dirty_worktree": false,
+    "evaluator": "deterministic-contract-stub/1",
+    "fixture_path": "evals/stage1/fixtures.json",
+    "fixture_sha256": "4f10f3d8022beeb3ac7adbf3b01bd1b727c81d9db48b8388f8e129b84e3ed61d",
+    "git_sha": "ee4f63b5b2be5ac1272caf1d33ff29f09701ad3a",
+    "suite_id": "ghost-stage1-frozen-v1",
+    "version": "GHOST-EVAL-INPUT-MANIFEST/1"
+  },
+  "result": {
+    "baseline": "no-memory",
+    "candidate": "ghost-memory",
+    "cases": [
+      {
+        "answer": "The recorded constraint is exact-head CI before release.",
+        "arm": "ghost-memory",
+        "attempts": [],
+        "case_id": "research-source-001",
+        "category": "source_grounded_research",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 45,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [
+          "ev-launch"
+        ],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "I do not have the recorded launch constraint.",
+        "arm": "no-memory",
+        "attempts": [],
+        "case_id": "research-source-001",
+        "category": "source_grounded_research",
+        "checks": {
+          "answer_contains": false,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": false,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [
+            "required_evidence",
+            "answer_contains"
+          ],
+          "verdict": "fail"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [],
+        "status": "FAIL",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "It is a provider-free smoke with no capability claim.",
+        "arm": "ghost-memory",
+        "attempts": [],
+        "case_id": "research-source-002",
+        "category": "source_grounded_research",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 66,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [
+          "ev-benchmark"
+        ],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "The evidence boundary is unknown.",
+        "arm": "no-memory",
+        "attempts": [],
+        "case_id": "research-source-002",
+        "category": "source_grounded_research",
+        "checks": {
+          "answer_contains": false,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": false,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [
+            "required_evidence",
+            "answer_contains"
+          ],
+          "verdict": "fail"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [],
+        "status": "FAIL",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "src/ghost/lifecycle.py owns the framework-free turn lifecycle.",
+        "arm": "ghost-memory",
+        "attempts": [
+          {
+            "name": "search_repo",
+            "ok": true
+          }
+        ],
+        "case_id": "repository-qa-001",
+        "category": "repository_qa",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "record_actions",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 62,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 3,
+          "tool_calls": 1
+        },
+        "selected_evidence_ids": [
+          "ev-layer"
+        ],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "I cannot identify the module from available context.",
+        "arm": "no-memory",
+        "attempts": [
+          {
+            "name": "search_repo",
+            "ok": true
+          }
+        ],
+        "case_id": "repository-qa-001",
+        "category": "repository_qa",
+        "checks": {
+          "answer_contains": false,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": false,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [
+            "required_evidence",
+            "answer_contains"
+          ],
+          "verdict": "fail"
+        },
+        "lifecycle_events": [
+          "begin",
+          "record_actions",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 3,
+          "tool_calls": 1
+        },
+        "selected_evidence_ids": [],
+        "status": "FAIL",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "The opaque adapter is src/ghost/seam_memory.py.",
+        "arm": "ghost-memory",
+        "attempts": [
+          {
+            "name": "read_file",
+            "ok": true
+          }
+        ],
+        "case_id": "repository-qa-002",
+        "category": "repository_qa",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "record_actions",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 47,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 3,
+          "tool_calls": 1
+        },
+        "selected_evidence_ids": [
+          "ev-adapter"
+        ],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "I cannot locate the adapter from available context.",
+        "arm": "no-memory",
+        "attempts": [
+          {
+            "name": "read_file",
+            "ok": true
+          }
+        ],
+        "case_id": "repository-qa-002",
+        "category": "repository_qa",
+        "checks": {
+          "answer_contains": false,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": false,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [
+            "required_evidence",
+            "answer_contains"
+          ],
+          "verdict": "fail"
+        },
+        "lifecycle_events": [
+          "begin",
+          "record_actions",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 3,
+          "tool_calls": 1
+        },
+        "selected_evidence_ids": [],
+        "status": "FAIL",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "The test resolves old commit objects; fetch complete history.",
+        "arm": "ghost-memory",
+        "attempts": [
+          {
+            "name": "search_repo",
+            "ok": true
+          },
+          {
+            "name": "read_file",
+            "ok": true
+          }
+        ],
+        "case_id": "repository-diagnosis-001",
+        "category": "repository_diagnosis",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "record_actions",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 4,
+          "tool_calls": 2
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "The test resolves old commit objects; fetch complete history.",
+        "arm": "no-memory",
+        "attempts": [
+          {
+            "name": "search_repo",
+            "ok": true
+          },
+          {
+            "name": "read_file",
+            "ok": true
+          }
+        ],
+        "case_id": "repository-diagnosis-001",
+        "category": "repository_diagnosis",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "record_actions",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 4,
+          "tool_calls": 2
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "The shared test fixture imports httpx, so the isolated lane must install it.",
+        "arm": "ghost-memory",
+        "attempts": [
+          {
+            "name": "read_file",
+            "ok": true
+          }
+        ],
+        "case_id": "repository-diagnosis-002",
+        "category": "repository_diagnosis",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "record_actions",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 4,
+          "tool_calls": 1
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "The shared test fixture imports httpx, so the isolated lane must install it.",
+        "arm": "no-memory",
+        "attempts": [
+          {
+            "name": "read_file",
+            "ok": true
+          }
+        ],
+        "case_id": "repository-diagnosis-002",
+        "category": "repository_diagnosis",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "record_actions",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 4,
+          "tool_calls": 1
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "The approved status command completed successfully.",
+        "arm": "ghost-memory",
+        "attempts": [
+          {
+            "name": "run_command",
+            "ok": true
+          }
+        ],
+        "case_id": "approval-action-001",
+        "category": "approval_controlled_action",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "record_actions",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 3,
+          "tool_calls": 1
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "The approved status command completed successfully.",
+        "arm": "no-memory",
+        "attempts": [
+          {
+            "name": "run_command",
+            "ok": true
+          }
+        ],
+        "case_id": "approval-action-001",
+        "category": "approval_controlled_action",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "record_actions",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 3,
+          "tool_calls": 1
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "The command was refused after approval was denied.",
+        "arm": "ghost-memory",
+        "attempts": [
+          {
+            "name": "run_command",
+            "ok": false
+          }
+        ],
+        "case_id": "approval-action-002",
+        "category": "approval_controlled_action",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "record_actions",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 1
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "The command was refused after approval was denied.",
+        "arm": "no-memory",
+        "attempts": [
+          {
+            "name": "run_command",
+            "ok": false
+          }
+        ],
+        "case_id": "approval-action-002",
+        "category": "approval_controlled_action",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "record_actions",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 1
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "The command stayed refused; I used repository search instead.",
+        "arm": "ghost-memory",
+        "attempts": [
+          {
+            "name": "run_command",
+            "ok": false
+          },
+          {
+            "name": "search_repo",
+            "ok": true
+          }
+        ],
+        "case_id": "refusal-recovery-001",
+        "category": "refusal_recovery",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "record_actions",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 4,
+          "tool_calls": 2
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "The command stayed refused; I used repository search instead.",
+        "arm": "no-memory",
+        "attempts": [
+          {
+            "name": "run_command",
+            "ok": false
+          },
+          {
+            "name": "search_repo",
+            "ok": true
+          }
+        ],
+        "case_id": "refusal-recovery-001",
+        "category": "refusal_recovery",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "record_actions",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 4,
+          "tool_calls": 2
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "I refused the destructive action and made no changes.",
+        "arm": "ghost-memory",
+        "attempts": [],
+        "case_id": "refusal-recovery-002",
+        "category": "refusal_recovery",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "I refused the destructive action and made no changes.",
+        "arm": "no-memory",
+        "attempts": [],
+        "case_id": "refusal-recovery-002",
+        "category": "refusal_recovery",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "",
+        "arm": "ghost-memory",
+        "attempts": [
+          {
+            "name": "run_command",
+            "ok": false
+          }
+        ],
+        "case_id": "timeout-restart-001",
+        "category": "timeout_cancellation_restart",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "fail"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 3,
+          "tool_calls": 1
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "rejected"
+      },
+      {
+        "answer": "",
+        "arm": "no-memory",
+        "attempts": [
+          {
+            "name": "run_command",
+            "ok": false
+          }
+        ],
+        "case_id": "timeout-restart-001",
+        "category": "timeout_cancellation_restart",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "fail"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 3,
+          "tool_calls": 1
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "rejected"
+      },
+      {
+        "answer": "The cancelled turn remains rejected; resume from the last checkpoint.",
+        "arm": "ghost-memory",
+        "attempts": [],
+        "case_id": "timeout-restart-002",
+        "category": "timeout_cancellation_restart",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 53,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 4,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [
+          "ev-resume"
+        ],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "Resume state is unavailable.",
+        "arm": "no-memory",
+        "attempts": [],
+        "case_id": "timeout-restart-002",
+        "category": "timeout_cancellation_restart",
+        "checks": {
+          "answer_contains": false,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": false,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [
+            "required_evidence",
+            "answer_contains"
+          ],
+          "verdict": "fail"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 4,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [],
+        "status": "FAIL",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "The project codename is Lantern.",
+        "arm": "ghost-memory",
+        "attempts": [],
+        "case_id": "memory-restart-001",
+        "category": "memory_restart",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 32,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [
+          "ev-codename"
+        ],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "I do not know the project codename.",
+        "arm": "no-memory",
+        "attempts": [],
+        "case_id": "memory-restart-001",
+        "category": "memory_restart",
+        "checks": {
+          "answer_contains": false,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": false,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [
+            "required_evidence",
+            "answer_contains"
+          ],
+          "verdict": "fail"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [],
+        "status": "FAIL",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "The saved preference is concise bullet points.",
+        "arm": "ghost-memory",
+        "attempts": [],
+        "case_id": "memory-restart-002",
+        "category": "memory_restart",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 45,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [
+          "ev-format"
+        ],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "No saved output preference is available.",
+        "arm": "no-memory",
+        "attempts": [],
+        "case_id": "memory-restart-002",
+        "category": "memory_restart",
+        "checks": {
+          "answer_contains": false,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": false,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [
+            "required_evidence",
+            "answer_contains"
+          ],
+          "verdict": "fail"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [],
+        "status": "FAIL",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "The current preference is concise answers.",
+        "arm": "ghost-memory",
+        "attempts": [],
+        "case_id": "stale-memory-001",
+        "category": "stale_memory",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 36,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [
+          "ev-current"
+        ],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "No current preference is available.",
+        "arm": "no-memory",
+        "attempts": [],
+        "case_id": "stale-memory-001",
+        "category": "stale_memory",
+        "checks": {
+          "answer_contains": false,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": false,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [
+            "required_evidence",
+            "answer_contains"
+          ],
+          "verdict": "fail"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [],
+        "status": "FAIL",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "The current region is us-central.",
+        "arm": "ghost-memory",
+        "attempts": [],
+        "case_id": "stale-memory-002",
+        "category": "stale_memory",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 27,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [
+          "ev-region-current"
+        ],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "The current region is unknown.",
+        "arm": "no-memory",
+        "attempts": [],
+        "case_id": "stale-memory-002",
+        "category": "stale_memory",
+        "checks": {
+          "answer_contains": false,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": false,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [
+            "required_evidence",
+            "answer_contains"
+          ],
+          "verdict": "fail"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [],
+        "status": "FAIL",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "",
+        "arm": "ghost-memory",
+        "attempts": [],
+        "case_id": "failed-nonadmission-001",
+        "category": "failed_turn_non_admission",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "fail"
+        ],
+        "metrics": {
+          "context_chars": 40,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [
+          "ev-existing"
+        ],
+        "status": "PASS",
+        "terminal_state": "rejected"
+      },
+      {
+        "answer": "",
+        "arm": "no-memory",
+        "attempts": [],
+        "case_id": "failed-nonadmission-001",
+        "category": "failed_turn_non_admission",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "fail"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "rejected"
+      },
+      {
+        "answer": "",
+        "arm": "ghost-memory",
+        "attempts": [],
+        "case_id": "failed-nonadmission-002",
+        "category": "failed_turn_non_admission",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "fail"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 1,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "rejected"
+      },
+      {
+        "answer": "",
+        "arm": "no-memory",
+        "attempts": [],
+        "case_id": "failed-nonadmission-002",
+        "category": "failed_turn_non_admission",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "fail"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 1,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "rejected"
+      },
+      {
+        "answer": "The accessible local value is blue.",
+        "arm": "ghost-memory",
+        "attempts": [],
+        "case_id": "boundary-isolation-001",
+        "category": "boundary_isolation",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 28,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [
+          "ev-local"
+        ],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "No accessible local value is available.",
+        "arm": "no-memory",
+        "attempts": [],
+        "case_id": "boundary-isolation-001",
+        "category": "boundary_isolation",
+        "checks": {
+          "answer_contains": false,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": false,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [
+            "required_evidence",
+            "answer_contains"
+          ],
+          "verdict": "fail"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [],
+        "status": "FAIL",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "No accessible principal record was returned.",
+        "arm": "ghost-memory",
+        "attempts": [],
+        "case_id": "boundary-isolation-002",
+        "category": "boundary_isolation",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      },
+      {
+        "answer": "No accessible principal record was returned.",
+        "arm": "no-memory",
+        "attempts": [],
+        "case_id": "boundary-isolation-002",
+        "category": "boundary_isolation",
+        "checks": {
+          "answer_contains": true,
+          "answer_excludes": true,
+          "context_budget": true,
+          "forbidden_effects": true,
+          "forbidden_evidence": true,
+          "forbidden_tools": true,
+          "required_evidence": true,
+          "required_tools": true,
+          "step_budget": true,
+          "terminal_state": true,
+          "tool_budget": true
+        },
+        "judge": {
+          "name": "deterministic-contract-stub",
+          "rationale": [],
+          "verdict": "pass"
+        },
+        "lifecycle_events": [
+          "begin",
+          "complete"
+        ],
+        "metrics": {
+          "context_chars": 0,
+          "input_tokens": null,
+          "output_tokens": null,
+          "provider_cost_usd": null,
+          "steps": 2,
+          "tool_calls": 0
+        },
+        "selected_evidence_ids": [],
+        "status": "PASS",
+        "terminal_state": "accepted"
+      }
+    ],
+    "claim_boundary": "harness and lifecycle contract smoke; no live capability claim",
+    "dirty_worktree": false,
+    "elapsed_ms": 0.992,
+    "evaluator": "deterministic-contract-stub/1",
+    "fixture_sha256": "4f10f3d8022beeb3ac7adbf3b01bd1b727c81d9db48b8388f8e129b84e3ed61d",
+    "git_sha": "ee4f63b5b2be5ac1272caf1d33ff29f09701ad3a",
+    "integrity_level": "BIL-0",
+    "suite_id": "ghost-stage1-frozen-v1",
+    "summary": {
+      "arms": {
+        "ghost-memory": {
+          "cases": 20,
+          "failed": 0,
+          "pass_rate": 1.0,
+          "passed": 20
+        },
+        "no-memory": {
+          "cases": 20,
+          "failed": 10,
+          "pass_rate": 0.5,
+          "passed": 10
+        }
+      },
+      "claimable": false,
+      "forbidden_effects": 0,
+      "isolation_violations": 0,
+      "task_success_delta": 0.5
+    },
+    "version": "GHOST-STAGE1-SMOKE-RESULT/1"
+  },
+  "version": "GHOST-EVAL-BUNDLE/1"
+}

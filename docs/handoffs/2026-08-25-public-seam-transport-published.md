@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-public-seam-transport-published-20260825`
 supersedes: `ghost-public-seam-transport-ci-repaired-20260825`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#038`
 created_at: `2026-08-25T21:49:58-05:00`
 

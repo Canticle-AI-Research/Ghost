@@ -836,3 +836,238 @@ publish a package artifact, tag, GitHub Release, or compatible hosted endpoint.
 No live provider/service test or paid benchmark ran. The canonical handoff
 advances to `docs/handoffs/2026-08-25-public-seam-transport-published.md`; the
 next product gate is the frozen Stage 1 task/memory evaluation baseline.
+
+## HISTORY#039 — Qualify the frozen Stage 1 evaluation substrate
+- Date: `2026-08-25T22:08:42-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `agent, ci, config, continuity, docs, evaluation, gates, handoff, history, memory, roadmap, status, tests, verification`
+- Commits: `working-tree`
+- Refs: `evals/stage1/fixtures.json, evals/stage1/MANIFEST.json, tools/evaluation, tests/test_evaluation.py, docs/evaluation/STAGE1_FROZEN_SUITE.md, .github/workflows/public-ci.yml, src/ghost/config.py, src/ghost/lifecycle.py, docs/handoffs/2026-08-25-stage1-frozen-evals-qualified.md`
+- Supersedes: `HISTORY#038`
+- Verification: `fixture validation passed 20 cases; dirty development BIL-0 smoke sealed, verified, and gated; uv run ruff check . passed; uv run python -m pytest --durations=10 passed 212 provider-free tests with 8 live tests deselected; git diff --check passed; clean exact-commit baseline and exact-head CI pending`
+
+The `ghost-stage1-frozen-v1` corpus freezes 20 cases across source-grounded
+research, repository QA/diagnosis, approval/refusal, timeout/cancellation,
+restart memory, stale memory, failed-turn non-admission, and namespace/principal
+isolation. Each case names selected and excluded evidence, answer constraints,
+tool outcomes, terminal state, step/tool/context budgets, and forbidden effects.
+
+An independently authored deterministic runner compares `ghost-memory` with a
+named `no-memory` arm and emits full per-case results. The BIL-0 bundle records
+the exact Git state, canonical fixture and case hashes, manifest and stable-
+result hashes, and a whole-bundle hash. Verification cross-checks suite, Git,
+fixture, case count, and IDs; the gate adds zero isolation violations, zero
+forbidden effects, and zero candidate contract failures. The runner records
+null provider usage/cost and `claimable: false`: this is harness proof, not a
+model capability score.
+
+Runtime work adds `GHOST_MAX_STEPS`, a validated 2–100 LangGraph superstep
+ceiling with default 25, including programmatic rejection before recall. The
+documentation freezes the Stage 1 mission/output record and explicitly defers
+streaming until disconnect, partial-output, cancellation, and exactly-once
+terminal semantics exist.
+
+The local development artifact was sealed only with `--allow-dirty` and cannot
+be a baseline. Commit this exact infrastructure, generate a bundle from that
+clean commit, add it in a successor chronology event, and require the hosted
+`stage1-evals` job before merge. Provider/live and release-candidate proof
+remain open and require explicit operator approval.
+
+## HISTORY#040 — Freeze the clean-source Stage 1 BIL-0 baseline
+- Date: `2026-08-25T22:10:35-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `ci, continuity, docs, evaluation, gates, handoff, history, memory, snapshot, status, tests, verification`
+- Commits: `bc18555d364a9ed49ce9be2e6c35378bbad29467`
+- Refs: `evals/runs/stage1/ghost-stage1-frozen-v1-bil0-baseline.json, evals/stage1/MANIFEST.json, docs/evaluation/STAGE1_FROZEN_SUITE.md, docs/handoffs/2026-08-25-stage1-baseline-frozen.md`
+- Supersedes: `HISTORY#039`
+- Verification: `clean-source smoke sealed bundle 6b16ad744b1dc585fc197150d0e0aee4254c985b1e0810619f0ed64f44fb03ad from bc18555; public verifier passed all eleven checks; safety gate passed with zero candidate contract failures, isolation violations, or forbidden effects; claimable false; successor full suite/build and exact-head CI pending`
+
+The first durable Stage 1 evaluation artifact is bound to clean exact source
+`bc18555d364a9ed49ce9be2e6c35378bbad29467`, not an uncommitted worktree. Its
+manifest records `dirty_worktree: false`, 20 frozen cases in each named arm,
+canonical fixture hash
+`4f10f3d8022beeb3ac7adbf3b01bd1b727c81d9db48b8388f8e129b84e3ed61d`,
+and per-case hashes. The complete bundle hash is
+`6b16ad744b1dc585fc197150d0e0aee4254c985b1e0810619f0ed64f44fb03ad`.
+
+Credential-free verification passed bundle version, integrity level, payload
+shape, manifest/result/bundle hashes, and suite/Git/fixture/count/ID cross-
+checks. The safety gate additionally found zero candidate contract failures,
+isolation violations, or forbidden effects. The artifact deliberately records
+`claimable: false`, null provider usage/cost, and a deterministic stub evaluator.
+Its scripted no-memory difference is a harness diagnostic, not evidence of
+model or memory quality.
+
+This event advances the handoff to
+`docs/handoffs/2026-08-25-stage1-baseline-frozen.md`. Full successor-tree tests,
+build, exact-head hosted CI, protected merge, and publication closeout remain.
+No provider/live test, paid judge, release candidate, package release, or
+deployment was run.
+
+## HISTORY#041 — Repair the Stage 1 smoke to execute Ghost's lifecycle
+- Date: `2026-08-25T22:15:15-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `agent, ci, correction, docs, evaluation, gates, handoff, history, memory, tests, verification`
+- Commits: `working-tree`
+- Refs: `tools/evaluation/runner.py, tools/evaluation/fixtures.py, tools/evaluation/integrity.py, tools/evaluation/__main__.py, tests/test_evaluation.py, .github/workflows/public-ci.yml, docs/evaluation/STAGE1_FROZEN_SUITE.md, docs/handoffs/2026-08-25-stage1-lifecycle-smoke-repaired.md`
+- Supersedes: `HISTORY#040`
+- Verification: `focused evaluation, CI-contract, and layering tests passed after repair; CodeRabbit CLI 0.7.5 authenticated but review did not run because the unconnected repository exhausted its free allowance and returned a five-minute rate limit; full suite/build, clean successor baseline, and exact-head CI pending`
+
+Manual review found that the first BIL-0 runner scored scripted records without
+invoking Ghost's framework-free lifecycle. The artifact was already explicitly
+non-claimable, but calling it lifecycle accounting was weaker than the product
+contract. The runner now executes `run_turn` against deterministic graph and
+memory doubles. Accepted cases traverse begin, optional action recording, and
+completion; rejected cases traverse begin and failure. Regression assertions
+pin both sequences.
+
+The same review closed three fail-open validation edges. Fixtures now reject
+unknown evidence references, hidden evidence marked required, forbidden
+evidence marked visible, and scripted steps/tools/context beyond declared
+budgets. Bundle verification treats malformed case-count and case-ID types as
+failed checks instead of throwing. The command gate likewise treats malformed
+arm summaries as failure. Hosted evaluation CI installs the locked project so
+the real lifecycle import is available.
+
+CodeRabbit was invoked under its documented skill after a secret-safe changed-
+path inspection; local `gitleaks` was unavailable. The CLI connected but did
+not analyze the diff because the repository was not attached to the accessible
+organization and the free allowance was rate-limited. No finding is attributed
+to CodeRabbit.
+
+The first baseline remains preserved as historical BIL-0 harness evidence.
+Commit this repair, generate and preserve a new clean-source lifecycle-executing
+baseline, then rerun full qualification before publication.
+
+## HISTORY#042 — Freeze the lifecycle-executing Stage 1 baseline
+- Date: `2026-08-25T22:16:51-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `agent, ci, continuity, evaluation, gates, handoff, history, memory, snapshot, status, tests, verification`
+- Commits: `78a5035929f03ab94e1f8f5e1cd3cb76829f7e07`
+- Refs: `evals/runs/stage1/ghost-stage1-frozen-v1-bil0-lifecycle-baseline.json, tools/evaluation/runner.py, docs/evaluation/STAGE1_FROZEN_SUITE.md, docs/handoffs/2026-08-25-stage1-lifecycle-baseline-qualified.md`
+- Supersedes: `HISTORY#041`
+- Verification: `clean-source lifecycle smoke sealed bundle 9ce3f9d80ab2a08de3767c0eaf48d84d74e02e73ef64db03891594e6c788cad2 from 78a5035; public verifier passed all eleven checks; gate passed with zero candidate failures, isolation violations, or forbidden effects; accepted and rejected lifecycle event sequences matched; claimable false; final successor-tree full suite/build and exact-head CI pending`
+
+The reviewed BIL-0 successor is bound to clean exact source
+`78a5035929f03ab94e1f8f5e1cd3cb76829f7e07` and stored separately from the
+initial artifact. Its bundle hash is
+`9ce3f9d80ab2a08de3767c0eaf48d84d74e02e73ef64db03891594e6c788cad2`;
+the manifest retains the frozen fixture hash and reports a clean worktree.
+
+The result now contains actual framework-free lifecycle events from `run_turn`.
+An accepted tool case records begin, action recording, and completion. A
+rejected timeout scenario records begin and failure, with no completion.
+Credential-free verification passed all eleven integrity/cross-identity checks,
+and the gate found zero candidate contract failures, isolation violations, or
+forbidden effects.
+
+The artifact remains BIL-0, deterministic, and explicitly non-claimable. Its
+scripted no-memory difference does not become a memory-quality claim merely
+because the real lifecycle ran. The first baseline remains preserved as the
+pre-review record; this successor is the current comparison artifact.
+
+Advance the handoff to
+`docs/handoffs/2026-08-25-stage1-lifecycle-baseline-qualified.md`, finish full
+successor-tree qualification, push, require the hosted evaluation context, and
+merge through protected main. Provider/live and release-candidate proof were
+not run.
+
+## HISTORY#043 — Repair all Stage 1 evaluation review findings
+- Date: `2026-08-25T22:23:34-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `ci, correction, docs, evaluation, gates, handoff, history, roadmap, security, tests, verification`
+- Commits: `working-tree`
+- Refs: `tools/evaluation/fixtures.py, tools/evaluation/runner.py, tools/evaluation/integrity.py, tools/evaluation/__main__.py, tests/test_evaluation.py, README.md, REPO_LEDGER.md, docs/security/PUBLIC_REPOSITORY_AND_RUNNER.md, docs/evaluation/MEMORY_EVALS.md, docs/evaluation/STAGE1_FROZEN_SUITE.md, docs/roadmap/SECOND_BRAIN_ROADMAP.md, docs/handoffs/2026-08-25-stage1-review-repaired.md`
+- Supersedes: `HISTORY#042`
+- Verification: `CodeRabbit CLI 0.7.5 full review completed over 44 changed files with eight findings, four major and four minor; all eight reproduced and repaired; focused evaluation and CI-contract tests passed; final clean-source bundle, full suite/build, exact-head CI, and protected merge pending`
+
+The delayed CodeRabbit review completed after the earlier free-allowance rate
+limit and returned eight valid findings. Fixture budgets allowed `max_steps=1`
+even though `run_turn` rejects below two. Observed effects were treated as a
+truthy aggregate rather than typed and compared to each case's forbidden set.
+The gate trusted summary failure counts instead of exact per-case two-arm
+coverage and outcomes. An outside-repository fixture path raised raw
+`ValueError`. All four major findings now fail closed with regressions.
+
+Four documentation findings were also repaired. The Q3 detail status now
+matches the in-progress table while G2 remains planned. Accepted lifecycle text
+makes action recording conditional. The fixture example is explicitly marked
+abbreviated. README and the security/ledger boundary now name `stage1-evals`
+as the automatic job that must become the sixth protected context before merge.
+
+The current clean-source lifecycle baseline remains valid for its exact prior
+runner, but it predates these repairs. Preserve it and generate a separately
+named final bundle from the committed review-repair source. No provider/live,
+paid judge, release-candidate, release, or deployment work ran.
+
+## HISTORY#044 — Freeze the final post-review Stage 1 baseline
+- Date: `2026-08-25T22:24:57-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `ci, continuity, evaluation, gates, handoff, history, memory, snapshot, status, tests, verification`
+- Commits: `ee4f63b5b2be5ac1272caf1d33ff29f09701ad3a`
+- Refs: `evals/runs/stage1/ghost-stage1-frozen-v1-bil0-final-baseline.json, docs/evaluation/STAGE1_FROZEN_SUITE.md, docs/handoffs/2026-08-25-stage1-final-baseline-qualified.md`
+- Supersedes: `HISTORY#043`
+- Verification: `clean-source final bundle 57ca22ea5706f78e8513b92c8569fb8641e3e58c43cfedf3df0e39d81512a959 sealed from post-review source ee4f63b; all eleven integrity checks and gate_case_coverage, gate_candidate_outcomes, gate_safety passed; zero candidate contract failures, isolation violations, or forbidden effects; claimable false; final successor-tree suite/build and exact-head CI pending`
+
+The final local BIL-0 artifact is bound to the exact clean source containing all
+eight CodeRabbit repairs: `ee4f63b5b2be5ac1272caf1d33ff29f09701ad3a`.
+The bundle hash is
+`57ca22ea5706f78e8513b92c8569fb8641e3e58c43cfedf3df0e39d81512a959`,
+and its manifest retains the unchanged frozen fixture and per-case identities.
+
+Verification passed the eleven bundle and cross-identity checks. The derived
+gate independently reconstructed exactly one `ghost-memory` and one
+`no-memory` record for every manifest case, required every candidate case to
+pass, and inspected per-case forbidden-evidence/effect verdicts. All three gate
+checks passed with zero candidate failures or safety violations.
+
+The artifact is still a deterministic BIL-0 contract smoke with null provider
+usage/cost and `claimable: false`. Earlier baseline artifacts remain preserved
+to make the review progression auditable; this post-review artifact is the
+current comparison baseline.
+
+Advance the handoff to
+`docs/handoffs/2026-08-25-stage1-final-baseline-qualified.md`, finish exact
+successor-tree qualification, publish the PR, require the hosted evaluation
+context, and merge through protected main. No paid/live or release-candidate
+qualification ran.
+
+## HISTORY#045 — Qualify the Stage 1 evaluation candidate for publication
+- Date: `2026-08-25T22:29:49-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `ci, continuity, docs, evaluation, gates, handoff, history, roadmap, security, status, tests, verification`
+- Commits: `bc18555d364a9ed49ce9be2e6c35378bbad29467, 89ca75c9e1837dbad6964ef4877509a6842e1bf4, 78a5035929f03ab94e1f8f5e1cd3cb76829f7e07, 78ac27a9424913e8bb5e7d04c9b10e323768121b, ee4f63b5b2be5ac1272caf1d33ff29f09701ad3a, a6f9e6d19e12a3ee0b0c944b9e9a4f2e6264d0c6`
+- Refs: `evals/stage1, evals/runs/stage1/ghost-stage1-frozen-v1-bil0-final-baseline.json, tools/evaluation, tests/test_evaluation.py, .github/workflows/public-ci.yml, docs/evaluation/STAGE1_FROZEN_SUITE.md, docs/handoffs/2026-08-25-stage1-candidate-ready.md, https://github.com/Canticle-AI-Research/Ghost/actions/runs/32924345004`
+- Supersedes: `HISTORY#044`
+- Verification: `uv run python -m tools.history.closeout --agent codex passed through HISTORY#044; uv run ruff check . passed; uv run python -m pytest --durations=10 passed 219 provider-free tests with 8 live tests deselected; uv build passed; git diff --check passed; CodeRabbit full review returned eight findings all repaired; final-delta review returned one wording finding repaired; exact main@620caee run 32924345004 passed five current required jobs; candidate push/PR/six-job CI pending`
+
+The Stage 1 frozen-evaluation candidate is locally complete. It freezes 20
+cases across ten required categories, executes Ghost's framework-free
+lifecycle with deterministic graph/memory doubles, records exact candidate and
+no-memory coverage, and seals credential-free BIL-0 artifacts with public
+verification and derived outcome/safety gates. `GHOST_MAX_STEPS` supplies the
+runtime superstep ceiling that the fixture budgets exercise.
+
+The final clean-source bundle remains
+`57ca22ea5706f78e8513b92c8569fb8641e3e58c43cfedf3df0e39d81512a959`.
+All eleven bundle-level verifier checks and the three gate checks passed. Case
+records deliberately retain expected no-memory-arm failures; those are not
+bundle-integrity failures. The deterministic artifact remains non-claimable.
+
+CodeRabbit's full review returned four major and four minor findings, all
+reproduced and repaired. A final-delta review returned one minor ambiguity
+between bundle-level and per-case checks; the documentation now distinguishes
+them explicitly.
+
+Live reconciliation also closed the stale PR #9 status: exact current
+`main@620caee` passed all five protected jobs in run `32924345004`. The Stage 1
+PR must expose and pass `stage1-evals`, then protected main must add it as the
+sixth required context without weakening existing policy. No paid/provider,
+release-candidate, package release, or deployment qualification ran.

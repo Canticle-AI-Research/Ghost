@@ -65,14 +65,14 @@ capability gate, and no track closes without its Q gates.
 | Q0 quality baseline | done | behavior suite and 450-line ceiling enforced |
 | Q1 behavior verification | in progress | many behaviors still unverified; count is not the measure |
 | Q2 module boundaries | in progress | ceiling enforced; target tightening pending |
-| Q3 benchmark and proof standard | planned | no benchmark infrastructure in Ghost; SEAM's standard is the target |
+| Q3 benchmark and proof standard | in progress | BIL-0 sealed Stage 1 smoke + public verifier implemented; live/higher-integrity qualification remains |
 | R0 documentation/history/wiki | done | PR #6 merged; exact PR and main heads passed hosted gates |
 | R1 public repository/runner | done | PR #5, protected main, hardened settings, zero runners, exact-head hosted run green |
 | R2 exact-head CI | done | PR #8 and merge `66841fc` passed all five hosted jobs; protected main requires the full matrix |
 | R3 company/IP/licensing | in progress | local PolyForm/Apache/proprietary matrix drafted; counsel/entity/assignment pending |
 | R4 public API/release discipline | in progress | HTTP parity + clean public install merged; package release and deployment proof pending |
 | G0 verified memory spine | done | landed through `main@25f47c4` |
-| G1 dependable single agent | in progress | mechanisms landed; frozen exit eval absent |
+| G1 dependable single agent | in progress | 20-case frozen BIL-0 suite + step ceiling implemented; live/release-candidate exit proof remains |
 | G2 deliberate memory | planned | every successful turn still ingested wholesale |
 | G3 graph-aware specialists | planned | waits on G1 and G2 gates |
 | G4 measured product | exploratory | waits on repository, safety, memory, recovery gates |
@@ -423,8 +423,10 @@ Mechanisms already landed:
 Remaining deliverables:
 
 1. freeze Ghost's research-and-engineering mission/output contract;
-2. create at least 20 frozen task and memory fixtures;
-3. add explicit maximum-step and cancellation/streaming policy;
+2. create at least 20 frozen task and memory fixtures — implemented in
+   `ghost-stage1-frozen-v1`;
+3. add explicit maximum-step and cancellation/streaming policy — implemented
+   for bounded turns and documented non-streaming behavior;
 4. qualify restart, refusal, timeout, recovery, and provenance behavior;
 5. define sandbox/process isolation boundary for consequential automation;
 6. prove bounded research/repository tasks against a no-memory baseline; and
@@ -507,16 +509,16 @@ observability, cost, and rollback gates on the exact release candidate.
 
 ### Q3 — Benchmark and proof standard
 
-**Status: planned**
+**Status: in progress**
 
 Prerequisite: Q1 for the behaviors under measurement. Required before any G1,
 G2, or G3 exit claim, and before any public performance claim.
 
 Ghost is in the business of verifiable behavior. A test proves a behavior
 happens; a **benchmark proves a claim about how well it happens**, and a claim
-without a re-runnable artifact behind it is marketing. Ghost has no benchmark
-infrastructure today — this track builds it, and the standard is SEAM's, already
-proven in that repository. Do not invent a second one.
+without a re-runnable artifact behind it is marketing. Ghost now has the first
+BIL-0 sealed contract-smoke substrate, adopting SEAM's proof properties. Live
+and higher-integrity benchmark qualification remain open.
 
 #### The invariant
 

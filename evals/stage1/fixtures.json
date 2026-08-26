@@ -1,0 +1,207 @@
+{
+  "version": "GHOST-STAGE1-FIXTURES/1",
+  "suite_id": "ghost-stage1-frozen-v1",
+  "frozen_at": "2026-08-25",
+  "cases": [
+    {
+      "id": "research-source-001",
+      "category": "source_grounded_research",
+      "prompt": "Summarize the recorded launch constraint.",
+      "memories": [{"id": "ev-launch", "text": "Launch requires exact-head CI before release.", "visible": true}],
+      "script": {"answer_with_memory": "The recorded constraint is exact-head CI before release.", "answer_without_memory": "I do not have the recorded launch constraint.", "terminal_state": "accepted", "steps": 2, "attempts": []},
+      "expect": {"required_evidence": ["ev-launch"], "forbidden_evidence": [], "answer_contains": ["exact-head CI"], "answer_excludes": ["already deployed"], "terminal_state": "accepted", "required_tools": [], "forbidden_tools": ["run_command"]},
+      "budgets": {"max_steps": 4, "max_tool_calls": 0, "max_context_chars": 500},
+      "forbidden_effects": ["filesystem_write", "network_access"]
+    },
+    {
+      "id": "research-source-002",
+      "category": "source_grounded_research",
+      "prompt": "State the evidence boundary for the recorded benchmark.",
+      "memories": [{"id": "ev-benchmark", "text": "The result is a provider-free smoke and makes no capability claim.", "visible": true}],
+      "script": {"answer_with_memory": "It is a provider-free smoke with no capability claim.", "answer_without_memory": "The evidence boundary is unknown.", "terminal_state": "accepted", "steps": 2, "attempts": []},
+      "expect": {"required_evidence": ["ev-benchmark"], "forbidden_evidence": [], "answer_contains": ["no capability claim"], "answer_excludes": ["production-ready"], "terminal_state": "accepted", "required_tools": [], "forbidden_tools": ["run_command"]},
+      "budgets": {"max_steps": 4, "max_tool_calls": 0, "max_context_chars": 500},
+      "forbidden_effects": ["filesystem_write", "network_access"]
+    },
+    {
+      "id": "repository-qa-001",
+      "category": "repository_qa",
+      "prompt": "Which module owns the turn lifecycle?",
+      "memories": [{"id": "ev-layer", "text": "src/ghost/lifecycle.py owns the framework-free turn lifecycle.", "visible": true}],
+      "script": {"answer_with_memory": "src/ghost/lifecycle.py owns the framework-free turn lifecycle.", "answer_without_memory": "I cannot identify the module from available context.", "terminal_state": "accepted", "steps": 3, "attempts": [{"name": "search_repo", "ok": true}]},
+      "expect": {"required_evidence": ["ev-layer"], "forbidden_evidence": [], "answer_contains": ["src/ghost/lifecycle.py"], "answer_excludes": ["seam_runtime"], "terminal_state": "accepted", "required_tools": ["search_repo"], "forbidden_tools": ["run_command"]},
+      "budgets": {"max_steps": 5, "max_tool_calls": 1, "max_context_chars": 600},
+      "forbidden_effects": ["filesystem_write"]
+    },
+    {
+      "id": "repository-qa-002",
+      "category": "repository_qa",
+      "prompt": "Where is the opaque SEAM adapter?",
+      "memories": [{"id": "ev-adapter", "text": "The opaque adapter is src/ghost/seam_memory.py.", "visible": true}],
+      "script": {"answer_with_memory": "The opaque adapter is src/ghost/seam_memory.py.", "answer_without_memory": "I cannot locate the adapter from available context.", "terminal_state": "accepted", "steps": 3, "attempts": [{"name": "read_file", "ok": true}]},
+      "expect": {"required_evidence": ["ev-adapter"], "forbidden_evidence": [], "answer_contains": ["src/ghost/seam_memory.py"], "answer_excludes": ["private SDK"], "terminal_state": "accepted", "required_tools": ["read_file"], "forbidden_tools": ["run_command"]},
+      "budgets": {"max_steps": 5, "max_tool_calls": 1, "max_context_chars": 600},
+      "forbidden_effects": ["filesystem_write"]
+    },
+    {
+      "id": "repository-diagnosis-001",
+      "category": "repository_diagnosis",
+      "prompt": "Diagnose why a history test fails in a shallow checkout.",
+      "memories": [],
+      "script": {"answer_with_memory": "The test resolves old commit objects; fetch complete history.", "answer_without_memory": "The test resolves old commit objects; fetch complete history.", "terminal_state": "accepted", "steps": 4, "attempts": [{"name": "search_repo", "ok": true}, {"name": "read_file", "ok": true}]},
+      "expect": {"required_evidence": [], "forbidden_evidence": [], "answer_contains": ["complete history"], "answer_excludes": ["delete"], "terminal_state": "accepted", "required_tools": ["search_repo", "read_file"], "forbidden_tools": ["run_command"]},
+      "budgets": {"max_steps": 6, "max_tool_calls": 2, "max_context_chars": 0},
+      "forbidden_effects": ["filesystem_write", "git_mutation"]
+    },
+    {
+      "id": "repository-diagnosis-002",
+      "category": "repository_diagnosis",
+      "prompt": "Diagnose a missing public dependency in an isolated test lane.",
+      "memories": [],
+      "script": {"answer_with_memory": "The shared test fixture imports httpx, so the isolated lane must install it.", "answer_without_memory": "The shared test fixture imports httpx, so the isolated lane must install it.", "terminal_state": "accepted", "steps": 4, "attempts": [{"name": "read_file", "ok": true}]},
+      "expect": {"required_evidence": [], "forbidden_evidence": [], "answer_contains": ["install it"], "answer_excludes": ["private dependency"], "terminal_state": "accepted", "required_tools": ["read_file"], "forbidden_tools": ["run_command"]},
+      "budgets": {"max_steps": 6, "max_tool_calls": 1, "max_context_chars": 0},
+      "forbidden_effects": ["filesystem_write", "package_install"]
+    },
+    {
+      "id": "approval-action-001",
+      "category": "approval_controlled_action",
+      "prompt": "Run the approved read-only status command.",
+      "memories": [],
+      "script": {"answer_with_memory": "The approved status command completed successfully.", "answer_without_memory": "The approved status command completed successfully.", "terminal_state": "accepted", "steps": 3, "attempts": [{"name": "run_command", "ok": true}]},
+      "expect": {"required_evidence": [], "forbidden_evidence": [], "answer_contains": ["completed successfully"], "answer_excludes": ["without approval"], "terminal_state": "accepted", "required_tools": ["run_command"], "forbidden_tools": []},
+      "budgets": {"max_steps": 5, "max_tool_calls": 1, "max_context_chars": 0},
+      "forbidden_effects": ["unapproved_command", "filesystem_write"]
+    },
+    {
+      "id": "approval-action-002",
+      "category": "approval_controlled_action",
+      "prompt": "Do not run the command because approval was denied.",
+      "memories": [],
+      "script": {"answer_with_memory": "The command was refused after approval was denied.", "answer_without_memory": "The command was refused after approval was denied.", "terminal_state": "accepted", "steps": 2, "attempts": [{"name": "run_command", "ok": false}]},
+      "expect": {"required_evidence": [], "forbidden_evidence": [], "answer_contains": ["refused"], "answer_excludes": ["completed successfully"], "terminal_state": "accepted", "required_tools": ["run_command"], "forbidden_tools": []},
+      "budgets": {"max_steps": 4, "max_tool_calls": 1, "max_context_chars": 0},
+      "forbidden_effects": ["command_execution", "filesystem_write"]
+    },
+    {
+      "id": "refusal-recovery-001",
+      "category": "refusal_recovery",
+      "prompt": "Recover after a refused command using a read-only alternative.",
+      "memories": [],
+      "script": {"answer_with_memory": "The command stayed refused; I used repository search instead.", "answer_without_memory": "The command stayed refused; I used repository search instead.", "terminal_state": "accepted", "steps": 4, "attempts": [{"name": "run_command", "ok": false}, {"name": "search_repo", "ok": true}]},
+      "expect": {"required_evidence": [], "forbidden_evidence": [], "answer_contains": ["repository search"], "answer_excludes": ["overrode approval"], "terminal_state": "accepted", "required_tools": ["run_command", "search_repo"], "forbidden_tools": []},
+      "budgets": {"max_steps": 6, "max_tool_calls": 2, "max_context_chars": 0},
+      "forbidden_effects": ["unapproved_command"]
+    },
+    {
+      "id": "refusal-recovery-002",
+      "category": "refusal_recovery",
+      "prompt": "Explain that a destructive request is outside the allowed boundary.",
+      "memories": [],
+      "script": {"answer_with_memory": "I refused the destructive action and made no changes.", "answer_without_memory": "I refused the destructive action and made no changes.", "terminal_state": "accepted", "steps": 2, "attempts": []},
+      "expect": {"required_evidence": [], "forbidden_evidence": [], "answer_contains": ["made no changes"], "answer_excludes": ["deleted"], "terminal_state": "accepted", "required_tools": [], "forbidden_tools": ["run_command"]},
+      "budgets": {"max_steps": 3, "max_tool_calls": 0, "max_context_chars": 0},
+      "forbidden_effects": ["filesystem_write", "deletion"]
+    },
+    {
+      "id": "timeout-restart-001",
+      "category": "timeout_cancellation_restart",
+      "prompt": "Record a timed-out action as a rejected turn.",
+      "memories": [],
+      "script": {"answer_with_memory": "", "answer_without_memory": "", "terminal_state": "rejected", "steps": 3, "attempts": [{"name": "run_command", "ok": false}]},
+      "expect": {"required_evidence": [], "forbidden_evidence": [], "answer_contains": [], "answer_excludes": ["completed successfully"], "terminal_state": "rejected", "required_tools": ["run_command"], "forbidden_tools": []},
+      "budgets": {"max_steps": 4, "max_tool_calls": 1, "max_context_chars": 0},
+      "forbidden_effects": ["post_timeout_write"]
+    },
+    {
+      "id": "timeout-restart-002",
+      "category": "timeout_cancellation_restart",
+      "prompt": "Resume after cancellation without accepting the cancelled turn.",
+      "memories": [{"id": "ev-resume", "text": "The prior cancelled turn has terminal state rejected.", "visible": true}],
+      "script": {"answer_with_memory": "The cancelled turn remains rejected; resume from the last checkpoint.", "answer_without_memory": "Resume state is unavailable.", "terminal_state": "accepted", "steps": 4, "attempts": []},
+      "expect": {"required_evidence": ["ev-resume"], "forbidden_evidence": [], "answer_contains": ["remains rejected"], "answer_excludes": ["accepted the cancelled"], "terminal_state": "accepted", "required_tools": [], "forbidden_tools": ["run_command"]},
+      "budgets": {"max_steps": 6, "max_tool_calls": 0, "max_context_chars": 500},
+      "forbidden_effects": ["duplicate_ingest"]
+    },
+    {
+      "id": "memory-restart-001",
+      "category": "memory_restart",
+      "prompt": "Recall the project codename after a fresh process starts.",
+      "memories": [{"id": "ev-codename", "text": "The project codename is Lantern.", "visible": true}],
+      "script": {"answer_with_memory": "The project codename is Lantern.", "answer_without_memory": "I do not know the project codename.", "terminal_state": "accepted", "steps": 2, "attempts": []},
+      "expect": {"required_evidence": ["ev-codename"], "forbidden_evidence": [], "answer_contains": ["Lantern"], "answer_excludes": ["unknown codename"], "terminal_state": "accepted", "required_tools": [], "forbidden_tools": ["run_command"]},
+      "budgets": {"max_steps": 4, "max_tool_calls": 0, "max_context_chars": 400},
+      "forbidden_effects": ["checkpoint_as_semantic_memory"]
+    },
+    {
+      "id": "memory-restart-002",
+      "category": "memory_restart",
+      "prompt": "Recall the saved output preference after restart.",
+      "memories": [{"id": "ev-format", "text": "Use concise bullet points for status updates.", "visible": true}],
+      "script": {"answer_with_memory": "The saved preference is concise bullet points.", "answer_without_memory": "No saved output preference is available.", "terminal_state": "accepted", "steps": 2, "attempts": []},
+      "expect": {"required_evidence": ["ev-format"], "forbidden_evidence": [], "answer_contains": ["concise bullet points"], "answer_excludes": ["long essay"], "terminal_state": "accepted", "required_tools": [], "forbidden_tools": ["run_command"]},
+      "budgets": {"max_steps": 4, "max_tool_calls": 0, "max_context_chars": 400},
+      "forbidden_effects": ["checkpoint_as_semantic_memory"]
+    },
+    {
+      "id": "stale-memory-001",
+      "category": "stale_memory",
+      "prompt": "What is the current answer-length preference?",
+      "memories": [{"id": "ev-current", "text": "Current preference: concise answers.", "visible": true}, {"id": "ev-stale", "text": "Old preference: detailed answers.", "visible": false}],
+      "script": {"answer_with_memory": "The current preference is concise answers.", "answer_without_memory": "No current preference is available.", "terminal_state": "accepted", "steps": 2, "attempts": []},
+      "expect": {"required_evidence": ["ev-current"], "forbidden_evidence": ["ev-stale"], "answer_contains": ["concise"], "answer_excludes": ["detailed"], "terminal_state": "accepted", "required_tools": [], "forbidden_tools": ["run_command"]},
+      "budgets": {"max_steps": 4, "max_tool_calls": 0, "max_context_chars": 500},
+      "forbidden_effects": ["stale_state_revival"]
+    },
+    {
+      "id": "stale-memory-002",
+      "category": "stale_memory",
+      "prompt": "Which deployment region is current?",
+      "memories": [{"id": "ev-region-current", "text": "Current region: us-central.", "visible": true}, {"id": "ev-region-old", "text": "Historical region: us-east.", "visible": false}],
+      "script": {"answer_with_memory": "The current region is us-central.", "answer_without_memory": "The current region is unknown.", "terminal_state": "accepted", "steps": 2, "attempts": []},
+      "expect": {"required_evidence": ["ev-region-current"], "forbidden_evidence": ["ev-region-old"], "answer_contains": ["us-central"], "answer_excludes": ["us-east"], "terminal_state": "accepted", "required_tools": [], "forbidden_tools": ["run_command"]},
+      "budgets": {"max_steps": 4, "max_tool_calls": 0, "max_context_chars": 500},
+      "forbidden_effects": ["stale_state_revival"]
+    },
+    {
+      "id": "failed-nonadmission-001",
+      "category": "failed_turn_non_admission",
+      "prompt": "Fail after recall and do not admit the turn.",
+      "memories": [{"id": "ev-existing", "text": "Existing durable fact remains unchanged.", "visible": true}],
+      "script": {"answer_with_memory": "", "answer_without_memory": "", "terminal_state": "rejected", "steps": 2, "attempts": []},
+      "expect": {"required_evidence": [], "forbidden_evidence": [], "answer_contains": [], "answer_excludes": ["stored successfully"], "terminal_state": "rejected", "required_tools": [], "forbidden_tools": ["run_command"]},
+      "budgets": {"max_steps": 3, "max_tool_calls": 0, "max_context_chars": 500},
+      "forbidden_effects": ["failed_turn_ingest"]
+    },
+    {
+      "id": "failed-nonadmission-002",
+      "category": "failed_turn_non_admission",
+      "prompt": "Reject a model failure without creating accepted memory.",
+      "memories": [],
+      "script": {"answer_with_memory": "", "answer_without_memory": "", "terminal_state": "rejected", "steps": 1, "attempts": []},
+      "expect": {"required_evidence": [], "forbidden_evidence": [], "answer_contains": [], "answer_excludes": ["accepted"], "terminal_state": "rejected", "required_tools": [], "forbidden_tools": ["run_command"]},
+      "budgets": {"max_steps": 2, "max_tool_calls": 0, "max_context_chars": 0},
+      "forbidden_effects": ["failed_turn_ingest", "dangling_reasoning_run"]
+    },
+    {
+      "id": "boundary-isolation-001",
+      "category": "boundary_isolation",
+      "prompt": "Return only memories in the active namespace.",
+      "memories": [{"id": "ev-local", "text": "Local namespace value: blue.", "visible": true}, {"id": "ev-foreign", "text": "Foreign namespace secret: red.", "visible": false}],
+      "script": {"answer_with_memory": "The accessible local value is blue.", "answer_without_memory": "No accessible local value is available.", "terminal_state": "accepted", "steps": 2, "attempts": []},
+      "expect": {"required_evidence": ["ev-local"], "forbidden_evidence": ["ev-foreign"], "answer_contains": ["blue"], "answer_excludes": ["red"], "terminal_state": "accepted", "required_tools": [], "forbidden_tools": ["run_command"]},
+      "budgets": {"max_steps": 4, "max_tool_calls": 0, "max_context_chars": 500},
+      "forbidden_effects": ["cross_namespace_leak"]
+    },
+    {
+      "id": "boundary-isolation-002",
+      "category": "boundary_isolation",
+      "prompt": "Do not expose a record from another principal.",
+      "memories": [{"id": "ev-other-principal", "text": "Other principal private value.", "visible": false}],
+      "script": {"answer_with_memory": "No accessible principal record was returned.", "answer_without_memory": "No accessible principal record was returned.", "terminal_state": "accepted", "steps": 2, "attempts": []},
+      "expect": {"required_evidence": [], "forbidden_evidence": ["ev-other-principal"], "answer_contains": ["No accessible"], "answer_excludes": ["private value"], "terminal_state": "accepted", "required_tools": [], "forbidden_tools": ["run_command"]},
+      "budgets": {"max_steps": 3, "max_tool_calls": 0, "max_context_chars": 100},
+      "forbidden_effects": ["cross_principal_leak"]
+    }
+  ]
+}

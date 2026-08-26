@@ -134,6 +134,7 @@ def run_turn(
     user_input: str,
     thread_id: str,
     turn_id: str | None = None,
+    max_steps: int = 25,
     extract_attempts: Callable[[dict[str, Any]], Sequence[ToolAttempt]] | None = None,
 ) -> str:
     """Execute one turn under SEAM's contract, and return the answer.
@@ -155,6 +156,8 @@ def run_turn(
     resolved_input = user_input.strip()
     if not resolved_input:
         raise ValueError("user input is required")
+    if not 2 <= max_steps <= 100:
+        raise ValueError("max_steps must be between 2 and 100")
 
     resolved_turn_id = turn_id or uuid4().hex
     seam_turn = memory.begin_turn(resolved_input)
@@ -168,7 +171,10 @@ def run_turn(
         result = graph.invoke(
             {"messages": [{"role": "user", "content": resolved_input}]},
             context=GhostTurnContext(seam_memory=seam_turn.rendered_memory),
-            config={"configurable": {"thread_id": thread_id}},
+            config={
+                "configurable": {"thread_id": thread_id},
+                "recursion_limit": max_steps,
+            },
         )
         messages = result.get("messages") or []
         if not messages:
