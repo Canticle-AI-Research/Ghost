@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-canonical-foundation-candidate-20260825`
 supersedes: `ghost-public-runner-closed-20260825`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#034`
 created_at: `2026-08-25T20:17:58-05:00`
 

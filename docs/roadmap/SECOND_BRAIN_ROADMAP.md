@@ -58,15 +58,15 @@ capability gate, and no track closes without its Q gates.
 
 | Track | Status | Evidence boundary |
 |---|---|---|
-| T0 core temporal chain | in progress | locally verified; publication slice active |
-| T1 drift gates | in progress | locally verified; exact-head publication evidence pending |
+| T0 core temporal chain | done | merged and exact-head continuity verified through PR #6 |
+| T1 drift gates | done | merged env/script/topic/roadmap/path-move gates passed on exact main |
 | T2 streams and routing | planned | SEAM layer documented but not installed in Ghost |
 | T3 published chain template | in progress | `templates/temporal-chain/` installs and verifies locally; not released |
 | Q0 quality baseline | done | behavior suite and 450-line ceiling enforced |
 | Q1 behavior verification | in progress | many behaviors still unverified; count is not the measure |
 | Q2 module boundaries | in progress | ceiling enforced; target tightening pending |
 | Q3 benchmark and proof standard | planned | no benchmark infrastructure in Ghost; SEAM's standard is the target |
-| R0 documentation/history/wiki | in progress | locally qualified foundation; publication slice active |
+| R0 documentation/history/wiki | done | PR #6 merged; exact PR and main heads passed hosted gates |
 | R1 public repository/runner | done | PR #5, protected main, hardened settings, zero runners, exact-head hosted run green |
 | R2 exact-head CI | in progress | required public lanes green; private dependency tier deliberately unavailable |
 | R3 company/IP/licensing | in progress | local PolyForm/Apache/proprietary matrix drafted; counsel/entity/assignment pending |
@@ -96,13 +96,13 @@ and is packaged for other repositories as
 
 ### T0 — Core chain
 
-**Status: in progress**
+**Status: done**
 
 Installed and verified in Ghost:
 
 - `PROJECT_STATUS.md` current-state router;
 - `REPO_LEDGER.md` stable decisions and invariants;
-- `HISTORY.md` append-only chronology, 33 entries, bootstrapped from the exact
+- `HISTORY.md` append-only chronology, 35 entries, bootstrapped from the exact
   commit graph;
 - `HISTORY_INDEX.md` derived bounded map with a source digest;
 - bounded context packs by recency, topic, entry, and token budget;
@@ -117,7 +117,7 @@ history-tool tests pass on a merged head, not only in a working tree.
 
 ### T1 — Drift gates
 
-**Status: in progress**
+**Status: done**
 
 Prerequisite: T0.
 
@@ -266,7 +266,7 @@ ceiling, and the layering tests still prove the three-layer split.
 
 ### R0 — Canonical documentation and build continuity
 
-**Status: in progress**
+**Status: done**
 
 Prerequisites: Git history, current checkout, remote state, and local avatar WIP
 must be reconciled without deleting unrelated work.

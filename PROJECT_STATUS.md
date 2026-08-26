@@ -6,25 +6,23 @@
 
 ## Current headline
 
-**2026-08-25 — `main@dbd421b` contains the verified memory-backed single-agent
-spine and the merged public/private CI safety boundary. The local working tree
-adds the canonical-history/wiki foundation, a company-wide
-Apache-edge/PolyForm-product/proprietary-core licensing candidate, the named
-Temporal Chain with documentation-drift gates, multi-harness launchers, and an
-isolated desktop-avatar workstream. Those local slices are not yet merged,
-released, assigned to a company, or deployed.**
+**2026-08-25 — `main@a5997c6` contains the verified memory-backed single-agent
+spine, public/private CI safety boundary, canonical engineering wiki and build
+history, Temporal Chain tooling/template, Ghost licensing foundation, and
+multi-harness launchers. The remaining local candidate is the isolated desktop
+avatar workstream. Nothing is released, deployed, assigned to a company, or
+counsel-approved.**
 
-The local branch is fast-forwarded to `origin/main@dbd421b` and preserves the
-uncommitted candidate. Public CI is green on the exact merged head; provider-
-free current-tree verification and the publication-slice counts belong in the
-latest history entry and handoff after closeout. See
-`docs/status/CURRENT_STATE.md`, HISTORY#022, and HISTORY#034.
+PR #6 and exact merge-head Public CI are green. The primary working branch is
+fast-forwarded to `origin/main@a5997c6` and preserves only the uncommitted avatar
+candidate. See `docs/status/CURRENT_STATE.md`, HISTORY#022, and HISTORY#035.
 
 Live GitHub reconciliation on 2026-08-25 established:
 
 - repository visibility is public;
 - PR #5 merged the hosted automatic/manual-private workflow boundary;
-- exact `main@dbd421b` passed all three hosted required checks;
+- PR #6 merged the canonical wiki/history/licensing/launcher foundation;
+- exact `main@a5997c6` passed all three hosted required checks after PR #6;
 - all external-contributor workflows require approval;
 - secret scanning and push protection are enabled;
 - Ghost has no repository secret and no assigned runner; and
@@ -43,7 +41,7 @@ mission, orchestration, tools, and operator-facing surfaces. SEAM owns durable
 RAW/MIRL memory, retrieval, provenance, and reasoning records. LangGraph
 checkpoints store execution state only.
 
-The approved local distribution architecture uses Apache-2.0 for thin clients
+The merged Ghost distribution architecture uses Apache-2.0 for thin clients
 and protocols, PolyForm Shield 1.0.0 for user-runnable source-available product
 software, and permanent proprietary protection for undistributed SEAM/MIRL
 internals, planned SEAM-U assets, and hosted control planes. Ghost still uses
@@ -51,8 +49,8 @@ the private in-process SDK; the public API/client topology is planned.
 
 ## Roadmap position
 
-- Temporal Chain (Track T): core, handoff, and drift-gate layers run locally;
-  publication is active; SEAM streams and routing are not installed.
+- Temporal Chain (Track T): core, handoff, drift-gate, and reusable-template
+  layers are merged; SEAM streams/routing and artifact release remain open.
 - Engineering quality (Track Q): tests exist to verify behavior, not to reach a
   count; many behaviors remain unverified. 450-line module ceiling enforced.
   Ghost has no benchmark infrastructure yet; Q3 adopts SEAM's sealed-bundle
@@ -69,14 +67,14 @@ the private in-process SDK; the public API/client topology is planned.
 
 ## Active order
 
-1. Publish the canonical documentation/history/licensing/launcher foundation.
-2. Isolate, review, and publish the desktop-avatar workstream.
-3. Restore trustworthy private integration and dependency handling.
-4. Obtain counsel review and execute founder-to-company IP assignment after
-   the legal entity is formed.
-5. Design and qualify Ghost's public client/API migration without losing its
+1. Design and qualify Ghost's public client/API migration without losing its
    lifecycle, reasoning, and provenance contract.
-6. Complete Stage 1 frozen task/memory evaluations.
+2. Restore trustworthy full integration and dependency handling on hosted CI.
+3. Obtain counsel review and execute founder-to-company IP assignment after
+   the legal entity is formed.
+4. Complete Stage 1 frozen task/memory evaluations.
+5. Resume the isolated desktop-avatar workstream after its asset and
+   consequential-action boundaries are approved.
 
 ## Resume route
 

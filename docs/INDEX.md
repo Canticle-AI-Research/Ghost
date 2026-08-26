@@ -86,7 +86,8 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [history/PATH_MOVES.md](history/PATH_MOVES.md) | ledger that keeps immutable history refs resolvable after a rename |
 | [Temporal Chain template](../templates/temporal-chain/README.md) | reusable standard-library history + git protocol starter for other repositories |
 | [handoffs/INDEX.md](handoffs/INDEX.md) | canonical single-head handoff registry |
-| [handoffs/2026-08-25-canonical-foundation-candidate.md](handoffs/2026-08-25-canonical-foundation-candidate.md) | current isolated canonical-foundation publication boundary |
+| [handoffs/2026-08-25-canonical-foundation-merged.md](handoffs/2026-08-25-canonical-foundation-merged.md) | current merged-foundation and public-API resume boundary |
+| [handoffs/2026-08-25-canonical-foundation-candidate.md](handoffs/2026-08-25-canonical-foundation-candidate.md) | superseded isolated canonical-foundation publication boundary |
 | [handoffs/2026-08-25-public-runner-closed.md](handoffs/2026-08-25-public-runner-closed.md) | superseded safety closure and foundation-publication boundary |
 | [handoffs/2026-08-25-temporal-chain-named.md](handoffs/2026-08-25-temporal-chain-named.md) | superseded Temporal Chain naming and documentation-gate candidate |
 | [handoffs/2026-08-25-company-licensing-foundation.md](handoffs/2026-08-25-company-licensing-foundation.md) | superseded company licensing and product-boundary candidate |
@@ -103,6 +104,7 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [updates/2026-08-19-verified-action-graph.md](updates/2026-08-19-verified-action-graph.md) | verified action graph report |
 | [updates/2026-08-19-operating-system-control.md](updates/2026-08-19-operating-system-control.md) | shell-control report |
 | [updates/2026-08-21-desktop-pet-handoff.md](updates/2026-08-21-desktop-pet-handoff.md) | detailed local avatar handoff |
+| [updates/2026-08-25-canonical-foundation.md](updates/2026-08-25-canonical-foundation.md) | merged wiki, history, Temporal Chain, licensing, and launcher foundation |
 | [updates/2026-08-25-public-runner-safety.md](updates/2026-08-25-public-runner-safety.md) | merged public/private CI safety change |
 | [updates/2026-08-25-stage1-status-correction.md](updates/2026-08-25-stage1-status-correction.md) | append-only correction of Stage 1 completion claim |
 
