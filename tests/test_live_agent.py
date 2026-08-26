@@ -161,25 +161,8 @@ def test_a_thread_resumes_after_the_agent_is_torn_down(tmp_path_factory) -> None
     )
 
 
-def test_memory_crosses_threads_because_scope_is_a_label_not_a_partition(
-    tmp_path_factory,
-) -> None:
-    """Pins documented behaviour that is easy to mistake for a bug.
-
-    `GHOST_SEAM_SCOPE=thread` is a scope LABEL, not a binding to the LangGraph
-    thread id -- `NAMESPACE_AND_SCOPE.md` says so plainly: "the current
-    `thread` label does not itself partition data by LangGraph thread ID."
-    Every thread in a namespace therefore writes to, and recalls from, the same
-    scope.
-
-    That is correct for single-operator use and is exactly what makes Ghost
-    remember across sessions. It is NOT a tenancy boundary, and it matters more
-    now that Ghost can run commands: what it learns while working in one thread
-    is recallable from every other thread in the namespace.
-
-    This test asserts the current behaviour so that implementing real per-thread
-    partitioning has to update it deliberately rather than silently.
-    """
+def test_memory_is_isolated_by_langgraph_thread_id(tmp_path_factory) -> None:
+    """A thread-scoped turn must bind memory to the same checkpoint thread."""
     root = tmp_path_factory.mktemp("live")
     settings = _settings(root / "ghost.db")
     # A neutral fact, not a credential: asking a model to repeat a
@@ -191,17 +174,12 @@ def test_memory_crosses_threads_because_scope_is_a_label_not_a_partition(
             f"Remember: the staging build is codenamed {token}.", thread_id="thread-a"
         )
 
-    with GhostAgent(settings) as second:
-        answer = second.invoke(
-            "What is the staging build codename? Answer with just the codename.",
-            thread_id="thread-b",
-        )
+    with SeamMemory(settings) as memory:
+        own = memory.begin_turn("staging build codename", thread_id="thread-a")
+        foreign = memory.begin_turn("staging build codename", thread_id="thread-b")
 
-    assert token in answer, (
-        "memory did not cross threads. If per-thread partitioning was just "
-        "implemented, this test documents the old behaviour and should be "
-        "rewritten to assert isolation instead."
-    )
+    assert token in own.rendered_memory
+    assert token not in foreign.rendered_memory
 
 
 def test_a_real_tool_call_completes_through_the_verified_turn_api(tmp_path_factory) -> None:

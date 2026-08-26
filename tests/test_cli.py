@@ -8,6 +8,7 @@ handle released -- on every path out, including Ctrl-C mid-answer.
 
 from __future__ import annotations
 
+import json
 from typing import ClassVar
 
 import pytest
@@ -45,10 +46,43 @@ class FakeGhost:
         self.close()
 
 
+class FakeOperatorMemory:
+    instances: ClassVar[list[FakeOperatorMemory]] = []
+
+    def __init__(self, settings) -> None:
+        self.settings = settings
+        self.calls: list[tuple[str, tuple[object, ...], dict[str, object]]] = []
+        self.closed = False
+        FakeOperatorMemory.instances.append(self)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc: object) -> None:
+        self.closed = True
+
+    def _call(self, name: str, *args: object, **kwargs: object) -> dict[str, object]:
+        self.calls.append((name, args, kwargs))
+        return {"accepted": True, "operation": name}
+
+    def remember(self, *args: object, **kwargs: object):
+        return self._call("remember", *args, **kwargs)
+
+    def recall(self, *args: object, **kwargs: object):
+        return self._call("recall", *args, **kwargs)
+
+    def correct(self, *args: object, **kwargs: object):
+        return self._call("correct", *args, **kwargs)
+
+    def forget(self, *args: object, **kwargs: object):
+        return self._call("forget", *args, **kwargs)
+
+
 @pytest.fixture(autouse=True)
 def _isolate(monkeypatch):
     """Never load a real .env, build a real agent, or touch a real MIRL store."""
     FakeGhost.instances = []
+    FakeOperatorMemory.instances = []
     monkeypatch.setattr(cli, "load_dotenv", lambda *a, **k: False)
     monkeypatch.setattr(cli, "GhostAgent", FakeGhost)
     monkeypatch.setenv("GHOST_SEAM_DB", "/nonexistent/ghost-cli-test.db")
@@ -122,3 +156,80 @@ def test_keyboard_interrupt_reports_130_and_still_closes(monkeypatch, capsys) ->
 def test_parser_defaults_to_the_default_thread() -> None:
     args = cli._parser().parse_args([])
     assert args.prompt == [] and args.thread_id == "default"
+
+
+def test_memory_remember_uses_the_operator_boundary(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(cli, "SeamMemory", FakeOperatorMemory)
+    assert cli.main(
+        ["memory", "remember", "The release code is violet.", "--thread-id", "t-7"]
+    ) == 0
+    instance = FakeOperatorMemory.instances[0]
+    assert instance.calls == [
+        ("remember", ("The release code is violet.",), {"thread_id": "t-7"})
+    ]
+    assert instance.closed is True
+    assert json.loads(capsys.readouterr().out)["operation"] == "remember"
+
+
+def test_memory_recall_selects_history_view(monkeypatch) -> None:
+    monkeypatch.setattr(cli, "SeamMemory", FakeOperatorMemory)
+    assert cli.main(
+        [
+            "memory",
+            "recall",
+            "release code",
+            "--view",
+            "history",
+            "--limit",
+            "12",
+            "--thread-id",
+            "t-7",
+        ]
+    ) == 0
+    assert FakeOperatorMemory.instances[0].calls == [
+        (
+            "recall",
+            ("release code",),
+            {"thread_id": "t-7", "limit": 12, "view": "history"},
+        )
+    ]
+
+
+def test_memory_correction_gets_a_stable_default_idempotency_key(monkeypatch) -> None:
+    monkeypatch.setattr(cli, "SeamMemory", FakeOperatorMemory)
+    argv = ["memory", "correct", "mem_abc", "New fact", "--thread-id", "t-7"]
+    assert cli.main(argv) == 0
+    first_key = FakeOperatorMemory.instances[-1].calls[0][2]["idempotency_key"]
+    assert cli.main(argv) == 0
+    second_key = FakeOperatorMemory.instances[-1].calls[0][2]["idempotency_key"]
+    assert first_key == second_key
+    assert str(first_key).startswith("ghost-correct-")
+
+
+def test_memory_forget_requires_exact_confirmation(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(cli, "SeamMemory", FakeOperatorMemory)
+    assert cli.main(
+        ["memory", "forget", "mem_abc", "--confirm", "mem_wrong"]
+    ) == 2
+    assert FakeOperatorMemory.instances == []
+    assert "exactly match" in capsys.readouterr().err
+
+
+def test_memory_forget_forwards_an_explicit_idempotency_key(monkeypatch) -> None:
+    monkeypatch.setattr(cli, "SeamMemory", FakeOperatorMemory)
+    assert cli.main(
+        [
+            "memory",
+            "forget",
+            "mem_abc",
+            "--confirm",
+            "mem_abc",
+            "--idempotency-key",
+            "operator-key-1",
+        ]
+    ) == 0
+    assert FakeOperatorMemory.instances[0].calls[0] == (
+        "forget",
+        ("mem_abc",),
+        {"thread_id": "default", "idempotency_key": "operator-key-1"},
+    )

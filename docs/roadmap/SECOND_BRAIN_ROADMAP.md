@@ -73,7 +73,7 @@ capability gate, and no track closes without its Q gates.
 | R4 public API/release discipline | in progress | HTTP parity + clean public install merged; package release and deployment proof pending |
 | G0 verified memory spine | done | landed through `main@25f47c4` |
 | G1 dependable single agent | in progress | 20-case frozen BIL-0 suite + step ceiling implemented; live/release-candidate exit proof remains |
-| G2 deliberate memory | planned | every successful turn still ingested wholesale |
+| G2 deliberate memory | in progress | mechanism candidate covers admission/mutation/isolation; sealed quality comparison remains |
 | G3 graph-aware specialists | planned | waits on G1 and G2 gates |
 | G4 measured product | exploratory | waits on repository, safety, memory, recovery gates |
 | U0 static identity | done | SVG/PNG/ICO/faces and reproducible toolkit landed |
@@ -189,11 +189,16 @@ Measured on the current working tree:
 
 | Measure | Value |
 |---|---|
-| Provider-free tests collected | 190 |
+| Provider-free tests collected | 257 |
 | Live-provider tests (approval-gated) | 8 |
-| Source under `src/` and `tools/` | ~4,270 lines |
-| Test code | ~3,190 lines |
-| Largest module | `tools/branding/assets.py` (402 lines) |
+| Python source under `src/` and `tools/` | 4,145 lines |
+| Python test code | 4,318 lines |
+| Largest module | `src/ghost/seam_memory.py` (435 lines) |
+
+Measured with `uv run pytest --collect-only`, Python-file `wc -l` totals under
+`src/`, `tools/`, and `tests/`, and a descending per-file line count on this
+deliberate-memory candidate. Counts describe the current tree; they are not a
+quality target or maturity claim.
 
 ### Q1 — Behavior verification
 
@@ -251,8 +256,9 @@ raise the ceiling.
 Deliverables:
 
 1. tighten the ceiling toward 300 lines as modules split;
-2. split the current largest surfaces — `tools/branding/assets.py`
-   (402 lines) and `src/ghost/tools.py` (360 lines) — along their real seams;
+2. split the current largest surfaces — `src/ghost/seam_memory.py` (435
+   lines), `tools/branding/assets.py` (402 lines), and `src/ghost/tools.py`
+   (360 lines) — along their real seams;
 3. keep one clear responsibility per module, with the layer rules in
    `tests/test_layering.py` continuing to assert the SDK/lifecycle/application
    split; and
@@ -439,7 +445,7 @@ naming its no-memory baseline and integrity level, not a reported score.
 
 ### G2 — Deliberate and correctable memory
 
-**Status: planned**
+**Status: in progress**
 
 Prerequisite: G1 exit and current SEAM SDK lifecycle contract review.
 
@@ -454,6 +460,11 @@ Deliverables:
 7. principal/workspace/project/thread boundary contract; and
 8. eval fixtures for relevance, contradiction, idempotency, staleness, and
    zero cross-boundary leakage.
+
+Local candidate coverage now implements all eight mechanism surfaces with
+provider-free contract tests. G2 does not reach its exit gate from those tests:
+the fixed memory-quality corpus still needs a sealed Q3 bundle diffed against a
+named baseline, exact-head CI, and protected publication.
 
 Exit gate: fixed evaluations show relevant recall improvement without storing
 every successful turn, corrections win over stale claims, forgetting is

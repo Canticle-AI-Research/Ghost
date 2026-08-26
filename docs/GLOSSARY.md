@@ -87,7 +87,8 @@ vector indexes are derived projections.
 
 The policy that decides whether an observation should become durable memory,
 what kind of memory it is, and what evidence and trust state it carries. Ghost
-currently ingests every successful root turn; selective admission is planned.
+implements deterministic `admit`, `reject`, and `review` decisions; only admit
+causes SEAM ingest.
 
 ### Recall
 

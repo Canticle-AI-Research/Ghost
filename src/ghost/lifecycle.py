@@ -27,6 +27,7 @@ from uuid import uuid4
 
 from .config import GhostSettings
 from .context import GhostTurnContext
+from .memory_policy import MemoryAdmission
 from .seam_memory import SeamTurn
 
 
@@ -76,7 +77,7 @@ class AgentGraph(Protocol):
 class MemoryLayer(Protocol):
     """The SEAM operations a turn needs. `SeamMemory` satisfies this."""
 
-    def begin_turn(self, user_input: str) -> SeamTurn: ...
+    def begin_turn(self, user_input: str, *, thread_id: str) -> SeamTurn: ...
 
     def record_actions(
         self, turn: SeamTurn, attempts: Sequence[ToolAttempt]
@@ -91,6 +92,7 @@ class MemoryLayer(Protocol):
         thread_id: str,
         turn_id: str,
         verification_ids: Sequence[str] = (),
+        admission: MemoryAdmission,
     ) -> tuple[str, ...]: ...
 
     def fail_turn(
@@ -136,6 +138,7 @@ def run_turn(
     turn_id: str | None = None,
     max_steps: int = 25,
     extract_attempts: Callable[[dict[str, Any]], Sequence[ToolAttempt]] | None = None,
+    admit_memory: Callable[[str, str], MemoryAdmission] | None = None,
 ) -> str:
     """Execute one turn under SEAM's contract, and return the answer.
 
@@ -160,13 +163,14 @@ def run_turn(
         raise ValueError("max_steps must be between 2 and 100")
 
     resolved_turn_id = turn_id or uuid4().hex
-    seam_turn = memory.begin_turn(resolved_input)
+    seam_turn = memory.begin_turn(resolved_input, thread_id=thread_id)
 
     # Everything between begin_turn and complete_turn runs inside an open SEAM
     # reasoning run. If it raises -- a model error, a tool timeout, a
     # KeyboardInterrupt mid-answer -- the run must still be closed, or the
     # store accumulates one dangling run per crash. Tools make this the common
     # path rather than the rare one.
+    completion_accepted = False
     try:
         result = graph.invoke(
             {"messages": [{"role": "user", "content": resolved_input}]},
@@ -181,27 +185,41 @@ def run_turn(
             raise RuntimeError("Ghost returned no messages")
         answer = message_text(messages[-1])
         attempts = tuple(extract_attempts(result)) if extract_attempts else ()
+        verification_ids = (
+            memory.record_actions(seam_turn, attempts) if attempts else ()
+        )
+        admission = (
+            admit_memory(resolved_input, answer)
+            if admit_memory is not None
+            else MemoryAdmission("admit", "conversation", "legacy_auto")
+        )
+        memory.complete_turn(
+            seam_turn,
+            user_input=resolved_input,
+            assistant_output=answer,
+            thread_id=thread_id,
+            turn_id=resolved_turn_id,
+            verification_ids=verification_ids,
+            admission=admission,
+        )
+        completion_accepted = True
     except BaseException as error:
         # BaseException, not Exception: a cancelled or interrupted turn leaves
         # exactly the same dangling run as a failed one.
-        memory.fail_turn(
-            seam_turn,
-            error=error,
-            thread_id=thread_id,
-            turn_id=resolved_turn_id,
-        )
+        if not completion_accepted:
+            try:
+                memory.fail_turn(
+                    seam_turn,
+                    error=error,
+                    thread_id=thread_id,
+                    turn_id=resolved_turn_id,
+                )
+            except BaseException as finalization_error:
+                error.add_note(
+                    "Ghost also failed to finalize the open SEAM turn: "
+                    f"{type(finalization_error).__name__}"
+                )
         raise
-
-    verification_ids = memory.record_actions(seam_turn, attempts) if attempts else ()
-
-    memory.complete_turn(
-        seam_turn,
-        user_input=resolved_input,
-        assistant_output=answer,
-        thread_id=thread_id,
-        turn_id=resolved_turn_id,
-        verification_ids=verification_ids,
-    )
     return answer
 
 

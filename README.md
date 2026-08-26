@@ -116,6 +116,9 @@ export SEAM_API_TOKEN="<secret>"
 export GHOST_CHECKPOINT_DB="$PWD/.state/checkpoints.db"
 export GHOST_SEAM_NAMESPACE="ghost.default"
 export GHOST_SEAM_SCOPE="thread"
+export GHOST_WORKSPACE="default"
+export GHOST_PROJECT="default"
+export GHOST_MEMORY_ADMISSION="explicit"
 ```
 
 Run interactively by omitting the prompt:
@@ -188,20 +191,34 @@ durable memory.
 
 ## Memory lifecycle
 
-For every successful root turn, Ghost:
+For every root turn, Ghost:
 
 1. asks the SEAM service to open a reasoning-backed turn;
 2. receives bounded public memories selected with graph expansion;
 3. injects that bounded text transiently into model context;
 4. runs the DeepAgent;
 5. sends tool attempts for server-side decision/check recording;
-6. completes the turn through the public API, where SEAM derives passed checks
-   and evidence server-side before ingest; or
-7. sends only the exception class to reject a failed turn without ingest.
+6. deterministically classifies a completed turn as admit, reject, or review;
+7. completes through the public API, where SEAM records that decision and
+   ingests only admitted turns; or
+8. sends only the exception class to reject a failed turn without ingest.
 
 Recall happens before the current turn is ingested, so a response cannot cite
 its own newly written memory. Retrieved text is labeled as untrusted evidence,
 not instructions, and does not accumulate in the LangGraph checkpoint.
+
+The default `explicit` policy stores an explicit remember request, leaves an
+unconfirmed durable-looking fact for review, and rejects ordinary conversation.
+The model's own output cannot promote itself. Memory mutation remains outside
+the model tool surface:
+
+```bash
+uv run ghost memory remember "I prefer concise answers." --thread-id default
+uv run ghost memory recall "answer style" --thread-id default
+uv run ghost memory correct mem_0123456789abcdef01234567 "I prefer concise answers with citations."
+uv run ghost memory recall "answer style" --view history
+uv run ghost memory forget mem_89abcdef0123456789abcdef --confirm mem_89abcdef0123456789abcdef
+```
 
 ## Verification
 
@@ -233,7 +250,8 @@ The two CI workflows divide automatic and explicitly paid work as follows:
 |---|---|---|
 | `repo-hygiene` | yes | ruff, docs/history, CI contract, diff and secret scans |
 | `brand-assets` | yes | vendored brand toolkit on hosted Chrome/fontconfig |
-| `tests` | yes | full provider-free suite on Python 3.11 and 3.13 |
+| `tests (3.11)` | yes | full provider-free suite on Python 3.11 |
+| `tests (3.13)` | yes | full provider-free suite on Python 3.13 |
 | `package-smoke` | yes | wheel/sdist build, clean install, and `ghost --help` |
 | `stage1-evals` | yes | frozen fixture validation, BIL-0 seal/verify, and safety gate |
 | `live` | no | paid provider plus configured SEAM service integration |
@@ -248,8 +266,9 @@ runner.
 Ghost is public. Automatic workflows run only on GitHub-hosted infrastructure,
 external contributors require workflow approval, repository Actions have
 read-only defaults, secret scanning and push protection are enabled, and no
-self-hosted runner is assigned to Ghost. Protected `main` requires the three
-hosted jobs above. Private CI cannot start automatically and paid live tests
+self-hosted runner is assigned to Ghost. Protected `main` requires exactly
+`repo-hygiene`, `brand-assets`, `tests (3.11)`, `tests (3.13)`,
+`package-smoke`, and `stage1-evals`. Private CI cannot start automatically and paid live tests
 require an additional explicit input.
 
 The full threat model, exact merge/run evidence, settings boundary, and rules

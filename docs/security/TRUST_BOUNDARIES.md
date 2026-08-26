@@ -11,10 +11,10 @@ authorization grant, or verified fact.
 | Boundary | Current control | Remaining work |
 |---|---|---|
 | Recalled memory to model | labeled untrusted, angle brackets escaped, transient middleware | adversarial eval corpus and richer content-block handling |
-| Model output to MIRL | persisted only after a successful root result; provenance retained | selective admission and optional review gate |
+| Model output to MIRL | successful turn plus explicit provider-free admission decision; model output cannot self-promote | operator review queue UI and higher-integrity eval |
 | Graph to answer | graph hits resolve back to MIRL IDs | user-visible evidence-path policy |
 | Tool request to external action | DeepAgents framework boundary | explicit tool allowlist, permissions, HITL, timeouts |
-| User/workspace isolation | service-derived principal plus configured namespace/scope | Ghost workspace/session UX and hosted authorization proof |
+| User/workspace isolation | service-derived principal plus namespace/workspace/project/scope/thread boundary | hosted authorization proof and migration UX |
 | Secret handling | ignored env files; no key copied into repository | deployment secret manager and log redaction tests |
 | SEAM service boundary | public HTTP adapter, opaque handles, no private source dependency | compatible release/deployment and recovery proof |
 | SEAM response to Ghost | streamed 8 MiB cap before JSON parsing | deployment latency/body telemetry without content logging |
@@ -36,10 +36,15 @@ replacement, or cross-user retrieval.
 
 ## Canonical-memory admission
 
-Current Ghost automatically ingests every successful root turn. Model output is
-therefore durable provenance-bearing memory but should not be treated as
-independently corroborated truth. The planned admission layer must attach trust,
-evidence, time, and review requirements appropriate to the memory kind.
+Current Ghost sends a deterministic admission decision with every successful
+root turn. The default admits explicit remember requests, rejects ordinary
+conversation and mutation requests, and marks unconfirmed durable candidates
+for review without storing them. The classifier reads operator input only;
+model output cannot promote itself. `GHOST_MEMORY_ADMISSION=all` is an explicit
+compatibility override and should not be mistaken for corroboration.
+
+Remember, correct, and forget are CLI-only operator operations. They are not
+registered as model tools, so recalled prompt injection cannot reach them.
 
 No hidden chain-of-thought, raw provider payload, credential, private key,
 session link, or unrestricted tool log should become MIRL knowledge.

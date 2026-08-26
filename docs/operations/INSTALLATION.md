@@ -79,6 +79,9 @@ SEAM_BASE_URL=http://127.0.0.1:8765
 SEAM_API_TOKEN=
 GHOST_SEAM_NAMESPACE=ghost.default
 GHOST_SEAM_SCOPE=thread
+GHOST_WORKSPACE=default
+GHOST_PROJECT=default
+GHOST_MEMORY_ADMISSION=explicit
 GHOST_CHECKPOINT_DB=~/.local/share/ghost/checkpoints.db
 ```
 
@@ -90,6 +93,9 @@ The service must provide:
 
 ```text
 POST /v1/memories/recall
+POST /v1/memories
+POST /v1/memories/correct
+POST /v1/memories/delete
 POST /v1/agent/turns/begin
 POST /v1/agent/turns/actions
 POST /v1/agent/turns/complete

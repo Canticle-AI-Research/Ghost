@@ -26,6 +26,33 @@ uv run ghost --thread-id research-a
 
 Interactive commands are `/exit` and `/quit`. EOF exits zero. Ctrl-C exits 130.
 
+## `ghost memory`: deliberate memory operations
+
+These commands call the opaque SEAM lifecycle directly and do not construct a
+model or LangGraph checkpoint.
+
+```text
+ghost memory remember TEXT [--thread-id ID]
+ghost memory recall QUERY [--view current|history] [--limit N] [--thread-id ID]
+ghost memory correct MEM_ID TEXT [--idempotency-key KEY] [--thread-id ID]
+ghost memory forget MEM_ID --confirm MEM_ID [--idempotency-key KEY] [--thread-id ID]
+```
+
+Examples:
+
+```bash
+uv run ghost memory remember "I prefer concise, evidence-first answers." --thread-id default
+uv run ghost memory recall "answer style" --thread-id default
+uv run ghost memory recall "answer style" --view history --thread-id default
+uv run ghost memory correct mem_0123456789abcdef01234567 "I prefer concise answers with citations." --thread-id default
+uv run ghost memory forget mem_89abcdef0123456789abcdef --confirm mem_89abcdef0123456789abcdef --thread-id default
+```
+
+Correction and forgetting generate deterministic idempotency keys from the
+operation when no key is supplied, so repeating the exact command is safe.
+`forget` refuses to contact SEAM unless `--confirm` exactly repeats the target
+reference. Output is stable JSON containing only the public response.
+
 ## Environment/install commands
 
 ### `uv lock --check`

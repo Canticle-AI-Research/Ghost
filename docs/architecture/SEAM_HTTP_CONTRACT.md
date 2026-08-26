@@ -24,10 +24,18 @@ not continue in memory-degraded mode.
 Every turn request includes:
 
 ```json
-{"namespace": "ghost.default", "scope": "thread"}
+{
+  "namespace": "ghost.default",
+  "scope": "thread",
+  "workspace": "default",
+  "project": "default",
+  "session_id": "langgraph-thread-id"
+}
 ```
 
-These are public partitions, not proof of identity. The service derives the
+Ghost includes `session_id` whenever scope is `thread`; the exact same thread
+value owns checkpoint execution and durable-memory partitioning. These are
+public partitions, not proof of identity. The service derives the
 principal from authentication and binds opaque handles to that principal and
 exact partition. Ghost never sends a private tenant ID.
 
@@ -56,6 +64,9 @@ foreign handle             -> content-free 404
 {
   "namespace": "ghost.default",
   "scope": "thread",
+  "workspace": "default",
+  "project": "default",
+  "session_id": "thread-42",
   "query": "What does the operator prefer?",
   "limit": 8,
   "graph_hops": 2,
@@ -71,7 +82,13 @@ Required response subset:
 {
   "turn_id": "opaque-turn-handle",
   "memories": [
-    {"id": "mem_opaque-handle", "text": "bounded public memory", "score": 0.91}
+    {
+      "id": "mem_opaque-handle",
+      "text": "bounded public memory",
+      "score": 0.91,
+      "status": "asserted",
+      "created_at": "2026-08-25T00:00:00+00:00"
+    }
   ]
 }
 ```
@@ -88,6 +105,9 @@ the text enters model context. An empty list becomes an empty context string.
 {
   "namespace": "ghost.default",
   "scope": "thread",
+  "workspace": "default",
+  "project": "default",
+  "session_id": "thread-42",
   "turn_id": "opaque-turn-handle",
   "attempts": [
     {
@@ -128,21 +148,41 @@ disabled or securely redacted.
 {
   "namespace": "ghost.default",
   "scope": "thread",
+  "workspace": "default",
+  "project": "default",
+  "session_id": "thread-42",
   "turn_id": "opaque-turn-handle",
   "user_input": "Remember that I prefer concise evidence.",
-  "assistant_output": "I will remember that preference."
+  "assistant_output": "I will remember that preference.",
+  "memory_admission": {
+    "decision": "admit",
+    "kind": "preference",
+    "reason_code": "explicit_remember"
+  }
 }
 ```
 
 Required response subset:
 
 ```json
-{"accepted": true, "receipt_id": "rcpt_opaque-handle"}
+{
+  "accepted": true,
+  "receipt_id": "rcpt_opaque-handle",
+  "memory_count": 1,
+  "memory_admission": {
+    "decision": "admit",
+    "kind": "preference",
+    "reason_code": "explicit_remember"
+  }
+}
 ```
 
-Ghost deliberately omits its LangGraph thread ID, client turn ID, evidence IDs,
-and verification IDs. The service owns the authoritative run, retrieval ledger,
+Ghost deliberately omits its client turn ID, evidence IDs, and verification
+IDs. It does send the LangGraph thread ID as the memory `session_id`. The
+service owns the authoritative run, retrieval ledger,
 passed-check set, deterministic source identity, ingest, and terminal transition.
+Only `admit` persists the exchange; `reject` and `review` accept the reasoning
+outcome with `memory_count: 0`.
 
 ## Fail
 
@@ -152,6 +192,9 @@ passed-check set, deterministic source identity, ingest, and terminal transition
 {
   "namespace": "ghost.default",
   "scope": "thread",
+  "workspace": "default",
+  "project": "default",
+  "session_id": "thread-42",
   "turn_id": "opaque-turn-handle",
   "error_type": "RuntimeError"
 }
@@ -170,13 +213,34 @@ service rejects without ingest, then Ghost re-raises the original exception.
   "query": "release captain",
   "namespace": "ghost.default",
   "scope": "thread",
-  "limit": 5
+  "workspace": "default",
+  "project": "default",
+  "session_id": "thread-42",
+  "limit": 5,
+  "view": "current"
 }
 ```
 
 The response `memories` list uses the same public item shape as begin. Ghost
 adapts it to the existing read-only tool format; the model receives no route
 that can complete, fail, delete, correct, promote, or mutate memory.
+
+## Operator memory routes
+
+The CLI, never a model tool, also uses:
+
+```text
+POST /v1/memories          explicit remember
+POST /v1/memories/recall   current or history view
+POST /v1/memories/correct  additive replacement + supersession
+POST /v1/memories/delete   auditable soft-delete
+```
+
+Every route carries the same dimensions. Correction and deletion additionally
+carry an idempotency key and opaque `mem_` handle. Correction accepts exactly
+one handle; delete is bounded by the server. A foreign or cross-boundary handle
+returns content-free 404. `history` returns lifecycle status but does not
+register retired handles for reuse.
 
 ## Error handling
 

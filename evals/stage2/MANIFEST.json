@@ -1,0 +1,18 @@
+{
+  "case_count": 10,
+  "case_ids": [
+    "admission-explicit-001",
+    "admission-review-001",
+    "admission-transient-001",
+    "correction-current-001",
+    "correction-repeat-001",
+    "forget-current-001",
+    "history-stale-001",
+    "model-nonpromotion-001",
+    "project-isolation-001",
+    "thread-isolation-001"
+  ],
+  "fixture_sha256": "32ed350b167b1a412e9afabcdc75657afcc96c141937d267dcdb9a5830c69a7c",
+  "status": "frozen",
+  "suite_id": "ghost-stage2-memory-governance-v1"
+}

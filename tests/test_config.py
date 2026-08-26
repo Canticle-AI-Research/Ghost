@@ -23,6 +23,9 @@ def _clear(monkeypatch) -> None:
         "GHOST_SEAM_DB",
         "GHOST_SEAM_NAMESPACE",
         "GHOST_SEAM_SCOPE",
+        "GHOST_WORKSPACE",
+        "GHOST_PROJECT",
+        "GHOST_MEMORY_ADMISSION",
         "SEAM_BASE_URL",
         "SEAM_API_TOKEN",
         "GHOST_SEAM_TIMEOUT",
@@ -39,6 +42,9 @@ def test_defaults_are_operator_local_and_conservative(monkeypatch) -> None:
 
     assert settings.namespace == "ghost.default"
     assert settings.scope == "thread"
+    assert settings.workspace == "default"
+    assert settings.project == "default"
+    assert settings.memory_admission == "explicit"
     assert settings.recall_budget == 8
     assert settings.graph_hops == 2
     assert settings.max_steps == 25
@@ -55,6 +61,9 @@ def test_environment_overrides_are_honoured(monkeypatch) -> None:
     monkeypatch.setenv("GHOST_MODEL", "anthropic:claude-opus-5")
     monkeypatch.setenv("GHOST_SEAM_NAMESPACE", "ghost.research")
     monkeypatch.setenv("GHOST_SEAM_SCOPE", "project")
+    monkeypatch.setenv("GHOST_WORKSPACE", "canticle")
+    monkeypatch.setenv("GHOST_PROJECT", "ghost")
+    monkeypatch.setenv("GHOST_MEMORY_ADMISSION", "off")
     monkeypatch.setenv("GHOST_RECALL_BUDGET", "16")
     monkeypatch.setenv("GHOST_GRAPH_HOPS", "0")
     monkeypatch.setenv("GHOST_MAX_STEPS", "40")
@@ -67,6 +76,9 @@ def test_environment_overrides_are_honoured(monkeypatch) -> None:
     assert settings.model == "anthropic:claude-opus-5"
     assert settings.namespace == "ghost.research"
     assert settings.scope == "project"
+    assert settings.workspace == "canticle"
+    assert settings.project == "ghost"
+    assert settings.memory_admission == "off"
     assert settings.recall_budget == 16
     assert settings.graph_hops == 0
     assert settings.max_steps == 40
@@ -117,6 +129,22 @@ def test_non_numeric_timeout_is_rejected(monkeypatch) -> None:
     _clear(monkeypatch)
     monkeypatch.setenv("GHOST_SEAM_TIMEOUT", "eventually")
     with pytest.raises(ValueError, match="must be a number"):
+        GhostSettings.from_env()
+
+
+@pytest.mark.parametrize(
+    ("name", "value"),
+    [
+        ("GHOST_MEMORY_ADMISSION", "maybe"),
+        ("GHOST_SEAM_SCOPE", "tenant"),
+        ("GHOST_WORKSPACE", "bad/workspace"),
+        ("GHOST_PROJECT", "-bad"),
+    ],
+)
+def test_invalid_memory_boundary_settings_fail_at_startup(monkeypatch, name, value):
+    _clear(monkeypatch)
+    monkeypatch.setenv(name, value)
+    with pytest.raises(ValueError):
         GhostSettings.from_env()
 
 

@@ -14,11 +14,18 @@ The current suite verifies:
 - blank-input rejection before recall;
 - OpenAI reasoning models use the Responses API;
 - the opaque adapter recalls, records checks, completes, and rejects through
-  the exact public route shapes; and
-- server-side tests prove accepted replay idempotency and failed-turn non-ingest.
+  the exact public route shapes;
+- server-side tests prove accepted replay idempotency and failed-turn non-ingest;
+- fixed provider-free policy cases prove explicit admission, transient
+  rejection, unconfirmed review, and model-output non-promotion;
+- opaque lifecycle fakes prove current/history correction, forgetting, visible
+  status/reference metadata, and zero cross-thread leakage; and
+- SEAM HTTP tests prove additive supersession, correction idempotency/conflict,
+  retained soft-delete history, and principal/workspace/project/thread denial.
 
 A live temporary-store smoke also verified recall across fresh Ghost processes.
-These are foundation checks, not a product-quality benchmark.
+These are mechanism and safety checks, not a product-quality benchmark or a
+claim that memory improves task outcomes.
 
 The frozen `ghost-stage1-frozen-v1` corpus now supplies 20 immutable cases and
 a credential-free BIL-0 sealed smoke runner. It establishes the evaluation
@@ -27,6 +34,12 @@ model runs, it is not product-quality evidence. See
 [`STAGE1_FROZEN_SUITE.md`](STAGE1_FROZEN_SUITE.md).
 Its first clean-source bundle is tracked and independently verifiable, while
 remaining explicitly non-claimable.
+
+The frozen `ghost-stage2-memory-governance-v1` fixture adds 10 provider-free
+mechanism cases for admission relevance, correction/contradiction,
+idempotency, stale history, forgetting, and isolation. Its canonical fixture
+hash is `32ed350b167b1a412e9afabcdc75657afcc96c141937d267dcdb9a5830c69a7c`.
+It is not a sealed answer-quality comparison and cannot close G2 by itself.
 
 ## Evaluation layers
 

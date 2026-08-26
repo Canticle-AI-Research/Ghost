@@ -79,9 +79,9 @@ sequenceDiagram
     G->>S: record_actions(attempts)
     S->>API: POST /v1/agent/turns/actions
     API->>DB: decisions + hashed checks
-    G->>S: complete_turn(user, answer)
+    G->>S: complete_turn(user, answer, admission)
     S->>API: POST /v1/agent/turns/complete
-    API->>DB: compile, persist, finalize with server-derived refs
+    API->>DB: record decision; compile only if admitted; finalize
     API-->>S: accepted + opaque receipt
 ```
 
@@ -96,9 +96,9 @@ sequenceDiagram
 | Persistent LangGraph checkpoint | Current | `SqliteSaver` in `src/ghost/application.py` |
 | Read-first tools | Current | memory recall, bounded file read and literal search |
 | Opt-in shell control | Current | unsandboxed, approval/timeout/verification bounded |
-| Frozen Stage 1 task qualification | Planned next | roadmap G1 exit gate |
-| Selective memory admission | Planned | roadmap stage 2 |
-| Correction and forgetting UX | Planned | roadmap stage 2 |
+| Frozen Stage 1 task substrate | Current | merged BIL-0 suite; provider-live exit proof remains |
+| Selective memory admission | Branch-local candidate | `src/ghost/memory_policy.py` |
+| Correction and forgetting UX | Branch-local candidate | `ghost memory` commands + opaque SEAM routes |
 | Custom research/coding/verifier subagents | Planned | roadmap stage 3 |
 | Authenticated service and UI | Planned | roadmap stage 4 |
 

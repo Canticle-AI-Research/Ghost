@@ -6,18 +6,28 @@
 
 ## Current headline
 
-**2026-08-25 — `main@86774ef` publishes Ghost's public-only install boundary,
+**2026-08-26 — deliberate-memory mechanisms are branch-local and in progress.**
+The candidate adds deterministic admit/reject/review policy, explicit remember,
+additive correction/supersession, scoped forgetting, current/history views,
+opaque lifecycle status/references, and concrete
+principal/workspace/project/thread transport isolation. Provider-free behavior
+tests are local evidence only; protected merge and a sealed Q3 memory-quality
+comparison remain open. The avatar worktree is untouched.
+
+**2026-08-25 — `main@e1d1b9a` publishes Ghost's public-only install boundary,
 opaque SEAM lifecycle, and frozen Stage 1 evaluation substrate. PR #10 merged
 20 immutable cases, real-lifecycle two-arm BIL-0 execution, sealed
 verification/gating, a hard turn-step ceiling, and complete rebuild/operator
-documentation. Exact main run `32927031615` passed all six protected jobs,
+documentation. Exact main run `32927357539` passed all six protected jobs,
 including the newly required `stage1-evals`. The deterministic baseline remains
 non-claimable; provider-live and release-candidate qualification are still open.
 The isolated avatar remains separate WIP. No package or service is released or
 deployed, and nothing is assigned to a company or counsel-approved.**
 
-PRs #6 through #10 and their exact merge-head Public CI are green. SEAM PR #231
-is protected-main server source; Ghost PR #8 is protected-main client source.
+PRs #6 through #10 and their exact merge-head Public CI are green. SEAM PR #233
+is protected-main deliberate-memory server source at `main@0b07244`; Ghost PR
+#8 is protected-main base client source, while this client-policy extension is
+still branch-local.
 This proves public installability and contract parity, not a compatible hosted
 endpoint, package release, or deployment. See `docs/status/CURRENT_STATE.md`,
 HISTORY#022, HISTORY#038, and the current handoff.
@@ -29,8 +39,8 @@ Live GitHub reconciliation on 2026-08-25 established:
 - PR #6 merged the canonical wiki/history/licensing/launcher foundation;
 - PR #7 merged the canonical follow-up through `main@10a2b45`;
 - PR #10 merged the frozen Stage 1 evaluation substrate;
-- exact `main@86774ef` passed all six hosted required checks in run
-  `32927031615`;
+- exact `main@e1d1b9a` passed all six hosted required checks in run
+  `32927357539`;
 - all external-contributor workflows require approval;
 - secret scanning and push protection are enabled;
 - Ghost has no repository secret and no assigned runner; and
@@ -69,7 +79,8 @@ qualification, release, and deployment remain incomplete.
 - Stage 1 dependable single agent: 20-case frozen corpus, smoke verifier/gate,
   and step ceiling are merged; provider-live and release-candidate exit proof
   remain incomplete.
-- Stage 2 deliberate memory: not implemented.
+- Stage 2 deliberate memory: branch-local mechanism candidate; not merged or
+  quality-qualified.
 - Stage 3 graph-aware specialists: not implemented.
 - Stage 4 measured product: exploratory.
 - Desktop avatar: local/in-progress parallel UX track, not a roadmap gate.
@@ -80,8 +91,8 @@ qualification, release, and deployment remain incomplete.
 
 1. Obtain counsel review and execute founder-to-company IP assignment after
    the legal entity is formed.
-2. Implement deliberate memory admission, correction, forgetting, and
-   isolation against the now-frozen Stage 1 baseline.
+2. Publish deliberate memory admission, correction, forgetting, and isolation,
+   then create the sealed Q3 quality comparison.
 3. Complete provider-live and exact release-candidate Stage 1 qualification
    only with explicit spend/release authorization.
 4. Resume the isolated desktop-avatar workstream after its asset and

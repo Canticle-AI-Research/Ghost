@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import sys
 from collections.abc import Sequence
 
@@ -10,6 +12,7 @@ from dotenv import load_dotenv
 
 from .application import GhostAgent
 from .config import GhostSettings
+from .seam_memory import SeamMemory, SeamTransportError
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -17,6 +20,95 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("prompt", nargs="*", help="one-shot prompt; omit for interactive mode")
     parser.add_argument("--thread-id", default="default", help="LangGraph conversation thread")
     return parser
+
+
+def _memory_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="ghost memory",
+        description="Inspect and mutate Ghost's durable SEAM memory",
+    )
+    commands = parser.add_subparsers(dest="memory_command", required=True)
+
+    remember = commands.add_parser("remember", help="store one explicit memory")
+    remember.add_argument("text")
+    _add_memory_boundary_args(remember)
+
+    recall = commands.add_parser("recall", help="search current or historical memory")
+    recall.add_argument("query")
+    recall.add_argument("--view", choices=("current", "history"), default="current")
+    recall.add_argument("--limit", type=int, default=None)
+    _add_memory_boundary_args(recall)
+
+    correct = commands.add_parser("correct", help="supersede one memory")
+    correct.add_argument("memory_id")
+    correct.add_argument("text")
+    correct.add_argument("--idempotency-key")
+    _add_memory_boundary_args(correct)
+
+    forget = commands.add_parser("forget", help="soft-delete one memory")
+    forget.add_argument("memory_id")
+    forget.add_argument(
+        "--confirm",
+        required=True,
+        help="repeat the exact mem_ id to authorize forgetting",
+    )
+    forget.add_argument("--idempotency-key")
+    _add_memory_boundary_args(forget)
+    return parser
+
+
+def _add_memory_boundary_args(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--thread-id", default="default", help="memory thread boundary")
+
+
+def _operation_key(operation: str, *values: str) -> str:
+    material = json.dumps(
+        ["ghost-memory-operation/1", operation, *values],
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return f"ghost-{operation}-{hashlib.sha256(material).hexdigest()[:24]}"
+
+
+def _run_memory_command(args: argparse.Namespace, settings: GhostSettings) -> int:
+    if args.memory_command == "forget" and args.confirm != args.memory_id:
+        print("forget confirmation must exactly match memory_id", file=sys.stderr)
+        return 2
+    try:
+        with SeamMemory(settings) as memory:
+            if args.memory_command == "remember":
+                result = memory.remember(args.text, thread_id=args.thread_id)
+            elif args.memory_command == "recall":
+                result = memory.recall(
+                    args.query,
+                    thread_id=args.thread_id,
+                    limit=args.limit,
+                    view=args.view,
+                )
+            elif args.memory_command == "correct":
+                key = args.idempotency_key or _operation_key(
+                    "correct", args.memory_id, args.text
+                )
+                result = memory.correct(
+                    args.memory_id,
+                    args.text,
+                    thread_id=args.thread_id,
+                    idempotency_key=key,
+                )
+            else:
+                key = args.idempotency_key or _operation_key(
+                    "forget", args.memory_id
+                )
+                result = memory.forget(
+                    args.memory_id,
+                    thread_id=args.thread_id,
+                    idempotency_key=key,
+                )
+    except SeamTransportError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0
 
 
 def _terminal_approval(command: str) -> bool:
@@ -42,7 +134,11 @@ def _terminal_approval(command: str) -> bool:
 
 def main(argv: Sequence[str] | None = None) -> int:
     load_dotenv(".env.local", override=False)
-    args = _parser().parse_args(argv)
+    raw_argv = list(argv) if argv is not None else sys.argv[1:]
+    if raw_argv[:1] == ["memory"]:
+        args = _memory_parser().parse_args(raw_argv[1:])
+        return _run_memory_command(args, GhostSettings.from_env())
+    args = _parser().parse_args(raw_argv)
     settings = GhostSettings.from_env()
 
     if settings.enable_shell:
@@ -77,4 +173,3 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

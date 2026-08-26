@@ -23,7 +23,10 @@ process environment  highest precedence
 | `GHOST_SEAM_DB` | `~/.local/share/ghost/seam.db` | legacy local path used only to place the default checkpoint beside, not semantic storage |
 | `GHOST_CHECKPOINT_DB` | `~/.local/share/ghost/checkpoints.db` | LangGraph execution state only |
 | `GHOST_SEAM_NAMESPACE` | `ghost.default` | logical SEAM namespace |
-| `GHOST_SEAM_SCOPE` | `thread` | SEAM scope label; not automatic thread-ID isolation |
+| `GHOST_SEAM_SCOPE` | `thread` | semantic scope; thread scope also sends the LangGraph thread ID as `session_id` |
+| `GHOST_WORKSPACE` | `default` | validated workspace partition label |
+| `GHOST_PROJECT` | `default` | validated project partition label |
+| `GHOST_MEMORY_ADMISSION` | `explicit` | `explicit`, `all`, or `off`; completed-turn admission policy |
 | `GHOST_RECALL_BUDGET` | `8` | integer 1–50 selected records/public API bound |
 | `GHOST_GRAPH_HOPS` | `2` | integer 0–3 graph expansion |
 | `GHOST_MAX_STEPS` | `25` | integer 2–100 LangGraph recursion/superstep ceiling per turn |
@@ -76,7 +79,8 @@ deadline must be an additional bound, not a replacement for either.
 
 ## SEAM service variables
 
-Ghost sends only the public namespace, scope, optional bearer token, bounded
+Ghost sends only the public namespace, scope, workspace, project, thread
+session, optional bearer token, bounded
 turn text, tool-attempt metadata, and raw tool output for server-side hashing.
 Storage, pgvector, graph, MIRL, deletion, and lifecycle policy remain
 service-owned and are never configured through Ghost. `SEAM_BASE_URL` should
@@ -89,5 +93,6 @@ use HTTPS outside trusted loopback. The service must implement the additive
 - Never copy actual values into docs, history, snapshots, issues, or PR text.
 - Prefer explicit isolated database paths for tests.
 - Use separate namespaces/stores for destructive experiments.
-- Do not infer multi-user isolation from namespace/scope strings.
+- Do not infer multi-user isolation from labels alone; shared hosting also
+  requires SEAM principal mode and its authenticated boundary.
 - Record configuration names and bounds in evidence; redact values.

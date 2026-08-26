@@ -43,6 +43,32 @@ def _flag(name: str, *, default: bool) -> bool:
     return raw.strip().lower() in {"1", "true", "yes", "on"}
 
 
+def _choice(name: str, default: str, allowed: frozenset[str]) -> str:
+    value = os.environ.get(name, default).strip().lower()
+    if value not in allowed:
+        raise ValueError(f"{name} must be one of: {', '.join(sorted(allowed))}")
+    return value
+
+
+def validate_dimension(value: str, name: str) -> str:
+    """Validate one caller-visible SEAM boundary label."""
+
+    value = value.strip()
+    if not value or len(value) > 128:
+        raise ValueError(f"{name} must contain 1 to 128 characters")
+    if not value[0].isascii() or not value[0].isalnum():
+        raise ValueError(f"{name} must start with an ASCII letter or number")
+    if any(not (char.isascii() and (char.isalnum() or char in "._-")) for char in value):
+        raise ValueError(
+            f"{name} must use ASCII letters, numbers, dots, underscores, or hyphens"
+        )
+    return value
+
+
+def _dimension(name: str, default: str) -> str:
+    return validate_dimension(os.environ.get(name, default), name)
+
+
 def _tool_roots() -> tuple[Path, ...]:
     """Readable roots for the filesystem tools, from ``GHOST_TOOL_ROOTS``.
 
@@ -75,6 +101,9 @@ class GhostSettings:
     seam_db: Path
     namespace: str
     scope: str
+    workspace: str = "default"
+    project: str = "default"
+    memory_admission: str = "explicit"
     seam_base_url: str = "http://127.0.0.1:8765"
     seam_api_token: str | None = field(default=None, repr=False)
     seam_timeout: float = 30.0
@@ -113,8 +142,19 @@ class GhostSettings:
             checkpoint_db=Path(
                 os.environ.get("GHOST_CHECKPOINT_DB", str(default_checkpoints))
             ).expanduser(),
-            namespace=os.environ.get("GHOST_SEAM_NAMESPACE", "ghost.default"),
-            scope=os.environ.get("GHOST_SEAM_SCOPE", "thread"),
+            namespace=_dimension("GHOST_SEAM_NAMESPACE", "ghost.default"),
+            scope=_choice(
+                "GHOST_SEAM_SCOPE",
+                "thread",
+                frozenset({"ephemeral", "global", "org", "project", "thread", "user"}),
+            ),
+            workspace=_dimension("GHOST_WORKSPACE", "default"),
+            project=_dimension("GHOST_PROJECT", "default"),
+            memory_admission=_choice(
+                "GHOST_MEMORY_ADMISSION",
+                "explicit",
+                frozenset({"all", "explicit", "off"}),
+            ),
             seam_base_url=os.environ.get(
                 "SEAM_BASE_URL", "http://127.0.0.1:8765"
             ).rstrip("/"),

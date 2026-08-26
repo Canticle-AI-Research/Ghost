@@ -34,18 +34,23 @@ flowchart LR
 | Lexical index | term-oriented search representation | No | Yes | Yes |
 | PACK | bounded task context with canonical refs | No | Yes | Ghost currently renders selected records directly; fuller PACK use is planned |
 | LENS | task-specific view | No | Yes | Planned |
-| LangGraph checkpoint | execution state and resumability | Operational state only | Replaceable | In-memory only |
+| LangGraph checkpoint | execution state and resumability | Operational state only | Replaceable | Persistent SQLite through `GHOST_CHECKPOINT_DB` |
 | Reasoning graph | auditable outcome and verification structure | Durable non-canonical artifact | Not canonical truth | Partially, through reasoning runs |
 
 ## Canonical write rule
 
-New information enters through an explicit SEAM ingest operation. The runtime
+New information enters through an explicit SEAM ingest operation or an admitted
+completed turn. The runtime
 stores source evidence, compiles semantic records, and updates projections under
 the SEAM contract. Ghost must not write graph edges or vector rows directly.
 
-Current Ghost behavior automatically ingests every successful root turn. That
-is suitable for early dogfooding but too broad for a mature second brain.
-Selective memory admission is planned and must answer:
+Ghost now classifies every successful root turn through the provider-free policy
+in `ghost.memory_policy`. The default `explicit` mode admits only an operator's
+explicit remember request, marks unconfirmed durable-looking facts `review`,
+and rejects ordinary or transient turns. The model's own output cannot promote
+itself. `all` and `off` are deliberate operator overrides.
+
+Admission answers:
 
 - Is this information durable or merely conversational?
 - Is it a user preference, project fact, decision, event, task state, or source?
@@ -71,12 +76,13 @@ Corrections should produce additive evidence, explicit correction or
 supersession relationships, and a resolved current state. The earlier claim
 remains available in history with its original provenance.
 
-Ghost does not yet expose correction or forgetting operations. Their required
-behavior is mapped in [Memory lifecycle](../operations/MEMORY_LIFECYCLE.md).
+Ghost exposes correction and forgetting as operator-only CLI operations, never
+as model-callable tools. Correction writes replacement evidence plus an
+explicit `supersedes` relation, then retires the old record through SEAM's
+canonical soft-delete lifecycle. Forgetting uses that same lifecycle directly.
 
 ## Rebuild rule
 
 If a derived graph, vector index, PACK, or lens is lost or stale, it should be
 reconstructable from canonical records through a versioned SEAM operation. If
 RAW or MIRL is lost, rebuilding a projection cannot restore the missing truth.
-
