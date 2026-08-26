@@ -19,7 +19,11 @@ def verify() -> None:
         expected = handoffs[position + 1].handoff_id if position + 1 < len(handoffs) else None
         if handoff.supersedes != expected:
             raise ValueError(f"{handoff.path} breaks the supersession chain")
-        datetime.fromisoformat(handoff.created_at)
+        created_at = datetime.fromisoformat(handoff.created_at)
+        if position + 1 < len(handoffs):
+            older_created_at = datetime.fromisoformat(handoffs[position + 1].created_at)
+            if created_at <= older_created_at:
+                raise ValueError("handoff created_at values are not strictly newest-first")
 
 
 if __name__ == "__main__":

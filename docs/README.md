@@ -34,12 +34,12 @@ The wiki distinguishes four kinds of claim:
 ```text
 ┌────────────────────────────── operator boundary ──────────────────────────────┐
 │                                                                               │
-│  terminal / future UI / avatar                                                │
+│  terminal / future UI / local experimental avatar                             │
 │          │                                                                    │
 │          ▼                                                                    │
 │  ┌─────────────────┐      ┌───────────────────────────────────────────────┐   │
 │  │ Ghost interface │─────►│ DeepAgent adapter                            │   │
-│  │ CLI + avatar    │      │ model + middleware + tools + checkpoints     │   │
+│  │ CLI; avatar WIP │      │ model + middleware + tools + checkpoints     │   │
 │  └─────────────────┘      └──────────────────────┬────────────────────────┘   │
 │                                                  │ framework-free turn         │
 │                                                  ▼ contract                    │

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from pathlib import Path
 
 from .model import ROOT
 
@@ -32,8 +33,8 @@ class Handoff:
     created_at: str
 
 
-def _read_document(path: str) -> Handoff:
-    text = (ROOT / path).read_text(encoding="utf-8")
+def _read_document(path: str, *, root: Path = ROOT) -> Handoff:
+    text = (root / path).read_text(encoding="utf-8")
     fields = {
         match.group("key"): match.group("value").strip()
         for match in FIELD.finditer(text)
@@ -56,12 +57,49 @@ def _read_document(path: str) -> Handoff:
     )
 
 
-def load_handoffs() -> tuple[str, list[Handoff]]:
-    text = INDEX.read_text(encoding="utf-8")
+def load_handoffs(*, root: Path = ROOT) -> tuple[str, list[Handoff]]:
+    index = root / "docs" / "handoffs" / "INDEX.md"
+    text = index.read_text(encoding="utf-8")
     latest_match = LATEST.search(text)
     if not latest_match:
         raise ValueError("handoff index has no latest field")
-    paths = [match.group("path") for match in ROW.finditer(text)]
-    if not paths:
+    rows = list(ROW.finditer(text))
+    if not rows:
         raise ValueError("handoff index has no registered documents")
-    return latest_match.group(1), [_read_document(path) for path in paths]
+    paths = [row.group("path") for row in rows]
+    if len(paths) != len(set(paths)):
+        raise ValueError("handoff index registers a document more than once")
+    handoff_dir = root / "docs" / "handoffs"
+    documents = {
+        path.relative_to(root).as_posix()
+        for path in handoff_dir.glob("*.md")
+        if path.name != "INDEX.md"
+    }
+    if set(paths) != documents:
+        missing = sorted(documents - set(paths))
+        stale = sorted(set(paths) - documents)
+        raise ValueError(
+            f"handoff registry mismatch: unregistered={missing}, missing={stale}"
+        )
+
+    handoffs = []
+    for row in rows:
+        path = row.group("path")
+        handoff = _read_document(path, root=root)
+        row_supersedes = row.group("supersedes").strip().strip("`")
+        row_values = (
+            row.group("id").strip().strip("`"),
+            row.group("status").strip().strip("`"),
+            int(row.group("history").removeprefix("HISTORY#")),
+            None if row_supersedes.lower() == "none" else row_supersedes,
+        )
+        document_values = (
+            handoff.handoff_id,
+            handoff.status,
+            handoff.history_id,
+            handoff.supersedes,
+        )
+        if row_values != document_values:
+            raise ValueError(f"invalid handoff metadata: {path}")
+        handoffs.append(handoff)
+    return latest_match.group(1), handoffs

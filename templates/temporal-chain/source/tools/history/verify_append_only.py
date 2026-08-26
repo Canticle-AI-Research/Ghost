@@ -6,10 +6,14 @@ from .model import HISTORY_PATH, history_at, parse_history, validate_entries
 
 
 def verify_append_only(base: str, current: str) -> None:
-    validate_entries(parse_history(base), check_refs=False)
-    validate_entries(parse_history(current), check_refs=False)
+    base_entries = parse_history(base)
+    current_entries = parse_history(current)
+    validate_entries(base_entries, check_refs=False)
+    validate_entries(current_entries, check_refs=False)
     if not current.startswith(base):
         raise ValueError("HISTORY.md changed, removed, or reordered established bytes")
+    if current_entries[:len(base_entries)] != base_entries:
+        raise ValueError("appended text changed an existing history entry")
 
 
 def main() -> None:

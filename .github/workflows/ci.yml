@@ -2,8 +2,8 @@
 #
 # Ghost is a uv project (uv.lock is committed and `uv sync` is the documented
 # setup), so this workflow drives uv where the SEAM template drives pip. Every
-# other convention here is SEAM's: job shape, the self-hosted runner, the fast
-# required gates ahead of the heavier suite, and comments that record WHY.
+# other convention here is SEAM's: job shape, the self-hosted runner, and
+# comments that record WHY.
 name: Private CI
 
 on:
@@ -40,11 +40,6 @@ concurrency:
 # therefore moved to public-ci.yml on ubuntu-latest, where it runs on every
 # push and pull request instead of waiting for a manual dispatch. What remains
 # here is only what genuinely cannot run without the private dependency.
-#
-# Self-hosted rules, inherited from SEAM: no sudo steps, no host-mutating
-# cleanup, caches persist between runs by design. The brand job depends on
-# Chrome and fontconfig ALREADY being on the box for that reason -- it verifies
-# them in a preflight step instead of installing them.
 jobs:
   tests:
     # The private tier: everything that imports `ghost` and therefore needs the

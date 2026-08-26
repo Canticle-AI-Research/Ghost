@@ -689,3 +689,33 @@ conversations, and blocks force pushes and deletion. Organization runner-group
 inventory could not be queried without organization-admin authority; zero
 repository-visible assigned runners is therefore the recorded fail-closed
 boundary. A future runner assignment requires a new review and history entry.
+
+## HISTORY#034 — Isolate and qualify the canonical foundation candidate
+- Date: `2026-08-25T20:17:58-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `architecture, ci, continuity, docs, gates, handoff, history, packaging, security, tests, tools, verification, wiki`
+- Commits: `working-tree`
+- Refs: `docs/README.md, docs/architecture/COMPLETE_SYSTEM_BLUEPRINT.md, docs/operations/COMMAND_REFERENCE.md, docs/roadmap/SECOND_BRAIN_ROADMAP.md, docs/handoffs/2026-08-25-canonical-foundation-candidate.md, tools/history, templates/temporal-chain, https://github.com/Canticle-AI-Research/Ghost/pull/5`
+- Supersedes: `HISTORY#033`
+- Verification: `clean docs/canonical-blueprint worktree: uv sync --frozen; uv run pytest -q passed provider-free with live tests deselected by the default marker; uv run ruff check . passed; uv build passed; focused credential-free continuity suites passed; git diff --check passed; initial complete CodeRabbit review produced 21 findings, 20 accepted and corrected, one private-remote redaction suggestion rejected because the exact non-secret dependency locator is already public package metadata and required for rebuild documentation; final re-review pending`
+
+The large dirty candidate was split at the Git index rather than by resetting
+the operator's working tree. The clean `docs/canonical-blueprint` branch holds
+the wiki, Temporal Chain, license/company foundation, and launcher tooling. The
+primary checkout retains only the avatar runtime/assets/test/tool candidate plus
+its CLI, package, and lock changes.
+
+Clean-room verification caught that local-avatar environment variables had
+leaked into the canonical configuration page even though their source was not
+part of this slice. They were removed until the avatar lands. Review then found
+real fail-open edges in append-only history, handoff index/document parity,
+handoff timestamp ordering, blocked-path rename handling, and template input
+validation. Each accepted finding gained either a focused regression test or a
+template install assertion.
+
+The documentation was also reconciled to merged `main@dbd421b`, the exact
+33-entry predecessor history, the local-only avatar boundary, the partial
+harness-installer boundary, credential-free public bundle verification, and
+machine-neutral handoff commands. Publication remains in progress until the
+exact pushed head passes required CI and merges through protected `main`.

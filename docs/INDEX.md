@@ -86,7 +86,8 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [history/PATH_MOVES.md](history/PATH_MOVES.md) | ledger that keeps immutable history refs resolvable after a rename |
 | [Temporal Chain template](../templates/temporal-chain/README.md) | reusable standard-library history + git protocol starter for other repositories |
 | [handoffs/INDEX.md](handoffs/INDEX.md) | canonical single-head handoff registry |
-| [handoffs/2026-08-25-public-runner-closed.md](handoffs/2026-08-25-public-runner-closed.md) | current safety closure and foundation-publication boundary |
+| [handoffs/2026-08-25-canonical-foundation-candidate.md](handoffs/2026-08-25-canonical-foundation-candidate.md) | current isolated canonical-foundation publication boundary |
+| [handoffs/2026-08-25-public-runner-closed.md](handoffs/2026-08-25-public-runner-closed.md) | superseded safety closure and foundation-publication boundary |
 | [handoffs/2026-08-25-temporal-chain-named.md](handoffs/2026-08-25-temporal-chain-named.md) | superseded Temporal Chain naming and documentation-gate candidate |
 | [handoffs/2026-08-25-company-licensing-foundation.md](handoffs/2026-08-25-company-licensing-foundation.md) | superseded company licensing and product-boundary candidate |
 | [handoffs/2026-08-25-continuity-template-integrated.md](handoffs/2026-08-25-continuity-template-integrated.md) | superseded reusable-continuity and workflow safety candidate boundary |
@@ -114,7 +115,8 @@ learning surface is [the Ghost engineering wiki](README.md).
 ## Maintenance rule
 
 No Markdown page under `docs/` is allowed to float unregistered. Every new page
-must appear in this file and every relative link must resolve. Run:
+must appear in this file and every relative link must resolve. This index is the
+sole self-evident exception because it is the registry itself. Run:
 
 ```bash
 uv run pytest tests/test_docs.py -q

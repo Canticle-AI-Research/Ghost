@@ -27,6 +27,8 @@ def main() -> None:
     parser.add_argument("--agent", required=True)
     parser.add_argument("--entries", type=int, default=5)
     args = parser.parse_args()
+    if args.entries < 1:
+        raise SystemExit("--entries must be positive")
     entries = load_history()
     latest_handoff, _ = load_handoffs()
     now = datetime.now(UTC)

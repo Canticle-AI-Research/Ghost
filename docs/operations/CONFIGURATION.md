@@ -73,22 +73,6 @@ retrieval adapter. Those variables are governed by the SEAM runtime, not
 redefined here. Use an isolated SQLite path and clear external DSNs when a test
 must be provider/service-free.
 
-## Local avatar variables
-
-These exist only in the unmerged avatar working tree:
-
-| Variable | Meaning |
-|---|---|
-| `GHOST_AVATAR` | set to `1` to send CLI turn events to default `ws://127.0.0.1:8765` |
-| `GHOST_AVATAR_WS` | explicit WebSocket URL; also enables the hook |
-| `GHOST_SPRITE` | direct GTK pet sprite override |
-| `GHOST_PET_X` | direct GTK pet initial X coordinate |
-| `GHOST_PET_Y` | direct GTK pet initial Y coordinate |
-| `DISPLAY` | X11 display used by GTK and desktop sensor commands |
-
-The hook suppresses connection failure so an absent avatar does not fail an
-agent turn.
-
 ## Safe configuration practices
 
 - Keep `.env.local` mode 0600 and ignored.

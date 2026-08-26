@@ -21,7 +21,7 @@ cd "${REPO_ROOT}" || exit 1
 # --- 1. Scope block ----------------------------------------------------------
 # Agent-local config and generated execution state are never Ghost's source.
 BLOCKED_PATTERNS='^(\.claude/|\.ghost/|\.opencode/|\.agents/|checkpoints\.db$|.*\.db-wal$|.*\.db-shm$)'
-staged="$(git diff --cached --name-only --diff-filter=ACM)"
+staged="$(git diff --cached --name-only --diff-filter=ACMR)"
 blocked="$(printf '%s\n' "${staged}" | grep -E "${BLOCKED_PATTERNS}" || true)"
 if [ -n "${blocked}" ]; then
   echo "pre-commit: refusing to stage agent-local or generated paths:" >&2

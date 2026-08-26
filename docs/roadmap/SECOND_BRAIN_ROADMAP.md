@@ -69,7 +69,7 @@ capability gate, and no track closes without its Q gates.
 | R0 documentation/history/wiki | in progress | locally qualified foundation; publication slice active |
 | R1 public repository/runner | done | PR #5, protected main, hardened settings, zero runners, exact-head hosted run green |
 | R2 exact-head CI | in progress | required public lanes green; private dependency tier deliberately unavailable |
-| R3 company/IP/licensing | in progress locally | PolyForm/Apache/proprietary matrix drafted; counsel/entity/assignment pending |
+| R3 company/IP/licensing | in progress | local PolyForm/Apache/proprietary matrix drafted; counsel/entity/assignment pending |
 | R4 public API/release discipline | planned | current wheel still requires private in-process SDK |
 | G0 verified memory spine | done | landed through `main@25f47c4` |
 | G1 dependable single agent | in progress | mechanisms landed; frozen exit eval absent |
@@ -77,8 +77,8 @@ capability gate, and no track closes without its Q gates.
 | G3 graph-aware specialists | planned | waits on G1 and G2 gates |
 | G4 measured product | exploratory | waits on repository, safety, memory, recovery gates |
 | U0 static identity | done | SVG/PNG/ICO/faces and reproducible toolkit landed |
-| U0b multi-harness launchers | done locally | four clients discover `canticle-ghost`; charter still untracked |
-| U1 desktop avatar | in progress, local | dirty working tree only; five Ruff findings |
+| U0b multi-harness launchers | in progress | four launchers local; Grok/Antigravity definitions tracked; charter, Claude definition, and Codex profile external |
+| U1 desktop avatar | in progress | local dirty working tree only; qualification pending |
 | U2 operator workspace UI | exploratory | no approved implementation contract |
 
 ## Track T: the Temporal Chain
@@ -96,13 +96,13 @@ and is packaged for other repositories as
 
 ### T0 — Core chain
 
-**Status: in progress; publication slice active**
+**Status: in progress**
 
 Installed and verified in Ghost:
 
 - `PROJECT_STATUS.md` current-state router;
 - `REPO_LEDGER.md` stable decisions and invariants;
-- `HISTORY.md` append-only chronology, 27 entries, bootstrapped from the exact
+- `HISTORY.md` append-only chronology, 33 entries, bootstrapped from the exact
   commit graph;
 - `HISTORY_INDEX.md` derived bounded map with a source digest;
 - bounded context packs by recency, topic, entry, and token budget;
@@ -117,7 +117,7 @@ history-tool tests pass on a merged head, not only in a working tree.
 
 ### T1 — Drift gates
 
-**Status: in progress; publication slice active**
+**Status: in progress**
 
 Prerequisite: T0.
 
@@ -159,7 +159,7 @@ from scratch, and no stream becomes a second authority that can contradict
 
 ### T3 — Published chain
 
-**Status: in progress locally**
+**Status: in progress**
 
 Prerequisites: T1 and R1.
 
@@ -266,7 +266,7 @@ ceiling, and the layering tests still prove the three-layer split.
 
 ### R0 — Canonical documentation and build continuity
 
-**Status: in progress; publication slice active**
+**Status: in progress**
 
 Prerequisites: Git history, current checkout, remote state, and local avatar WIP
 must be reconciled without deleting unrelated work.
@@ -340,7 +340,7 @@ absent.
 
 ### R3 — Company, IP, and licensing boundary
 
-**Status: in progress locally; no company-formation or counsel-approval claim**
+**Status: in progress**
 
 Prerequisites: reconciled ownership/provenance and operator-approved product
 matrix. R2 is required before publishing repository changes.
@@ -527,10 +527,14 @@ Ported from SEAM's repository ledger, which is the authority:
 #### Deliverables
 
 1. **Sealed bundles.** Every run emits one durable artifact carrying a
-   versioned bundle header, an input manifest, canonical-JSON hashing over
-   fixtures/cases/results, the exact git SHA, and an HMAC signature. Volatile
-   fields — timestamps, latencies, elapsed time — are excluded from the result
-   hash so two honest re-runs compare equal.
+   versioned bundle header, an input manifest, canonical-JSON hashes over
+   fixtures/cases/results, and the exact git SHA. Volatile fields — timestamps,
+   latencies, elapsed time — are excluded from the result hash so two honest
+   re-runs compare equal. Hash verification is always public and
+   credential-free. Release artifacts may add a publicly verifiable asymmetric
+   signature whose key owner and verification command are documented. HMAC is
+   reserved for protected internal attestations because a verifier without the
+   shared secret cannot independently validate it.
 2. **Integrity levels.** Adopt SEAM's Benchmark Integrity Levels. A level states
    what a result is *allowed to claim*. An unjudged result, or one scored by a
    stub judge, cannot seal above the lowest level without an explicit, recorded
@@ -580,7 +584,7 @@ reproducible brand tooling/tests.
 
 ### U0b — Multi-harness launchers
 
-**Status: done locally**
+**Status: in progress**
 
 Ghost's charter is carried by four agent clients from one shared persona body,
 so the operator can start Ghost wherever the work is without maintaining four
@@ -608,7 +612,7 @@ tracked sources, and each client demonstrably discovers `canticle-ghost`.
 
 ### U1 — Desktop avatar
 
-**Status: in progress, local only**
+**Status: in progress**
 
 Current local evidence:
 

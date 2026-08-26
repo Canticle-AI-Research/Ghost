@@ -14,7 +14,11 @@ def main() -> None:
     if args.latest < 1 or args.token_budget < 100:
         raise SystemExit("latest must be positive and token budget at least 100")
     topics = {topic.lower() for topic in args.topics}
-    entries = [e for e in load_history() if not topics or topics.intersection(e.topics)]
+    entries = [
+        entry
+        for entry in load_history()
+        if not topics or topics.intersection(topic.lower() for topic in entry.topics)
+    ]
     output = "\n".join(entry.raw.rstrip() for entry in entries[-args.latest:])
     cap = args.token_budget * 4
     if len(output) > cap:

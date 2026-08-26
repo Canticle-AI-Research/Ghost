@@ -24,6 +24,8 @@ class ContinuityTests(unittest.TestCase):
         verify_append_only(text, text)
         with self.assertRaises(ValueError):
             verify_append_only(text.replace("HISTORY#001", "HISTORY#999", 1), text)
+        with self.assertRaises(ValueError):
+            verify_append_only(text, text + "prose without a successor entry\n")
 
 
 if __name__ == "__main__":

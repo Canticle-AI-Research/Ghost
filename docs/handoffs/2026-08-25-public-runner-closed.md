@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-public-runner-closed-20260825`
 supersedes: `ghost-temporal-chain-named-20260825`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#033`
 created_at: `2026-08-25T20:04:30-05:00`
 

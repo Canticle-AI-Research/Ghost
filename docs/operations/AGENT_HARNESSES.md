@@ -27,10 +27,12 @@ tools/launchers/agents/_body.md        shared persona body (tracked)
 tools/launchers/ghost-<harness>        credential-scoping launcher
 ```
 
-The charter is the authority. Each harness definition is a thin adapter that
-instructs the client to read the charter first and states the same mission,
-scope, boundaries, and return contract. The body is assembled at install time so
-a charter change never has to be copied by hand into four files.
+The charter is the authority. The tracked Grok and Antigravity definitions are
+thin adapters that read it and carry the same mission, scope, boundaries, and
+return contract. Claude's agent definition and Codex's profile are external
+prerequisites in the current slice; the installer warns but does not create
+them. The roadmap keeps this track in progress until all four definitions and
+the charter are reproducible from tracked sources.
 
 ## Why the launcher exists
 
@@ -63,8 +65,10 @@ uv run python tools/launchers/install.py
 uv run python tools/launchers/install.py --harness grok --harness agy
 ```
 
-`--bin-dir` overrides the default `~/.local/bin`. The installer prints every
-path it writes and warns when the shared charter is missing.
+`--bin-dir` overrides the default `~/.local/bin`. The installer copies all four
+launchers, renders only the Grok and Antigravity definitions, and warns when the
+shared charter is missing. It does not write Claude's agent definition or the
+Codex profile.
 
 ## Verify discovery
 

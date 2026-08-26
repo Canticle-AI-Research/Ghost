@@ -18,7 +18,7 @@ The local branch is fast-forwarded to `origin/main@dbd421b` and preserves the
 uncommitted candidate. Public CI is green on the exact merged head; provider-
 free current-tree verification and the publication-slice counts belong in the
 latest history entry and handoff after closeout. See
-`docs/status/CURRENT_STATE.md`, HISTORY#022, and HISTORY#033.
+`docs/status/CURRENT_STATE.md`, HISTORY#022, and HISTORY#034.
 
 Live GitHub reconciliation on 2026-08-25 established:
 

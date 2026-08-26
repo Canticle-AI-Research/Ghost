@@ -187,7 +187,7 @@ GHOST_AVATAR=1 uv run ghost "Open the requested research task."
 Direct desktop experiment:
 
 ```bash
-DISPLAY=:1 /usr/bin/python3 src/ghost/avatar/desktop_pet.py
+DISPLAY=<x11-display> /usr/bin/python3 src/ghost/avatar/desktop_pet.py
 ```
 
 These commands operate unmerged code. Follow the avatar handoff and do not call

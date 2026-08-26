@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from tools.history.build_context_pack import select_entries
+from tools.history.handoffs import load_handoffs
 from tools.history.model import HISTORY_PATH, INDEX_PATH, load_history
 from tools.history.rebuild_index import render_index
 from tools.history.verify_append_only import verify_append_only
@@ -38,10 +39,55 @@ def test_append_only_check_accepts_a_successor_and_rejects_a_rewrite() -> None:
     verify_append_only(base, base)
     with pytest.raises(ValueError, match="not append-only"):
         verify_append_only(base.replace("Ghost", "Changed", 1), base)
+    with pytest.raises(ValueError, match="changed an existing entry"):
+        verify_append_only(base, base + "Appended prose without a new history entry.\n")
 
 
 def test_handoff_registry_is_one_verified_temporal_chain() -> None:
     verify_handoffs()
+
+
+def test_handoff_index_and_documents_must_agree(tmp_path: Path) -> None:
+    source = ROOT / "docs" / "handoffs"
+    target = tmp_path / "docs" / "handoffs"
+    target.mkdir(parents=True)
+    for document in source.glob("*.md"):
+        (target / document.name).write_text(document.read_text(encoding="utf-8"), encoding="utf-8")
+
+    index = target / "INDEX.md"
+    index.write_text(
+        index.read_text(encoding="utf-8").replace(
+            "ghost-public-runner-closed-20260825",
+            "wrong-index-id",
+            1,
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="invalid handoff metadata"):
+        load_handoffs(root=tmp_path)
+
+    index.write_text((source / "INDEX.md").read_text(encoding="utf-8"), encoding="utf-8")
+    (target / "unregistered.md").write_text("not registered\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="registry mismatch"):
+        load_handoffs(root=tmp_path)
+
+
+def test_handoff_created_at_values_are_strictly_newest_first(tmp_path: Path) -> None:
+    source = ROOT / "docs" / "handoffs"
+    target = tmp_path / "docs" / "handoffs"
+    target.mkdir(parents=True)
+    for document in source.glob("*.md"):
+        text = document.read_text(encoding="utf-8")
+        if document.name == "2026-08-25-public-runner-closed.md":
+            text = text.replace(
+                "2026-08-25T20:04:30-05:00",
+                "2026-08-25T16:10:00-05:00",
+            )
+        (target / document.name).write_text(text, encoding="utf-8")
+    (tmp_path / "HISTORY.md").write_text(HISTORY_PATH.read_text(encoding="utf-8"), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="created_at values"):
+        verify_handoffs(root=tmp_path)
 
 
 def test_context_pack_selection_is_bounded_and_topic_aware() -> None:

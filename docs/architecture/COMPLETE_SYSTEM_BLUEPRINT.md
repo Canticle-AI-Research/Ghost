@@ -1,7 +1,8 @@
 # Complete Ghost system blueprint
 
 This page maps every active subsystem, its owner, inputs, outputs, trust
-boundary, and source location. It is descriptive of `main@25f47c4` unless a
+boundary, and source location. It is descriptive of
+`main@dbd421babf0703c8c339e7b8db8d51fc51b58282` unless a
 section is explicitly labeled local or planned.
 
 ## Whole system
@@ -283,7 +284,8 @@ system python + GTK ──► desktop_pet.py ──► real desktop override-red
 ```
 
 This is documented in [avatar system](AVATAR_SYSTEM.md) but remains local. It
-must not be required to rebuild `main@25f47c4`.
+must not be required to rebuild
+`main@dbd421babf0703c8c339e7b8db8d51fc51b58282`.
 
 ## Planned extensions
 

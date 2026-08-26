@@ -69,6 +69,7 @@ def test_recorded_fact_audit_cannot_be_disabled() -> None:
 
 def test_hook_blocks_agent_local_and_generated_paths() -> None:
     text = _hook_text()
+    assert "--diff-filter=ACMR" in text, "renamed blocked paths can bypass the scope gate"
     for pattern in (r"\.claude/", r"\.ghost/", r"checkpoints\\?\.db"):
         assert re.search(pattern, text), f"hook no longer scope-blocks {pattern}"
 

@@ -30,7 +30,10 @@ def select_entries(
     matches = [
         entry
         for entry in entries
-        if (not wanted_topics or wanted_topics.intersection(entry.topics))
+        if (
+            not wanted_topics
+            or wanted_topics.intersection(topic.lower() for topic in entry.topics)
+        )
         and (not wanted_ids or entry.id in wanted_ids)
     ]
     return matches[-latest:]

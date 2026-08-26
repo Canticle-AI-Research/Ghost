@@ -17,7 +17,7 @@ Operator asked to hand off. Live pet is the B2 jelly ghost. Next work is
 ## What is running
 
 ```text
-DISPLAY=:1 /usr/bin/python3 src/ghost/avatar/desktop_pet.py
+DISPLAY=<x11-display> /usr/bin/python3 src/ghost/avatar/desktop_pet.py
 ```
 
 GTK 3, skip-taskbar, override-redirect, 160px, click-drag, PIL frames (no cairo —
@@ -40,14 +40,10 @@ python3, not the uv venv (needs GTK).
 | `tools/export_ghost_glb.py` | Blender card GLB of the old sprite. |
 | `docs/superpowers/specs/2026-08-21-desktop-avatar.md` | Behavior spec (enter apps, pop out, faces). |
 | `branding/README.md` | Mark spec: translucent, rim, constellation, `❯ █` awake/done. |
-| `~/Desktop/Ghost-picks/` and `~/Desktop/Ghost-CHOOSE.png` | Copies of options for the operator. |
 
-ComfyUI is on **`:8189`**. AnimagineXL workflow: `~/Pictures/canticle/ghost_workflow.json`.
-“Ghost bunny” prompts yield **bunny-girls**; creature/no-humans prompts yield blobs.
-
-Meshy: `MESHY_API_KEY` in `~/.secrets` (`export MESHY_API_KEY=msy_…`, prefix underscore, 40 chars, API 200 OK). Do not print the key. Comfy Meshy node needs Comfy.org login; **direct** `https://api.meshy.ai/openapi/v1/image-to-3d` works with the env key.
-
-Cascadeur: `~/.local/bin/cascadeur`, template `meshy.qrigcasc`. Not used yet on B2.
+Local ComfyUI, Meshy, and animation experiments produced candidate assets.
+Provider credentials and machine-specific workflow locations remain outside the
+repository and must never be copied into history, handoffs, issues, or logs.
 
 ## Operator last requests (not done)
 
@@ -60,8 +56,6 @@ Wire mood from `director.py` faces when `GHOST_AVATAR=1`; until then cycle or ma
 ## How to restart the pet
 
 ```bash
-pkill -f '/src/ghost/avatar/desktop_pet.py'   # or kill the python PID
-DISPLAY=:1 /usr/bin/python3 src/ghost/avatar/desktop_pet.py
+pkill -f 'src/ghost/avatar/desktop_pet.py'   # or kill the recorded process ID
+DISPLAY=<x11-display> /usr/bin/python3 src/ghost/avatar/desktop_pet.py
 ```
-
-Repo: `/mnt/data/projects/Github-Repositories/Canticle-Research/Ghost`.

@@ -50,6 +50,20 @@ def test_template_installs_verifies_and_refuses_overwrite(tmp_path: Path) -> Non
         cwd=repo,
     )
 
+    invalid_snapshot = _run(
+        sys.executable,
+        "-m",
+        "tools.history.write_snapshot",
+        "--agent",
+        "test",
+        "--entries",
+        "0",
+        cwd=repo,
+        check=False,
+    )
+    assert invalid_snapshot.returncode != 0
+    assert "entries must be positive" in invalid_snapshot.stderr
+
     collision = _run(*command, cwd=ROOT, check=False)
     assert collision.returncode != 0
     assert "refusing to overwrite existing files" in collision.stderr

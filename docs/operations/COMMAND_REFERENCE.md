@@ -205,14 +205,16 @@ uv run python tools/launchers/install.py --harness grok --harness agy
 ```
 
 Installs `ghost-claude`, `ghost-codex`, `ghost-grok`, and `ghost-agy` into
-`~/.local/bin` (override with `--bin-dir`) and renders each harness's
-`canticle-ghost` agent definition from the shared persona body. See
+`~/.local/bin` (override with `--bin-dir`). It renders the Grok and Antigravity
+`canticle-ghost` definitions from the shared persona body. The Claude agent file
+and Codex `[profiles.ghost]` configuration are maintained separately and must
+already exist for those two launchers. See
 [agent harnesses](AGENT_HARNESSES.md).
 
 ### Install the Temporal Chain in another repository
 
 ```bash
-python templates/temporal-chain/install.py \
+uv run python templates/temporal-chain/install.py \
   --repo /absolute/path/to/repository \
   --project-name "Project Name"
 ```
@@ -305,8 +307,9 @@ GHOST_AVATAR_WS=ws://127.0.0.1:8875 uv run ghost "Inspect the repository."
 ### Direct GTK desktop pet
 
 ```bash
-DISPLAY=:1 /usr/bin/python3 src/ghost/avatar/desktop_pet.py
-GHOST_PET_X=1200 GHOST_PET_Y=240 DISPLAY=:1 /usr/bin/python3 src/ghost/avatar/desktop_pet.py
+DISPLAY=<x11-display> /usr/bin/python3 src/ghost/avatar/desktop_pet.py
+GHOST_PET_X=<x> GHOST_PET_Y=<y> DISPLAY=<x11-display> \
+  /usr/bin/python3 src/ghost/avatar/desktop_pet.py
 ```
 
 This uses system Python because GTK bindings are not part of the uv project.

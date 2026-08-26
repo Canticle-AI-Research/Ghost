@@ -7,11 +7,11 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 
 | Plane | Observed state |
 |---|---|
-| Local branch | `agent/avatar-u1-temporal-integration` |
-| Local HEAD | `dbd421babf0703c8c339e7b8db8d51fc51b58282` |
-| Fetched `origin/main` | same exact commit |
-| Tracked local modifications | documentation, continuity, licensing, launcher, CLI/package, and test candidates layered over `dbd421b` |
-| Local untracked work | continuity/status/wiki foundation, reusable template, avatar source/tests/assets/tools/spec/handoff, and local Blender toolkit |
+| Publication branch | `docs/canonical-blueprint`, based on `main@dbd421b` |
+| Primary working branch | `agent/avatar-u1-temporal-integration`, preserving avatar-only WIP after the split |
+| Fetched `origin/main` | `dbd421babf0703c8c339e7b8db8d51fc51b58282` |
+| Canonical candidate | documentation, continuity, licensing, and launcher changes isolated in a clean worktree |
+| Preserved local work | avatar source/tests/assets/tools plus CLI/package/lock changes in the primary checkout |
 | Remote visibility | public |
 | Merged PRs | PR #1 and PR #5 |
 | Open PRs | Dependabot #2 and #4 |

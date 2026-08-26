@@ -186,21 +186,26 @@ def _audit_module_lines(repo_root: Path, documents: list[Path]) -> list[FactIssu
 def _audit_handoff_pointer(repo_root: Path, documents: list[Path]) -> list[FactIssue]:
     """A prose claim about the current handoff must match the registry."""
 
-    latest, _chain = load_handoffs()
-    issues: list[FactIssue] = []
+    claims: list[tuple[str, int, str]] = []
     for document in documents:
         relative = document.relative_to(repo_root).as_posix()
         for number, line in _iter_lines(document.read_text(encoding="utf-8")):
             for match in HANDOFF_POINTER.finditer(line):
-                claimed = match.group("path")
-                if claimed != latest:
-                    issues.append(
-                        FactIssue(
-                            "handoff_pointer",
-                            f"{relative}:{number}",
-                            f"names {claimed}; the registry's current head is {latest}",
-                        )
-                    )
+                claims.append((relative, number, match.group("path")))
+    if not claims:
+        return []
+
+    latest, _chain = load_handoffs(root=repo_root)
+    issues: list[FactIssue] = []
+    for relative, number, claimed in claims:
+        if claimed != latest:
+            issues.append(
+                FactIssue(
+                    "handoff_pointer",
+                    f"{relative}:{number}",
+                    f"names {claimed}; the registry's current head is {latest}",
+                )
+            )
     return issues
 
 
@@ -231,7 +236,7 @@ def audit_latest_entry(repo_root: Path | None = None) -> list[FactIssue]:
     """
 
     root = (repo_root or ROOT).resolve()
-    latest = load_history()[-1]
+    latest = load_history(root / "HISTORY.md")[-1]
     issues: list[FactIssue] = []
     for match in MODULE_LINES.finditer(latest.raw):
         target = root / match.group("path")

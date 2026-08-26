@@ -38,7 +38,9 @@ Reaction FX (sweat, `?` pop, vein) are a later art pass.
 
 - Asked + idle random in v1. He-decides and the room later.
 - Web search → dash to the browser window → go in. Stay until the turn ends.
-- Open a named desktop item → dash to it → go in (overlay may `open_item`).
+- Open a named desktop item → emit `avatar_action` with `enter` plus the named
+  target; an operator click may separately send the bridge an `open_item`
+  request after the visual movement.
 - No desktop target → focused in place.
 - Task complete or fail → pop out somewhere on the desktop with done/error.
 - Idle: float, peek, wink, sleepy. Never enter apps. Never open files.
@@ -46,6 +48,8 @@ Reaction FX (sweat, `?` pop, vein) are a later art pass.
 ## Plumbing
 
 - `ghost.avatar.director` maps user text + desktop snapshot → commands.
-- Overlay consumes `avatar_action` (`enter`, `pop_out`, `face`, `idle`, `hide`, `appear`) plus `face`.
+- Overlay consumes `avatar_action` (`enter`, `pop_out`, `face`, `idle`, `hide`,
+  `appear`) plus target fields and `face`; `open_item` is a distinct
+  overlay-to-bridge request, not an avatar action.
 - `ghost` CLI pushes commands to `ws://127.0.0.1:8765` when the avatar is running.
 - Click-through of empty overlay is a known v1 compositor limit.

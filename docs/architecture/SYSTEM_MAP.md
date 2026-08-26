@@ -90,7 +90,6 @@ sequenceDiagram
 | Verified action graph (decision → tool check → verified outcome) | Current | `SeamMemory.record_actions` |
 | Injection-resistant transient recall | Current | `src/ghost/middleware.py` |
 | Persistent LangGraph checkpoint | Current | `SqliteSaver` in `src/ghost/application.py` |
-| Persistent checkpoint | Current | SQLite LangGraph checkpoint in `application.py` |
 | Read-first tools | Current | memory recall, bounded file read and literal search |
 | Opt-in shell control | Current | unsandboxed, approval/timeout/verification bounded |
 | Frozen Stage 1 task qualification | Planned next | roadmap G1 exit gate |

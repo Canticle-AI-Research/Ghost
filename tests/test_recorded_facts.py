@@ -91,6 +91,31 @@ def test_both_claim_word_orders_are_extracted() -> None:
         assert raw == "196", text
 
 
+def test_handoff_pointer_uses_the_supplied_repository_root(tmp_path: Path) -> None:
+    repo = _repo(
+        tmp_path,
+        {
+            "PROJECT_STATUS.md": (
+                "The current handoff is `docs/handoffs/current.md`.\n"
+            ),
+            "docs/handoffs/INDEX.md": (
+                "latest: `docs/handoffs/current.md`\n\n"
+                "| path | handoff_id | status | history | supersedes |\n"
+                "|---|---|---|---|---|\n"
+                "| `docs/handoffs/current.md` | local-head | current | HISTORY#001 | none |\n"
+            ),
+            "docs/handoffs/current.md": (
+                "handoff_id: `local-head`\n"
+                "supersedes: `none`\n"
+                "handoff_status: `current`\n"
+                "history: `HISTORY#001`\n"
+                "created_at: `2026-08-25T00:00:00-05:00`\n"
+            ),
+        },
+    )
+    assert audit_recorded_facts(repo) == []
+
+
 def test_deselected_count_is_not_read_as_a_claim() -> None:
     """`8 deselected` must not be mistaken for a passing total."""
     matches = [

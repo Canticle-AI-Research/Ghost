@@ -22,6 +22,10 @@ def verify_append_only(base_text: str, current_text: str) -> None:
         )
     if len(current_entries) < len(base_entries):
         raise ValueError("HISTORY.md removed entries from the base revision")
+    if current_entries[: len(base_entries)] != base_entries:
+        raise ValueError(
+            "HISTORY.md is not append-only: appended text changed an existing entry"
+        )
 
 
 def _history_at(ref: str) -> str | None:
