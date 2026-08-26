@@ -7,21 +7,21 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 
 | Plane | Observed state |
 |---|---|
-| Default branch | `main@4cebdd8646a4f5fe4d760c01c2172341ff4886ea` |
+| Default branch | `main@c9d8a83cbf5585338f9bf5db8b978e70fd2dd398` |
 | Stage 1 evaluation substrate | merged through PR #10: 20 frozen cases, real-lifecycle BIL-0 smoke/verifier/gate, step ceiling, final clean baseline |
 | Public transport | merged through PR #8; public install and opaque transport source published |
 | Primary working branch | `agent/avatar-u1-temporal-integration`, preserving avatar-only WIP on its earlier reviewed base |
 | Canonical foundation | merged through PRs #6 and #7 |
 | Preserved local work | avatar source/tests/assets/tools plus CLI/package/lock changes in the primary checkout |
 | Remote visibility | public |
-| Merged PRs | PR #1 and PRs #5 through #13 |
+| Merged PRs | PR #1 and PRs #5 through #14 |
 | Open PRs | Dependabot #2 and #4 |
-| Exact-head public CI | run `32933523547` green on `4cebdd8`; all six required jobs passed |
+| Exact-head public CI | run `32934944801` green on `c9d8a83`; all six required jobs passed |
 | Public transport proof | 200 provider-free tests, Ruff, build, clean wheel install, real `ghost --help`, and protected PR/main CI passed; 8 live tests deselected |
 
 This is a status snapshot, not authorization to delete or combine local files.
 
-## Landed capability at `main@4cebdd8`
+## Landed capability at `main@c9d8a83`
 
 - DeepAgents root agent with provider routing through LangChain.
 - OpenAI reasoning-model use through the Responses API.
@@ -63,14 +63,13 @@ This is a status snapshot, not authorization to delete or combine local files.
   confirmed soft-forgetting commands over opaque IDs.
 - Workspace/project/thread durable-memory isolation and lifecycle status.
 - Frozen 10-case Stage 2 memory-governance mechanism fixture.
+- Provider-free specialist envelopes, budgets, scopes, evidence, terminal
+  normalization, and content-free lifecycle events; no live specialist adapter.
+- SQLite-consistent checkpoint backup, digest/integrity verification,
+  non-overwriting restore commands, and redacted fail-closed health types.
 
 ## Local-only capability
 
-- `feat/specialist-ops-foundation`: provider-free specialist envelope,
-  authority/budget/provenance/terminal-state contracts; checkpoint
-  backup/verify/non-overwriting restore; redacted health and lifecycle event
-  types; tests and blueprint/runbook/command documentation. No live specialist
-  or hosted endpoint.
 - `ghost-avatar` WebSocket/HTTP/browser overlay runner.
 - GTK desktop pet using the selected B2 art direction.
 - CLI notifications from agent-turn start/end to the avatar bridge.

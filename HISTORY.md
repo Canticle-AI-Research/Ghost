@@ -1197,3 +1197,26 @@ This is not a G3 or G4 exit. No model-backed specialist, equal-budget Q3
 comparison, hosted endpoint, dashboard, SEAM backup, restore drill, package
 release, or deployment exists. Publish only after the clean review rerun and
 all six protected exact-head jobs; preserve the separate avatar worktree.
+
+## HISTORY#050 — Publish bounded specialist and operations foundations
+- Date: `2026-08-26T00:41:04-05:00`
+- Agent: `codex`
+- Status: `done`
+- Topics: `agent, architecture, ci, commands, continuity, deployment, docs, gates, handoff, history, operations, provenance, roadmap, security, status, tests, verification, wiki`
+- Commits: `c9d8a83cbf5585338f9bf5db8b978e70fd2dd398`
+- Refs: `https://github.com/Canticle-AI-Research/Ghost/pull/14, https://github.com/Canticle-AI-Research/Ghost/actions/runs/32934880135, https://github.com/Canticle-AI-Research/Ghost/actions/runs/32934944801, docs/handoffs/2026-08-26-specialist-ops-foundation-published.md`
+- Supersedes: `HISTORY#049`
+- Verification: `exact PR source 3d2d8b9 passed all six protected jobs in run 32934880135; PR #14 merged as c9d8a83; exact merge-head run 32934944801 passed the same six jobs; local closeout, Ruff, 270 provider-free tests with 8 live deselected, build, and diff hygiene passed; no provider/live/paid/release/deployment lane ran`
+
+The issue-7 foundation is protected-main source. Specialist authority,
+budgets, provenance, terminal normalization, and safe events now have an
+enforceable provider-free contract. Operators can consistently back up,
+digest/integrity-check, and restore checkpoint execution state to a new path,
+while health probes and specialist failures publish only fixed safe codes.
+
+This completes the requested foundation slice, not the G3/G4 roadmap exits.
+There is no model-backed specialist topology, equal-budget improvement bundle,
+hosted API, SEAM disaster recovery, package release, or deployment. CI also
+surfaced a non-blocking Node 20 action-runtime deprecation warning for a focused
+workflow maintenance follow-up. Advance the handoff to the protected-main
+publication record and preserve the separate avatar worktree.

@@ -1,13 +1,14 @@
 # Ghost handoff registry
 
-latest: `docs/handoffs/2026-08-26-specialist-ops-foundation-qualified.md`
+latest: `docs/handoffs/2026-08-26-specialist-ops-foundation-published.md`
 
 Exactly one document is current. Rows are newest first and form one linear
 supersession chain.
 
 | path | handoff_id | status | history | supersedes |
 |---|---|---|---|---|
-| `docs/handoffs/2026-08-26-specialist-ops-foundation-qualified.md` | ghost-specialist-ops-foundation-qualified-20260826 | current | HISTORY#049 | ghost-deliberate-memory-published-20260826 |
+| `docs/handoffs/2026-08-26-specialist-ops-foundation-published.md` | ghost-specialist-ops-foundation-published-20260826 | current | HISTORY#050 | ghost-specialist-ops-foundation-qualified-20260826 |
+| `docs/handoffs/2026-08-26-specialist-ops-foundation-qualified.md` | ghost-specialist-ops-foundation-qualified-20260826 | superseded | HISTORY#049 | ghost-deliberate-memory-published-20260826 |
 | `docs/handoffs/2026-08-26-deliberate-memory-published.md` | ghost-deliberate-memory-published-20260826 | superseded | HISTORY#048 | ghost-deliberate-memory-qualified-20260826 |
 | `docs/handoffs/2026-08-26-deliberate-memory-qualified.md` | ghost-deliberate-memory-qualified-20260826 | superseded | HISTORY#047 | ghost-stage1-frozen-published-20260825 |
 | `docs/handoffs/2026-08-25-stage1-frozen-published.md` | ghost-stage1-frozen-published-20260825 | superseded | HISTORY#046 | ghost-stage1-candidate-ready-20260825 |

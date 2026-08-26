@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-specialist-ops-foundation-qualified-20260826`
 supersedes: `ghost-deliberate-memory-published-20260826`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#049`
 created_at: `2026-08-26T00:32:11-05:00`
 
