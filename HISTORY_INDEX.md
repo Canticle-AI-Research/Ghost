@@ -3,12 +3,13 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `8b3391cb997cba03d4e951c3fbe4c88040cd7bdbf0a2b6a5300509eef20f991d`
-- Entries: `45`
-- Latest: `HISTORY#045`
+- Source SHA-256: `f0c6275b08a76b351c926278ed18574ce95f4e6f0459b0b23086b35fc76d305c`
+- Entries: `46`
+- Latest: `HISTORY#046`
 
 | ID | Date | Status | Commit | Topics | Supersedes | Event |
 |---:|---|---|---|---|---|---|
+| 046 | 2026-08-25 | done | `cbdd190e8642` | ci, continuity, docs, evaluation, gates, handoff, history, memory, roadmap, security, status, verification | #045 | Publish the frozen Stage 1 evaluation substrate |
 | 045 | 2026-08-25 | in-progress | `bc18555d364a` | ci, continuity, docs, evaluation, gates, handoff, history, roadmap, security, status, tests, verification | #044 | Qualify the Stage 1 evaluation candidate for publication |
 | 044 | 2026-08-25 | in-progress | `ee4f63b5b2be` | ci, continuity, evaluation, gates, handoff, history, memory, snapshot, status, tests, verification | #043 | Freeze the final post-review Stage 1 baseline |
 | 043 | 2026-08-25 | in-progress | `working-tree` | ci, correction, docs, evaluation, gates, handoff, history, roadmap, security, tests, verification | #042 | Repair all Stage 1 evaluation review findings |

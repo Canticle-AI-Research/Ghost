@@ -6,21 +6,17 @@
 
 ## Current headline
 
-**2026-08-25 — `main@620caee` publishes Ghost's public-only install boundary
-and opaque SEAM lifecycle through PR #8, alongside the verified memory-backed
-single-agent spine, hardened CI, canonical engineering wiki/build history,
-Temporal Chain, licensing foundation, and multi-harness launchers. Latest exact
-main run `32924345004` passed all five protected jobs at `620caee`. A separate Stage 1 candidate
-adds 20 frozen cases, a BIL-0 sealed verifier/gate, and a hard turn-step ceiling;
-its first clean-source BIL-0 baseline is sealed and verified. Review then
-strengthened the smoke to execute Ghost's real framework-free lifecycle and
-fail closed on malformed bundle shapes. CodeRabbit then completed and all eight
-findings were repaired and the final clean-source baseline is sealed, verified,
-and gated. Exact-head CI and protected merge remain pending. The isolated avatar
-remains separate WIP. No package or service is released or deployed, and
-nothing is assigned to a company or counsel-approved.**
+**2026-08-25 — `main@86774ef` publishes Ghost's public-only install boundary,
+opaque SEAM lifecycle, and frozen Stage 1 evaluation substrate. PR #10 merged
+20 immutable cases, real-lifecycle two-arm BIL-0 execution, sealed
+verification/gating, a hard turn-step ceiling, and complete rebuild/operator
+documentation. Exact main run `32927031615` passed all six protected jobs,
+including the newly required `stage1-evals`. The deterministic baseline remains
+non-claimable; provider-live and release-candidate qualification are still open.
+The isolated avatar remains separate WIP. No package or service is released or
+deployed, and nothing is assigned to a company or counsel-approved.**
 
-PRs #6, #7, #8, and #9 and their exact merge-head Public CI are green. SEAM PR #231
+PRs #6 through #10 and their exact merge-head Public CI are green. SEAM PR #231
 is protected-main server source; Ghost PR #8 is protected-main client source.
 This proves public installability and contract parity, not a compatible hosted
 endpoint, package release, or deployment. See `docs/status/CURRENT_STATE.md`,
@@ -32,12 +28,13 @@ Live GitHub reconciliation on 2026-08-25 established:
 - PR #5 merged the hosted automatic/manual-private workflow boundary;
 - PR #6 merged the canonical wiki/history/licensing/launcher foundation;
 - PR #7 merged the canonical follow-up through `main@10a2b45`;
-- exact `main@620caee` passed all five hosted required checks in run
-  `32924345004`;
+- PR #10 merged the frozen Stage 1 evaluation substrate;
+- exact `main@86774ef` passed all six hosted required checks in run
+  `32927031615`;
 - all external-contributor workflows require approval;
 - secret scanning and push protection are enabled;
 - Ghost has no repository secret and no assigned runner; and
-- protected `main` requires PRs and the five strict hosted checks, enforces
+- protected `main` requires PRs and the six strict hosted checks, enforces
   administrators and conversation resolution, and blocks force pushes/deletes.
 
 Organization runner-group inventory was unavailable without organization-admin
@@ -56,8 +53,8 @@ The merged Ghost distribution architecture uses Apache-2.0 for thin clients
 and protocols, PolyForm Shield 1.0.0 for user-runnable source-available product
 software, and permanent proprietary protection for undistributed SEAM/MIRL
 internals, planned SEAM-U assets, and hosted control planes. Ghost's opaque HTTP
-path is locally qualified; protected merge, release, and deployment remain
-incomplete.
+path and Stage 1 evaluation substrate are merged; compatible hosted-service
+qualification, release, and deployment remain incomplete.
 
 ## Roadmap position
 
@@ -65,12 +62,12 @@ incomplete.
   layers are merged; SEAM streams/routing and artifact release remain open.
 - Engineering quality (Track Q): tests exist to verify behavior, not to reach a
   count; many behaviors remain unverified. 450-line module ceiling enforced.
-  Ghost's first BIL-0 sealed contract-smoke infrastructure is locally
-  qualified with a tracked clean-source baseline; no performance claim is
+  Ghost's first BIL-0 sealed contract-smoke infrastructure is merged with a
+  tracked clean-source baseline and protected CI gate; no performance claim is
   admissible from the deterministic stub.
 - Stage 0 memory spine: landed.
 - Stage 1 dependable single agent: 20-case frozen corpus, smoke verifier/gate,
-  and step ceiling are locally qualified; live and release-candidate exit proof
+  and step ceiling are merged; provider-live and release-candidate exit proof
   remain incomplete.
 - Stage 2 deliberate memory: not implemented.
 - Stage 3 graph-aware specialists: not implemented.
@@ -83,9 +80,10 @@ incomplete.
 
 1. Obtain counsel review and execute founder-to-company IP assignment after
    the legal entity is formed.
-2. Complete Stage 1 frozen task/memory evaluations.
-3. Implement deliberate memory admission, correction, forgetting, and
-   isolation only after the Stage 1 baseline is frozen.
+2. Implement deliberate memory admission, correction, forgetting, and
+   isolation against the now-frozen Stage 1 baseline.
+3. Complete provider-live and exact release-candidate Stage 1 qualification
+   only with explicit spend/release authorization.
 4. Resume the isolated desktop-avatar workstream after its asset and
    consequential-action boundaries are approved.
 

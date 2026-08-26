@@ -74,11 +74,9 @@ chronology, transient branch state, or duplicated implementation narratives.
 - The `canticle-ghost` wheel clean-installs without private source access.
   Installability is not publication approval or a hosted-service claim.
 - Protected main requires `repo-hygiene`, `brand-assets`, `tests (3.11)`,
-  `tests (3.13)`, and `package-smoke`, all bound to GitHub Actions with strict
-  up-to-date enforcement. PR #8 and merge run `32924125667` passed that set.
-- The Stage 1 evaluation candidate adds hosted `stage1-evals`; it becomes part
-  of the protected merge boundary only after its exact context exists and the
-  narrow branch-protection update preserves every existing setting.
+  `tests (3.13)`, `package-smoke`, and `stage1-evals`, all bound to GitHub
+  Actions with strict up-to-date enforcement. PR #10 and exact merge run
+  `32927031615` passed that six-job set without weakening existing policy.
 - Public client distribution, private runtime distribution, GitHub release,
   and hosted deployment are distinct boundaries requiring separate evidence.
 - Canticle uses three license lanes: Apache-2.0 for thin clients/protocols with
