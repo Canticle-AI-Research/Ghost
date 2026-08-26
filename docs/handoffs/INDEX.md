@@ -1,13 +1,14 @@
 # Ghost handoff registry
 
-latest: `docs/handoffs/2026-08-25-stage1-final-baseline-qualified.md`
+latest: `docs/handoffs/2026-08-25-stage1-candidate-ready.md`
 
 Exactly one document is current. Rows are newest first and form one linear
 supersession chain.
 
 | path | handoff_id | status | history | supersedes |
 |---|---|---|---|---|
-| `docs/handoffs/2026-08-25-stage1-final-baseline-qualified.md` | ghost-stage1-final-baseline-qualified-20260825 | current | HISTORY#044 | ghost-stage1-review-repaired-20260825 |
+| `docs/handoffs/2026-08-25-stage1-candidate-ready.md` | ghost-stage1-candidate-ready-20260825 | current | HISTORY#045 | ghost-stage1-final-baseline-qualified-20260825 |
+| `docs/handoffs/2026-08-25-stage1-final-baseline-qualified.md` | ghost-stage1-final-baseline-qualified-20260825 | superseded | HISTORY#044 | ghost-stage1-review-repaired-20260825 |
 | `docs/handoffs/2026-08-25-stage1-review-repaired.md` | ghost-stage1-review-repaired-20260825 | superseded | HISTORY#043 | ghost-stage1-lifecycle-baseline-qualified-20260825 |
 | `docs/handoffs/2026-08-25-stage1-lifecycle-baseline-qualified.md` | ghost-stage1-lifecycle-baseline-qualified-20260825 | superseded | HISTORY#042 | ghost-stage1-lifecycle-smoke-repaired-20260825 |
 | `docs/handoffs/2026-08-25-stage1-lifecycle-smoke-repaired.md` | ghost-stage1-lifecycle-smoke-repaired-20260825 | superseded | HISTORY#041 | ghost-stage1-baseline-frozen-20260825 |

@@ -1037,3 +1037,37 @@ Advance the handoff to
 successor-tree qualification, publish the PR, require the hosted evaluation
 context, and merge through protected main. No paid/live or release-candidate
 qualification ran.
+
+## HISTORY#045 — Qualify the Stage 1 evaluation candidate for publication
+- Date: `2026-08-25T22:29:49-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `ci, continuity, docs, evaluation, gates, handoff, history, roadmap, security, status, tests, verification`
+- Commits: `bc18555d364a9ed49ce9be2e6c35378bbad29467, 89ca75c9e1837dbad6964ef4877509a6842e1bf4, 78a5035929f03ab94e1f8f5e1cd3cb76829f7e07, 78ac27a9424913e8bb5e7d04c9b10e323768121b, ee4f63b5b2be5ac1272caf1d33ff29f09701ad3a, a6f9e6d19e12a3ee0b0c944b9e9a4f2e6264d0c6`
+- Refs: `evals/stage1, evals/runs/stage1/ghost-stage1-frozen-v1-bil0-final-baseline.json, tools/evaluation, tests/test_evaluation.py, .github/workflows/public-ci.yml, docs/evaluation/STAGE1_FROZEN_SUITE.md, docs/handoffs/2026-08-25-stage1-candidate-ready.md, https://github.com/Canticle-AI-Research/Ghost/actions/runs/32924345004`
+- Supersedes: `HISTORY#044`
+- Verification: `uv run python -m tools.history.closeout --agent codex passed through HISTORY#044; uv run ruff check . passed; uv run python -m pytest --durations=10 passed 219 provider-free tests with 8 live tests deselected; uv build passed; git diff --check passed; CodeRabbit full review returned eight findings all repaired; final-delta review returned one wording finding repaired; exact main@620caee run 32924345004 passed five current required jobs; candidate push/PR/six-job CI pending`
+
+The Stage 1 frozen-evaluation candidate is locally complete. It freezes 20
+cases across ten required categories, executes Ghost's framework-free
+lifecycle with deterministic graph/memory doubles, records exact candidate and
+no-memory coverage, and seals credential-free BIL-0 artifacts with public
+verification and derived outcome/safety gates. `GHOST_MAX_STEPS` supplies the
+runtime superstep ceiling that the fixture budgets exercise.
+
+The final clean-source bundle remains
+`57ca22ea5706f78e8513b92c8569fb8641e3e58c43cfedf3df0e39d81512a959`.
+All eleven bundle-level verifier checks and the three gate checks passed. Case
+records deliberately retain expected no-memory-arm failures; those are not
+bundle-integrity failures. The deterministic artifact remains non-claimable.
+
+CodeRabbit's full review returned four major and four minor findings, all
+reproduced and repaired. A final-delta review returned one minor ambiguity
+between bundle-level and per-case checks; the documentation now distinguishes
+them explicitly.
+
+Live reconciliation also closed the stale PR #9 status: exact current
+`main@620caee` passed all five protected jobs in run `32924345004`. The Stage 1
+PR must expose and pass `stage1-evals`, then protected main must add it as the
+sixth required context without weakening existing policy. No paid/provider,
+release-candidate, package release, or deployment qualification ran.

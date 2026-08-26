@@ -211,7 +211,8 @@ became `evals/runs/stage1/ghost-stage1-frozen-v1-bil0-final-baseline.json`:
 
 - exact source: `ee4f63b5b2be5ac1272caf1d33ff29f09701ad3a`;
 - bundle hash: `57ca22ea5706f78e8513b92c8569fb8641e3e58c43cfedf3df0e39d81512a959`;
-- all eleven integrity checks and three derived gate checks: pass; and
+- all eleven bundle-level verifier checks and three derived gate checks: pass
+  (per-case checks retain expected no-memory-arm failures); and
 - claimable: `false`.
 
 Use this final artifact for current comparisons. Earlier artifacts remain

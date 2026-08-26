@@ -16,7 +16,7 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 | Remote visibility | public |
 | Merged PRs | PR #1, PR #5, PR #6, PR #7, PR #8, and documentation PR #9 |
 | Open PRs | Dependabot #2 and #4 |
-| Exact-head public CI | run `32924125667` green on `66841fc`; all five then-required jobs passed; PR #9 merge-head refresh pending reconciliation |
+| Exact-head public CI | run `32924345004` green on `620caee`; all five current required jobs passed |
 | Public transport proof | 200 provider-free tests, Ruff, build, clean wheel install, real `ghost --help`, and protected PR/main CI passed; 8 live tests deselected |
 
 This is a status snapshot, not authorization to delete or combine local files.

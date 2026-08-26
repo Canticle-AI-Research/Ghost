@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-stage1-final-baseline-qualified-20260825`
 supersedes: `ghost-stage1-review-repaired-20260825`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#044`
 created_at: `2026-08-25T22:24:57-05:00`
 
@@ -15,7 +15,8 @@ All eight CodeRabbit findings are repaired in clean source
 - bundle hash: `57ca22ea5706f78e8513b92c8569fb8641e3e58c43cfedf3df0e39d81512a959`;
 - manifest dirty flag: false;
 - 20 cases and exact two-arm coverage;
-- all eleven integrity checks: pass;
+- all eleven bundle-level verifier integrity checks: pass (per-case checks
+  still record expected no-memory-arm failures);
 - coverage, candidate outcome, and safety gates: pass;
 - zero candidate contract failures, isolation violations, and forbidden
   effects; and
