@@ -1167,3 +1167,33 @@ budget baseline before any G2 or specialist-improvement claim. Advance the
 handoff to `docs/handoffs/2026-08-26-deliberate-memory-published.md` and preserve
 the avatar worktree while beginning only roadmap-compatible issue-7 foundation
 work.
+
+## HISTORY#049 — Qualify bounded specialist and operations foundations
+- Date: `2026-08-26T00:32:11-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `agent, architecture, cli, commands, continuity, deployment, docs, handoff, history, operations, provenance, roadmap, security, status, tests, verification, wiki`
+- Commits: `working-tree`
+- Refs: `src/ghost/specialists.py, src/ghost/operations.py, docs/architecture/SPECIALIST_CONTRACT.md, docs/operations/RECOVERY_AND_OBSERVABILITY.md, docs/handoffs/2026-08-26-specialist-ops-foundation-qualified.md`
+- Supersedes: `HISTORY#048`
+- Verification: `uv run ruff check . passed; uv run pytest -q passed 270 provider-free tests with 8 live tests deselected; uv build passed; git diff --check passed; two complete CodeRabbit rounds identified three major redaction/coverage gaps, all repaired with regression coverage; final automated re-review unavailable after the free CLI reset extended to 50 minutes, manual final diff review passed; no provider/live/paid/deployment lane ran`
+
+The issue-7 foundation candidate makes future specialist authority explicit
+without activating a specialist topology. Every delegation names its parent
+turn, role, objective, hard step/deadline/output budgets, complete tool/root and
+memory scope, terminal state, and opaque evidence references. Non-success
+outcomes and observer events discard adapter-controlled failure content in
+favor of fixed safe codes; telemetry failure cannot change the work outcome.
+
+Checkpoint recovery now uses SQLite's consistent online backup, SHA-256 and
+`quick_check`, and atomic publication to a new destination only. Operator
+commands back up, verify, and restore execution checkpoints without constructing
+a model. Redacted health probes discard successful return content and expose
+only `ok` or a failure class. The new architecture page, recovery runbook,
+command reference, how-tos, blueprint, release boundary, wiki routes, ledger,
+status, and roadmap define the complete mechanics and their limits.
+
+This is not a G3 or G4 exit. No model-backed specialist, equal-budget Q3
+comparison, hosted endpoint, dashboard, SEAM backup, restore drill, package
+release, or deployment exists. Publish only after the clean review rerun and
+all six protected exact-head jobs; preserve the separate avatar worktree.

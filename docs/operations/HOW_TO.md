@@ -116,6 +116,51 @@ The second recall should be empty. This proves the configured session boundary,
 not hosted multi-user tenancy; that additionally requires authenticated SEAM
 principal mode.
 
+## Back up and recover conversation checkpoints
+
+Create a consistent backup and retain the printed SHA-256 separately:
+
+```bash
+uv run ghost checkpoint backup /secure/backups/ghost-checkpoints-20260826.db
+uv run ghost checkpoint verify /secure/backups/ghost-checkpoints-20260826.db \
+  --sha256 EXPECTED_64_HEX_DIGEST
+```
+
+Restore only while the owning Ghost process is stopped or drained, and restore
+to a new path:
+
+```bash
+uv run ghost checkpoint restore \
+  /secure/backups/ghost-checkpoints-20260826.db \
+  /srv/ghost/recovery/checkpoints.db \
+  --sha256 EXPECTED_64_HEX_DIGEST
+GHOST_CHECKPOINT_DB=/srv/ghost/recovery/checkpoints.db \
+  uv run ghost --thread-id recovery-smoke "Report the current thread boundary."
+```
+
+The restored file contains execution state only. Validate SEAM memory and
+principal/namespace isolation separately; see
+[recovery and observability](RECOVERY_AND_OBSERVABILITY.md).
+
+## Build a future specialist adapter safely
+
+Construct one `DelegationEnvelope` per attempt. Name the parent turn, role,
+objective, ceilings, complete tool allowlist, absolute readable roots, and SEAM
+namespace/workspace/project. Feed only those capabilities to the adapter, raise
+`TimeoutError` on deadline, translate root cancellation to
+`SpecialistCancelled`, and return opaque `SpecialistEvidence` references.
+
+Verify the provider-free boundary first:
+
+```bash
+uv run pytest tests/test_specialists.py -q
+uv run ruff check src/ghost/specialists.py tests/test_specialists.py
+```
+
+Do not register a live specialist or claim improvement until the equal-budget
+Q3 comparison and G1/G2 prerequisites pass. See the
+[specialist contract](../architecture/SPECIALIST_CONTRACT.md).
+
 ## Grant read-only repository access
 
 ```bash

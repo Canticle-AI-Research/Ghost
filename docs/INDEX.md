@@ -35,6 +35,7 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [architecture/SYSTEM_MAP.md](architecture/SYSTEM_MAP.md) | framework and data-flow map |
 | [architecture/MEMORY_LAYERS.md](architecture/MEMORY_LAYERS.md) | RAW/MIRL/derived/checkpoint ownership |
 | [architecture/KNOWLEDGE_GRAPH.md](architecture/KNOWLEDGE_GRAPH.md) | knowledge, reasoning, and execution graphs |
+| [architecture/SPECIALIST_CONTRACT.md](architecture/SPECIALIST_CONTRACT.md) | bounded specialist envelopes, authority, provenance, and terminal states |
 | [architecture/AVATAR_SYSTEM.md](architecture/AVATAR_SYSTEM.md) | local desktop-avatar architecture and status |
 | [concepts/SECOND_BRAIN.md](concepts/SECOND_BRAIN.md) | second-brain definition and limits |
 
@@ -51,6 +52,7 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [operations/DEVELOPMENT_WORKFLOW.md](operations/DEVELOPMENT_WORKFLOW.md) | code/docs/history workflow that prevents drift |
 | [operations/AGENT_HARNESSES.md](operations/AGENT_HARNESSES.md) | running Ghost's persona across Claude, Codex, Grok, and Antigravity |
 | [operations/RELEASE_AND_DEPLOYMENT.md](operations/RELEASE_AND_DEPLOYMENT.md) | build, package, release, runner, deployment gates |
+| [operations/RECOVERY_AND_OBSERVABILITY.md](operations/RECOVERY_AND_OBSERVABILITY.md) | checkpoint backup/restore, health, telemetry, and incident boundaries |
 
 ## Security and trust
 
@@ -85,6 +87,7 @@ learning surface is [the Ghost engineering wiki](README.md).
 
 | Document | Covers |
 |---|---|
+| [handoffs/2026-08-26-specialist-ops-foundation-qualified.md](handoffs/2026-08-26-specialist-ops-foundation-qualified.md) | current exact resume boundary for the issue-7 foundation candidate |
 | [history/REPOSITORY_CONTINUITY.md](history/REPOSITORY_CONTINUITY.md) | Temporal Chain history/index/snapshot/handoff model and commands |
 | [history/PATH_MOVES.md](history/PATH_MOVES.md) | ledger that keeps immutable history refs resolvable after a rename |
 | [Temporal Chain template](../templates/temporal-chain/README.md) | reusable standard-library history + git protocol starter for other repositories |

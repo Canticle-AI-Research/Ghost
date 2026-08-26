@@ -7,11 +7,13 @@ import hashlib
 import json
 import sys
 from collections.abc import Sequence
+from pathlib import Path
 
 from dotenv import load_dotenv
 
 from .application import GhostAgent
 from .config import GhostSettings
+from .operations import backup_checkpoint, restore_checkpoint, verify_checkpoint
 from .seam_memory import SeamMemory, SeamTransportError
 
 
@@ -54,6 +56,24 @@ def _memory_parser() -> argparse.ArgumentParser:
     )
     forget.add_argument("--idempotency-key")
     _add_memory_boundary_args(forget)
+    return parser
+
+
+def _checkpoint_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="ghost checkpoint",
+        description="Back up, verify, and restore Ghost execution checkpoints",
+    )
+    commands = parser.add_subparsers(dest="checkpoint_command", required=True)
+    backup = commands.add_parser("backup", help="write a consistent backup to a new path")
+    backup.add_argument("destination")
+    verify = commands.add_parser("verify", help="verify backup integrity and optional digest")
+    verify.add_argument("backup")
+    verify.add_argument("--sha256")
+    restore = commands.add_parser("restore", help="restore a verified backup to a new path")
+    restore.add_argument("backup")
+    restore.add_argument("destination")
+    restore.add_argument("--sha256", required=True)
     return parser
 
 
@@ -111,6 +131,30 @@ def _run_memory_command(args: argparse.Namespace, settings: GhostSettings) -> in
     return 0
 
 
+def _run_checkpoint_command(args: argparse.Namespace, settings: GhostSettings) -> int:
+    try:
+        if args.checkpoint_command == "backup":
+            manifest = backup_checkpoint(settings.checkpoints, Path(args.destination))
+        elif args.checkpoint_command == "verify":
+            manifest = verify_checkpoint(
+                Path(args.backup), expected_sha256=args.sha256
+            )
+        else:
+            manifest = restore_checkpoint(
+                Path(args.backup),
+                Path(args.destination),
+                expected_sha256=args.sha256,
+            )
+    except FileExistsError as error:
+        print(f"path already exists; refusing to overwrite: {error}", file=sys.stderr)
+        return 1
+    except (FileNotFoundError, ValueError, OSError) as error:
+        print(str(error), file=sys.stderr)
+        return 1
+    print(json.dumps(manifest.to_dict(), indent=2, sort_keys=True))
+    return 0
+
+
 def _terminal_approval(command: str) -> bool:
     """Ask the operator before Ghost runs a command.
 
@@ -138,6 +182,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if raw_argv[:1] == ["memory"]:
         args = _memory_parser().parse_args(raw_argv[1:])
         return _run_memory_command(args, GhostSettings.from_env())
+    if raw_argv[:1] == ["checkpoint"]:
+        args = _checkpoint_parser().parse_args(raw_argv[1:])
+        return _run_checkpoint_command(args, GhostSettings.from_env())
     args = _parser().parse_args(raw_argv)
     settings = GhostSettings.from_env()
 

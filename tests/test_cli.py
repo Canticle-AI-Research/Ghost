@@ -9,6 +9,8 @@ handle released -- on every path out, including Ctrl-C mid-answer.
 from __future__ import annotations
 
 import json
+import sqlite3
+from pathlib import Path
 from typing import ClassVar
 
 import pytest
@@ -233,3 +235,63 @@ def test_memory_forget_forwards_an_explicit_idempotency_key(monkeypatch) -> None
         ("mem_abc",),
         {"thread_id": "default", "idempotency_key": "operator-key-1"},
     )
+
+
+def test_checkpoint_backup_verify_and_restore_commands(
+    monkeypatch, capsys, tmp_path: Path
+) -> None:
+    source = tmp_path / "current.db"
+    backup = tmp_path / "backup.db"
+    restored = tmp_path / "restored.db"
+    with sqlite3.connect(source) as connection:
+        connection.execute("create table state (thread text primary key)")
+        connection.execute("insert into state values ('thread-7')")
+    monkeypatch.setenv("GHOST_CHECKPOINT_DB", str(source))
+
+    assert cli.main(["checkpoint", "backup", str(backup)]) == 0
+    manifest = json.loads(capsys.readouterr().out)
+    assert manifest["path"] == str(backup)
+
+    assert cli.main(
+        ["checkpoint", "verify", str(backup), "--sha256", manifest["sha256"]]
+    ) == 0
+    capsys.readouterr()
+
+    assert cli.main(
+        [
+            "checkpoint",
+            "restore",
+            str(backup),
+            str(restored),
+            "--sha256",
+            manifest["sha256"],
+        ]
+    ) == 0
+    capsys.readouterr()
+    with sqlite3.connect(restored) as connection:
+        assert connection.execute("select thread from state").fetchone() == ("thread-7",)
+
+
+def test_checkpoint_restore_refuses_overwrite(monkeypatch, capsys, tmp_path: Path) -> None:
+    source = tmp_path / "current.db"
+    backup = tmp_path / "backup.db"
+    restored = tmp_path / "restored.db"
+    with sqlite3.connect(source) as connection:
+        connection.execute("create table state (value text)")
+    monkeypatch.setenv("GHOST_CHECKPOINT_DB", str(source))
+    assert cli.main(["checkpoint", "backup", str(backup)]) == 0
+    digest = json.loads(capsys.readouterr().out)["sha256"]
+    restored.write_text("operator data", encoding="utf-8")
+
+    assert cli.main(
+        [
+            "checkpoint",
+            "restore",
+            str(backup),
+            str(restored),
+            "--sha256",
+            digest,
+        ]
+    ) == 1
+    assert restored.read_text(encoding="utf-8") == "operator data"
+    assert "already exists" in capsys.readouterr().err

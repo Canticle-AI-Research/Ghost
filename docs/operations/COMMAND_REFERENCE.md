@@ -53,6 +53,36 @@ operation when no key is supplied, so repeating the exact command is safe.
 `forget` refuses to contact SEAM unless `--confirm` exactly repeats the target
 reference. Output is stable JSON containing only the public response.
 
+## `ghost checkpoint`: execution-state recovery
+
+These commands operate on LangGraph execution checkpoints, never SEAM semantic
+memory. They do not construct a model or contact a provider.
+
+```text
+ghost checkpoint backup DESTINATION
+ghost checkpoint verify BACKUP [--sha256 DIGEST]
+ghost checkpoint restore BACKUP DESTINATION --sha256 DIGEST
+```
+
+Examples:
+
+```bash
+uv run ghost checkpoint backup /secure/backups/ghost-checkpoints.db
+uv run ghost checkpoint verify /secure/backups/ghost-checkpoints.db
+uv run ghost checkpoint verify /secure/backups/ghost-checkpoints.db \
+  --sha256 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+uv run ghost checkpoint restore /secure/backups/ghost-checkpoints.db \
+  /srv/ghost/recovery/checkpoints.db \
+  --sha256 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+```
+
+`backup` reads `GHOST_CHECKPOINT_DB`, uses SQLite's consistent backup API, and
+refuses to overwrite. `verify` checks an optional expected digest and SQLite
+integrity. `restore` requires the expected digest, verifies before and after
+copy, and writes only to a new path. Each success prints JSON with `path`,
+`sha256`, and `size_bytes`. See
+[recovery and observability](RECOVERY_AND_OBSERVABILITY.md).
+
 ## Environment/install commands
 
 ### `uv lock --check`
@@ -96,6 +126,7 @@ Both are supported. Project configuration deselects `live` tests.
 
 ```bash
 uv run pytest tests/test_cli.py -q
+uv run pytest tests/test_specialists.py tests/test_operations.py -q
 uv run pytest tests/test_memory_boundary.py tests/test_layering.py -q
 uv run pytest tests/test_docs.py tests/test_history_tools.py -q
 ```
