@@ -1143,7 +1143,7 @@ comparison as separate follow-up work.
 - Agent: `codex`
 - Status: `done`
 - Topics: `agent, ci, continuity, docs, evaluation, gates, handoff, history, memory, roadmap, security, status, tests, verification`
-- Commits: `3c2111234d76a46dc6bf9a3da7f906b986485876, 2a23fdcd730c051a83bab26622154df993431980`
+- Commits: `2a23fdcd730c051a83bab26622154df993431980`
 - Refs: `https://github.com/Canticle-AI-Research/Ghost/pull/12, https://github.com/Canticle-AI-Research/Ghost/actions/runs/32933045239, https://github.com/Canticle-AI-Research/Ghost/actions/runs/32933109326, docs/handoffs/2026-08-26-deliberate-memory-published.md`
 - Supersedes: `HISTORY#047`
 - Verification: `exact PR source 3c21112 passed repo-hygiene, brand-assets, tests (3.11), tests (3.13), package-smoke, and stage1-evals in run 32933045239; PR #12 merged as 2a23fdc; exact merge-head run 32933109326 passed the same six protected jobs; SEAM PR #233 source and all seven jobs were already protected-main at 0b07244; no paid/live lane ran`
