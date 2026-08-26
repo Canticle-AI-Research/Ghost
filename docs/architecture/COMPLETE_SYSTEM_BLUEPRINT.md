@@ -100,6 +100,7 @@ Ghost/
 ├── src/ghost/
 │   ├── application.py         framework/model/checkpoint adapter
 │   ├── lifecycle.py           framework-free turn contract
+│   ├── memory_policy.py       deterministic admission classifier
 │   ├── seam_memory.py         opaque public HTTP boundary
 │   ├── middleware.py          transient recall injection
 │   ├── tools.py               memory/filesystem/shell tools
@@ -127,9 +128,10 @@ Ghost/
 7  DeepAgent invokes the model and executes permitted tools
 8  adapter translates provider ToolMessages into plain ToolAttempt records
 9  SeamMemory sends one bounded attempt per tool for server-side verification
-10 SeamMemory submits the completed user/assistant pair through the public API
-11 SEAM derives evidence and passed checks, ingests, then accepts the outcome
-12 CLI prints the answer and closes HTTP/checkpoint connections on exit
+10 memory_policy classifies the completed exchange as admit/reject/review
+11 SeamMemory submits the pair and admission decision through the public API
+12 SEAM records the decision; only admit compiles durable memory
+13 CLI prints the answer and closes HTTP/checkpoint connections on exit
 ```
 
 Detailed sequence:
@@ -147,7 +149,8 @@ Operator     CLI       Lifecycle      SEAM       Middleware/Model      Tool
    │          │            │            │                │◄─────────────┤
    │          │            │◄────────────────────────────┤ answer/calls │
    │          │            ├───────────►│ actions        │              │
-   │          │            ├───────────►│ complete       │              │
+   │          │            ├───────────►│ complete +     │              │
+   │          │            │            │ admission      │              │
    │          │            │◄───────────┤ opaque receipt │              │
    │          │◄───────────┤ answer     │                │              │
    │◄─────────┤ print      │            │                │              │
@@ -189,6 +192,28 @@ canonical evidence                         execution state
 The checkpoint database may be discarded without deleting semantic memory.
 Ghost has no filesystem path to the service's canonical store; memory deletion
 and recovery are explicit authenticated SEAM lifecycle operations.
+
+## Deliberate memory state machine
+
+```text
+completed turn
+     │
+     ▼
+deterministic classifier ── explicit remember ──► admit ──► SEAM compile/persist
+     │
+     ├── durable but unconfirmed ───────────────► review ─► reasoning only
+     └── transient/no intent/mutation request ──► reject ─► reasoning only
+
+operator mutation plane (never a model tool)
+  remember TEXT ────────────────────────────────► new current memory
+  correct MEM_ID TEXT ─► replacement + supersedes + old deleted_soft
+  forget MEM_ID --confirm MEM_ID ───────────────► old deleted_soft
+  recall --view current|history ────────────────► bounded public records
+```
+
+Every arrow carries `namespace`, `scope`, `workspace`, `project`, and, for
+thread scope, the LangGraph thread ID as `session_id`. The bearer credential is
+resolved to a principal only inside SEAM.
 
 ## Tool authority ladder
 

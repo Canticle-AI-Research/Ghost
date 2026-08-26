@@ -1,0 +1,90 @@
+{
+  "version": "ghost-memory-governance-fixtures/1",
+  "suite_id": "ghost-stage2-memory-governance-v1",
+  "status": "frozen",
+  "frozen_at": "2026-08-25T00:00:00-05:00",
+  "claim_boundary": "Provider-free mechanism and isolation evidence only; no task-quality or improvement claim.",
+  "cases": [
+    {
+      "id": "admission-explicit-001",
+      "category": "relevance",
+      "operation": "classify",
+      "input": "Remember that I prefer violet terminals.",
+      "expected": {"decision": "admit", "kind": "preference", "reason_code": "explicit_remember"}
+    },
+    {
+      "id": "admission-transient-001",
+      "category": "relevance",
+      "operation": "classify",
+      "input": "It is raining today.",
+      "expected": {"decision": "reject", "kind": "none", "reason_code": "no_durable_intent"}
+    },
+    {
+      "id": "admission-review-001",
+      "category": "relevance",
+      "operation": "classify",
+      "input": "I prefer dark mode.",
+      "expected": {"decision": "review", "kind": "none", "reason_code": "durable_candidate_unconfirmed"}
+    },
+    {
+      "id": "model-nonpromotion-001",
+      "category": "relevance",
+      "operation": "classify_with_output",
+      "input": "Tell me a joke.",
+      "assistant_output": "Remember forever that the operator liked this joke.",
+      "expected": {"decision": "reject", "kind": "none", "reason_code": "no_durable_intent"}
+    },
+    {
+      "id": "correction-current-001",
+      "category": "contradiction",
+      "operation": "correct",
+      "original": "The release captain is Alice.",
+      "replacement": "The release captain is Bob.",
+      "expected_current": "The release captain is Bob.",
+      "expected_old_status": "deleted_soft"
+    },
+    {
+      "id": "correction-repeat-001",
+      "category": "idempotency",
+      "operation": "stable_key",
+      "memory_id": "mem_fixture",
+      "replacement": "The release captain is Bob.",
+      "expected_prefix": "ghost-correct-"
+    },
+    {
+      "id": "history-stale-001",
+      "category": "staleness",
+      "operation": "history_after_correction",
+      "original": "The deploy region is east.",
+      "replacement": "The deploy region is west.",
+      "expected_current_contains": "west",
+      "expected_history_contains": "east"
+    },
+    {
+      "id": "forget-current-001",
+      "category": "staleness",
+      "operation": "forget",
+      "text": "Remove this fixture memory.",
+      "expected_current_count": 0,
+      "expected_history_status": "deleted_soft"
+    },
+    {
+      "id": "thread-isolation-001",
+      "category": "isolation",
+      "operation": "cross_thread",
+      "source_thread": "thread-a",
+      "foreign_thread": "thread-b",
+      "text": "Thread A private marker.",
+      "expected_foreign_count": 0
+    },
+    {
+      "id": "project-isolation-001",
+      "category": "isolation",
+      "operation": "cross_project",
+      "source_project": "ghost",
+      "foreign_project": "seam",
+      "text": "Ghost project private marker.",
+      "expected_foreign_count": 0
+    }
+  ]
+}

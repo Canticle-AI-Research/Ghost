@@ -38,7 +38,7 @@ class _SmokeMemory:
         self.events: list[str] = []
         self.terminal_state = "open"
 
-    def begin_turn(self, user_input: str) -> SeamTurn:
+    def begin_turn(self, user_input: str, *, thread_id: str) -> SeamTurn:
         self.events.append("begin")
         rendered = "\n".join(
             json.dumps(memory, sort_keys=True) for memory in self.selected
@@ -47,6 +47,7 @@ class _SmokeMemory:
             run_id="smoke-turn",
             rendered_memory=rendered,
             evidence_refs=tuple(memory["id"] for memory in self.selected),
+            session_id=thread_id,
         )
 
     def record_actions(

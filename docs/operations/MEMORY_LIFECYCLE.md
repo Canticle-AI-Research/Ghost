@@ -3,7 +3,7 @@
 ## Current lifecycle
 
 Ghost uses one explicit pre-turn recall boundary and one successful post-turn
-write boundary.
+admission boundary.
 
 ```mermaid
 stateDiagram-v2
@@ -12,7 +12,9 @@ stateDiagram-v2
     ReasoningRunOpened --> MemoryRetrieved
     MemoryRetrieved --> AgentRunning
     AgentRunning --> AnswerProduced
-    AnswerProduced --> TurnIngested
+    AnswerProduced --> AdmissionDecided
+    AdmissionDecided --> TurnIngested: admit
+    AdmissionDecided --> ReasoningFinalized: reject or review
     TurnIngested --> ReasoningFinalized
     ReasoningFinalized --> [*]
 ```
@@ -46,13 +48,15 @@ not become checkpoint history.
 DeepAgents and LangGraph execute the model and any framework tools. Current
 execution is synchronous and uses a persistent SQLite checkpoint saver.
 
-### 6. Ingest only a completed turn
+### 6. Classify only a completed turn
 
 After Ghost produces a result, tool attempts go to
 `POST /v1/agent/turns/actions`. The completed user input and assistant output
-then go to `POST /v1/agent/turns/complete`. SEAM derives selected evidence and
-passed checks from server state, stores source evidence, compiles MIRL, and
-updates derived indexes. Recall precedes this write, preventing self-citation.
+then go to `POST /v1/agent/turns/complete` with an admit/reject/review decision.
+SEAM derives selected evidence and passed checks from server state. It compiles
+MIRL and updates derived indexes only for `admit`; reject/review still finalize
+the reasoning outcome with zero memory writes. Recall precedes any write,
+preventing self-citation.
 
 ### 7. Finalize provenance
 
@@ -67,10 +71,10 @@ Repeating an accepted completion returns the same receipt with `replayed=true`;
 actions after a terminal outcome conflict. A failed terminal replay remains
 rejected and does not ingest.
 
-## Planned admission lifecycle
+## Admission lifecycle
 
-Automatic persistence of every successful turn is intentionally an early-stage
-policy. The mature path should be:
+Ghost no longer persists every successful turn. The current deliberate policy
+is:
 
 ```mermaid
 flowchart LR
@@ -79,34 +83,46 @@ flowchart LR
     C -->|Yes| K[Classify memory kind]
     K --> E[Bind evidence trust time and scope]
     E --> R{Review required?}
-    R -->|Yes| P[Pending proposal]
+    R -->|Yes| P[Record review decision; no durable write]
     R -->|No| I[SEAM ingest]
-    P -->|Approved| I
-    P -->|Rejected| X
+    P --> X
 ```
 
-Admission should distinguish preferences, stable project facts, decisions,
-events, corrections, procedures, and transient task state.
+The current `review` result is an auditable non-admission decision. Ghost does
+not yet provide a pending-proposal queue or later approve/reject command; those
+belong to the future operator surface and must not be implied by this policy.
 
-## Planned correction lifecycle
+The default classifier distinguishes preferences, stable project facts,
+decisions, events, procedures, task state, unconfirmed durable candidates, and
+transient conversation. It is deterministic and never calls a provider.
 
-1. Retrieve the existing memory and exact evidence.
-2. Capture the new correction as a new source observation.
-3. Persist an explicit corrects, contradicts, or supersedes relationship.
-4. Resolve the current state without deleting the historical claim.
-5. Verify current and historical retrieval views.
+Configuration:
 
-## Planned forgetting lifecycle
+| `GHOST_MEMORY_ADMISSION` | Behavior |
+|---|---|
+| `explicit` | default; admit explicit remember, review unconfirmed durable candidates, reject the rest |
+| `all` | compatibility/operator override; admit every completed turn |
+| `off` | reject every automatic candidate; explicit CLI remember still works |
+
+## Correction lifecycle
+
+1. Recall the current memory and copy its opaque `mem_` reference.
+2. Run `ghost memory correct MEM_ID TEXT` in the same boundary.
+3. SEAM compiles the replacement and persists an explicit `supersedes` relation.
+4. SEAM soft-deletes the old canonical record and repairs derived projections.
+5. Current recall returns the replacement; history recall retains the old
+   record with `status: deleted_soft`.
+
+## Forgetting lifecycle
 
 Forgetting must be a scoped lifecycle operation, not a direct file or graph-row
 deletion. It should:
 
-1. identify exact canonical record IDs;
-2. show the planned impact and dependent references;
-3. require authorization appropriate to the caller and scope;
-4. apply canonical soft deletion or the governing SEAM lifecycle operation;
-5. remove or repair derived graph/vector state; and
-6. retain an auditable receipt without retaining deleted content improperly.
+1. identify the exact opaque `mem_` reference through current recall;
+2. require the operator to repeat that reference with `--confirm`;
+3. bind the request to the same principal/workspace/project/thread boundary;
+4. apply canonical soft deletion and recoverable derived cleanup; and
+5. return an opaque deletion receipt/status while current recall excludes it.
 
 ## Failure lifecycle
 

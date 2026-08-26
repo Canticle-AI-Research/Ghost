@@ -9,7 +9,8 @@ repository root unless stated otherwise.
 uv run ghost "What do you remember about the current research objective?"
 ```
 
-Ghost recalls before answering and ingests only after a successful turn.
+Ghost recalls before answering. A successful turn is ingested only when the
+configured admission policy returns `admit`.
 
 ## Resume a named conversation
 
@@ -44,6 +45,76 @@ uv run ghost --thread-id shared-agent
 
 This changes the durable memory boundary. Verify the service, principal,
 namespace, and scope before sending any content.
+
+## Remember something explicitly
+
+Either ask Ghost directly:
+
+```bash
+uv run ghost --thread-id architecture-review \
+  "Remember that the chosen release policy is exact-head verification."
+```
+
+or bypass the model and use the operator command:
+
+```bash
+uv run ghost memory remember \
+  "The chosen release policy is exact-head verification." \
+  --thread-id architecture-review
+```
+
+The first path admits only because the operator used explicit remember intent.
+The second is the clearest deterministic write path and prints the SEAM receipt
+as JSON.
+
+## Inspect current and historical memory
+
+```bash
+uv run ghost memory recall "release policy" --thread-id architecture-review
+uv run ghost memory recall "release policy" --view history \
+  --thread-id architecture-review
+```
+
+Copy the opaque `mem_...` ID from the current result before correcting or
+forgetting. Current view is answer-facing. History is an audit view and may
+contain `status: deleted_soft`; historical handles are not republished for
+mutation.
+
+## Correct a memory without rewriting history
+
+```bash
+uv run ghost memory correct mem_0123456789abcdef01234567 \
+  "The release policy requires exact-head CI and protected merge." \
+  --thread-id architecture-review
+```
+
+SEAM adds the replacement and `supersedes` relation before retiring the old
+record. Repeating the exact command is idempotent. Use `--idempotency-key KEY`
+when an external workflow already owns a durable operation key.
+
+## Forget a memory deliberately
+
+```bash
+uv run ghost memory forget mem_89abcdef0123456789abcdef \
+  --confirm mem_89abcdef0123456789abcdef \
+  --thread-id architecture-review
+```
+
+The exact repeated ID is a local confirmation gate. SEAM then performs
+auditable canonical soft-delete and recoverable derived cleanup. Use current
+recall to verify absence and history recall to verify lifecycle status.
+
+## Prove thread isolation locally
+
+```bash
+uv run ghost memory remember "Thread A marker." --thread-id thread-a
+uv run ghost memory recall "Thread A marker" --thread-id thread-a
+uv run ghost memory recall "Thread A marker" --thread-id thread-b
+```
+
+The second recall should be empty. This proves the configured session boundary,
+not hosted multi-user tenancy; that additionally requires authenticated SEAM
+principal mode.
 
 ## Grant read-only repository access
 

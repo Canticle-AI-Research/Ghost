@@ -33,9 +33,9 @@ class FakeMemory:
         self.completed: dict[str, Any] | None = None
         self.closed = False
 
-    def begin_turn(self, user_input: str) -> SeamTurn:
+    def begin_turn(self, user_input: str, *, thread_id: str) -> SeamTurn:
         assert user_input == "What do you remember?"
-        return SeamTurn("run-1", '{"record_id":"clm:1"}', ("clm:1",))
+        return SeamTurn("run-1", '{"record_id":"clm:1"}', ("clm:1",), thread_id)
 
     def complete_turn(self, turn: SeamTurn, **kwargs: Any) -> tuple[str, ...]:
         self.completed = {"turn": turn, **kwargs}
@@ -72,6 +72,8 @@ def test_agent_recall_invoke_and_persist_order() -> None:
     assert memory.completed["assistant_output"] == answer
     assert memory.completed["thread_id"] == "thread-7"
     assert memory.completed["turn_id"] == "turn-9"
+    assert memory.completed["admission"].decision == "reject"
+    assert memory.completed["admission"].reason_code == "no_durable_intent"
 
 
 def test_agent_rejects_empty_input_before_recall() -> None:

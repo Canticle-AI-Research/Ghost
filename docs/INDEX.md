@@ -77,7 +77,7 @@ learning surface is [the Ghost engineering wiki](README.md).
 
 | Document | Covers |
 |---|---|
-| [evaluation/MEMORY_EVALS.md](evaluation/MEMORY_EVALS.md) | planned memory-quality fixtures and measures |
+| [evaluation/MEMORY_EVALS.md](evaluation/MEMORY_EVALS.md) | deliberate-memory mechanism proofs and planned quality measures |
 | [evaluation/STAGE1_FROZEN_SUITE.md](evaluation/STAGE1_FROZEN_SUITE.md) | frozen 20-case corpus, BIL-0 bundle/verifier/gate, commands, and live successor boundary |
 | [evaluation/TESTING_AND_QUALIFICATION.md](evaluation/TESTING_AND_QUALIFICATION.md) | test lanes, exact commands, evidence meanings, release gates |
 
@@ -89,7 +89,8 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [history/PATH_MOVES.md](history/PATH_MOVES.md) | ledger that keeps immutable history refs resolvable after a rename |
 | [Temporal Chain template](../templates/temporal-chain/README.md) | reusable standard-library history + git protocol starter for other repositories |
 | [handoffs/INDEX.md](handoffs/INDEX.md) | canonical single-head handoff registry |
-| [handoffs/2026-08-25-stage1-frozen-published.md](handoffs/2026-08-25-stage1-frozen-published.md) | current protected-main Stage 1 evaluation boundary |
+| [handoffs/2026-08-26-deliberate-memory-qualified.md](handoffs/2026-08-26-deliberate-memory-qualified.md) | current deliberate-memory mechanism publication candidate |
+| [handoffs/2026-08-25-stage1-frozen-published.md](handoffs/2026-08-25-stage1-frozen-published.md) | superseded protected-main Stage 1 evaluation boundary |
 | [handoffs/2026-08-25-stage1-candidate-ready.md](handoffs/2026-08-25-stage1-candidate-ready.md) | superseded exact-head CI publication boundary for Stage 1 evaluation |
 | [handoffs/2026-08-25-stage1-final-baseline-qualified.md](handoffs/2026-08-25-stage1-final-baseline-qualified.md) | superseded post-review clean-source Stage 1 baseline boundary |
 | [handoffs/2026-08-25-stage1-review-repaired.md](handoffs/2026-08-25-stage1-review-repaired.md) | superseded Stage 1 evaluation review-repair boundary |

@@ -31,7 +31,8 @@ chronology, transient branch state, or duplicated implementation narratives.
 - The framework-free turn contract lives in `src/ghost/lifecycle.py`.
 - The DeepAgents/LangChain/LangGraph adapter lives in
   `src/ghost/application.py`.
-- Recall precedes execution; completed successful turns are ingested afterward.
+- Recall precedes execution; completed successful turns receive a recorded
+  admit/reject/review decision, and only admitted turns are ingested afterward.
 - Failed turns are rejected and never ingested as completed memory.
 - Retrieved memory is escaped, bounded, transient, and labeled untrusted.
 - Tool results may support an outcome only through passed SEAM verifications.
@@ -57,9 +58,17 @@ chronology, transient branch state, or duplicated implementation narratives.
 - Ghost has no canonical-memory filesystem path. `GHOST_SEAM_DB` remains only
   as a deprecated compatibility input for the checkpoint default; new
   deployments set `GHOST_CHECKPOINT_DB` directly.
-- The current `thread` scope label does not partition memory by LangGraph
-  thread ID. Cross-thread recall inside one namespace is expected in the
-  single-operator boundary and is not tenancy.
+- Thread-scoped Ghost requests send the LangGraph thread ID as SEAM
+  `session_id`. Principal, workspace, project, namespace, scope, and session
+  together form the durable-memory boundary; checkpoint thread identity and
+  memory session identity must remain the same value.
+- Automatic admission defaults to `explicit`: explicit remember is admitted,
+  durable-looking unconfirmed input is review-only, and ordinary turns are
+  rejected. Model output cannot promote itself. `all` and `off` are explicit
+  operator overrides.
+- Correction is additive replacement plus `supersedes` followed by canonical
+  soft-delete; forgetting is canonical soft-delete. Both remain CLI-only and
+  are never exposed as model tools.
 - Repository-root `checkpoints.db` is a historical tracked artifact and a known
   hygiene defect. Do not use it as runtime truth; remove it in a separately
   reviewed cleanup change.

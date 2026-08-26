@@ -14,15 +14,21 @@ settings:
 ```text
 GHOST_SEAM_NAMESPACE=ghost.default
 GHOST_SEAM_SCOPE=thread
+GHOST_WORKSPACE=default
+GHOST_PROJECT=default
 ```
 
-Every reasoning run, retrieval, and ingest uses that same pair. The SEAM
+Every reasoning run, retrieval, admission, correction, and forgetting operation
+uses those dimensions. When scope is `thread`, Ghost also sends the LangGraph
+thread ID as `session_id`; two thread IDs therefore map to different SEAM
+partitions. The SEAM
 service may additionally derive a principal/tenant boundary from the bearer
 credential; Ghost never supplies that identity as JSON. Token-only trusted
 mode remains suitable only for single-operator use and is not tenancy. In both
-modes, the `thread` label does not itself partition by LangGraph thread ID.
+modes, the scope label is semantic while `session_id` performs the concrete
+conversation partition.
 
-## Planned logical dimensions
+## Logical dimensions
 
 | Dimension | Purpose | Example policy |
 |---|---|---|
@@ -33,10 +39,11 @@ modes, the `thread` label does not itself partition by LangGraph thread ID.
 | thread | current conversational execution | LangGraph checkpoint identifier |
 | agent | contribution attribution | `ghost`, future researcher, coder, verifier |
 
-The exact encoded namespace format remains planned. It should use stable opaque
-identifiers rather than raw emails, usernames, or secrets.
+SEAM hashes the complete boundary into its internal namespace. Ghost sends only
+validated labels; it never sends the principal subject. Do not put emails,
+tokens, secrets, or other sensitive identifiers in these labels.
 
-## Proposed retrieval policy
+## Retrieval policy
 
 Ghost should make scope composition explicit rather than searching everything:
 
@@ -46,8 +53,9 @@ Ghost should make scope composition explicit rather than searching everything:
 4. user preferences when relevant;
 5. organization knowledge only through an authorized shared scope.
 
-Results from different scopes should retain their original boundary and should
-not be copied into a broader scope merely because they were retrieved.
+Ghost currently performs one exact-boundary query rather than widening across
+the hierarchy. Results retain their opaque reference and should not be copied
+into a broader scope merely because they were retrieved.
 
 ## Required isolation tests
 

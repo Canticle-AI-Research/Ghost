@@ -35,6 +35,24 @@ class FakeSeamHTTP:
         self.turns: dict[str, str] = {}
         self.closed = False
 
+    @staticmethod
+    def _dimensions(payload: dict[str, object]) -> tuple[object, ...]:
+        return tuple(
+            payload.get(name)
+            for name in ("namespace", "scope", "workspace", "project", "session_id")
+        )
+
+    def _visible(
+        self, payload: dict[str, object], *, include_history: bool = False
+    ) -> list[dict[str, object]]:
+        boundary = self._dimensions(payload)
+        return [
+            {key: value for key, value in memory.items() if key != "_dimensions"}
+            for memory in self.memories
+            if memory.get("_dimensions") == boundary
+            and (include_history or memory.get("status") != "deleted_soft")
+        ]
+
     def _response(self, path: str, payload: dict[str, object]) -> httpx.Response:
         request = httpx.Request("POST", f"http://seam.test{path}")
         if path == "/v1/agent/turns/begin":
@@ -43,7 +61,7 @@ class FakeSeamHTTP:
             return httpx.Response(
                 200,
                 request=request,
-                json={"turn_id": turn_id, "memories": list(self.memories)},
+                json={"turn_id": turn_id, "memories": self._visible(payload)},
             )
         if path == "/v1/agent/turns/actions":
             attempts = payload.get("attempts")
@@ -62,20 +80,29 @@ class FakeSeamHTTP:
         if path == "/v1/agent/turns/complete":
             turn_id = str(payload["turn_id"])
             receipt_id = f"receipt-{turn_id}"
-            if self.turns.get(turn_id) != "accepted":
+            admission = payload.get("memory_admission")
+            admitted = not isinstance(admission, dict) or admission.get("decision") == "admit"
+            if self.turns.get(turn_id) != "accepted" and admitted:
                 text = f"{payload['user_input']} {payload['assistant_output']}"
                 self.memories.append(
                     {
                         "id": f"memory-{len(self.memories) + 1}",
                         "text": text,
                         "score": 1.0,
+                        "status": "asserted",
+                        "created_at": "2026-08-25T00:00:00+00:00",
+                        "_dimensions": self._dimensions(payload),
                     }
                 )
-                self.turns[turn_id] = "accepted"
+            self.turns[turn_id] = "accepted"
             return httpx.Response(
                 200,
                 request=request,
-                json={"accepted": True, "receipt_id": receipt_id},
+                json={
+                    "accepted": True,
+                    "receipt_id": receipt_id,
+                    "memory_admission": admission,
+                },
             )
         if path == "/v1/agent/turns/fail":
             self.turns[str(payload["turn_id"])] = "rejected"
@@ -84,7 +111,84 @@ class FakeSeamHTTP:
             return httpx.Response(
                 200,
                 request=request,
-                json={"memories": list(self.memories)},
+                json={
+                    "memories": self._visible(
+                        payload, include_history=payload.get("view") == "history"
+                    )
+                },
+            )
+        if path == "/v1/memories":
+            memory = {
+                "id": f"memory-{len(self.memories) + 1}",
+                "text": str(payload["text"]),
+                "score": 1.0,
+                "status": "asserted",
+                "created_at": "2026-08-25T00:00:00+00:00",
+                "_dimensions": self._dimensions(payload),
+            }
+            self.memories.append(memory)
+            return httpx.Response(
+                200,
+                request=request,
+                json={"accepted": True, "receipt_id": f"receipt-{memory['id']}"},
+            )
+        if path == "/v1/memories/correct":
+            memory_id = str(next(iter(payload["memory_ids"])))
+            old = next(
+                (
+                    memory
+                    for memory in self.memories
+                    if memory["id"] == memory_id
+                    and memory.get("_dimensions") == self._dimensions(payload)
+                    and memory.get("status") != "deleted_soft"
+                ),
+                None,
+            )
+            if old is None:
+                return httpx.Response(404, request=request, json={"detail": "not found"})
+            old["status"] = "deleted_soft"
+            replacement = {
+                "id": f"memory-{len(self.memories) + 1}",
+                "text": str(payload["text"]),
+                "score": 1.0,
+                "status": "asserted",
+                "created_at": "2026-08-25T00:00:01+00:00",
+                "_dimensions": self._dimensions(payload),
+            }
+            self.memories.append(replacement)
+            public_replacement = {
+                key: value
+                for key, value in replacement.items()
+                if key != "_dimensions"
+            }
+            return httpx.Response(
+                200,
+                request=request,
+                json={
+                    "accepted": True,
+                    "status": "deleted",
+                    "memory": public_replacement,
+                },
+            )
+        if path == "/v1/memories/delete":
+            memory_id = str(next(iter(payload["memory_ids"])))
+            target = next(
+                (
+                    memory
+                    for memory in self.memories
+                    if memory["id"] == memory_id
+                    and memory.get("_dimensions") == self._dimensions(payload)
+                    and memory.get("status") != "deleted_soft"
+                ),
+                None,
+            )
+            if target is None:
+                return httpx.Response(404, request=request, json={"detail": "not found"})
+            target["status"] = "deleted_soft"
+            return httpx.Response(
+                200,
+                request=request,
+                json={"accepted": True, "status": "deleted"},
             )
         return httpx.Response(404, request=request, json={"detail": "not found"})
 

@@ -131,9 +131,9 @@ def test_lifecycle_can_drive_a_graph_that_is_not_langchain() -> None:
             return {"messages": [type("M", (), {"content": "answered"})()]}
 
     class Memory:
-        def begin_turn(self, user_input):
+        def begin_turn(self, user_input, *, thread_id):
             calls.append("begin")
-            return SeamTurn("run-1", "", ())
+            return SeamTurn("run-1", "", (), thread_id)
 
         def complete_turn(self, turn, **kwargs):
             calls.append("complete")
@@ -162,7 +162,7 @@ def test_lifecycle_rejects_an_invalid_step_budget_before_recall() -> None:
         def __init__(self) -> None:
             self.events: list[str] = []
 
-        def begin_turn(self, user_input):
+        def begin_turn(self, user_input, *, thread_id):
             self.events.append("begin")
 
     memory = Memory()

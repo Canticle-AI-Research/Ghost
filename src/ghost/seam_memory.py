@@ -6,12 +6,14 @@ import json
 import math
 from collections.abc import Iterable, Mapping, Sequence
 from contextlib import AbstractContextManager
+from contextvars import ContextVar, Token
 from dataclasses import dataclass
 from typing import Any, Protocol
 
 import httpx
 
-from .config import GhostSettings
+from .config import GhostSettings, validate_dimension
+from .memory_policy import MemoryAdmission
 
 MAX_SEAM_RESPONSE_BYTES = 8 * 1024 * 1024
 
@@ -23,6 +25,7 @@ class SeamTurn:
     run_id: str
     rendered_memory: str
     evidence_refs: tuple[str, ...]
+    session_id: str = "default"
 
 
 class HTTPClient(Protocol):
@@ -117,12 +120,24 @@ class SeamMemory:
             timeout=settings.seam_timeout,
         )
         self._owns_client = client is None
+        self._active_session: ContextVar[str | None] = ContextVar(
+            "ghost_seam_session", default=None
+        )
+        self._session_tokens: dict[str, Token[str | None]] = {}
 
-    def _dimensions(self) -> dict[str, object]:
-        return {
+    def _dimensions(self, session_id: str | None = None) -> dict[str, object]:
+        resolved_session = session_id or self._active_session.get() or "default"
+        dimensions: dict[str, object] = {
             "namespace": self.settings.namespace,
             "scope": self.settings.scope,
+            "workspace": self.settings.workspace,
+            "project": self.settings.project,
         }
+        if self.settings.scope == "thread":
+            dimensions["session_id"] = validate_dimension(
+                resolved_session, "thread_id"
+            )
+        return dimensions
 
     def _post(self, path: str, payload: dict[str, object]) -> dict[str, Any]:
         detail = ""
@@ -156,11 +171,11 @@ class SeamMemory:
             raise SeamTransportError(f"SEAM request {path} returned a non-object")
         return body
 
-    def begin_turn(self, user_input: str) -> SeamTurn:
+    def begin_turn(self, user_input: str, *, thread_id: str = "default") -> SeamTurn:
         """Recall relevant evidence while opening its server-side reasoning run."""
 
         payload = {
-            **self._dimensions(),
+            **self._dimensions(thread_id),
             "query": user_input,
             "limit": self.settings.recall_budget,
             "graph_hops": self.settings.graph_hops,
@@ -182,10 +197,13 @@ class SeamMemory:
             for item in memories
             if isinstance(item.get("id"), str) and item["id"]
         )
+        token = self._active_session.set(thread_id)
+        self._session_tokens[turn_id] = token
         return SeamTurn(
             run_id=turn_id,
             rendered_memory=render_memories(memories),
             evidence_refs=evidence_refs,
+            session_id=thread_id,
         )
 
     def record_actions(
@@ -208,7 +226,11 @@ class SeamMemory:
         ]
         body = self._post(
             "/v1/agent/turns/actions",
-            {**self._dimensions(), "turn_id": turn.run_id, "attempts": serialized},
+            {
+                **self._dimensions(turn.session_id),
+                "turn_id": turn.run_id,
+                "attempts": serialized,
+            },
         )
         passed = body.get("passed_verification_ids")
         if not isinstance(passed, list) or not all(
@@ -226,6 +248,7 @@ class SeamMemory:
         thread_id: str,
         turn_id: str,
         verification_ids: Sequence[str] = (),
+        admission: MemoryAdmission | None = None,
     ) -> tuple[str, ...]:
         """Compile a completed turn and finalize its server-side outcome.
 
@@ -236,19 +259,26 @@ class SeamMemory:
         """
 
         del thread_id, turn_id, verification_ids
-        body = self._post(
-            "/v1/agent/turns/complete",
-            {
-                **self._dimensions(),
-                "turn_id": turn.run_id,
-                "user_input": user_input,
-                "assistant_output": assistant_output,
-            },
-        )
-        receipt_id = body.get("receipt_id")
-        if body.get("accepted") is not True or not isinstance(receipt_id, str):
-            raise SeamTransportError("SEAM completion response was not accepted")
-        return (receipt_id,)
+        try:
+            body = self._post(
+                "/v1/agent/turns/complete",
+                {
+                    **self._dimensions(turn.session_id),
+                    "turn_id": turn.run_id,
+                    "user_input": user_input,
+                    "assistant_output": assistant_output,
+                    "memory_admission": (
+                        admission
+                        or MemoryAdmission("admit", "conversation", "legacy_auto")
+                    ).to_payload(),
+                },
+            )
+            receipt_id = body.get("receipt_id")
+            if body.get("accepted") is not True or not isinstance(receipt_id, str):
+                raise SeamTransportError("SEAM completion response was not accepted")
+            return (receipt_id,)
+        finally:
+            self._restore_session(turn)
 
     def query_knowledge(
         self,
@@ -257,16 +287,20 @@ class SeamMemory:
         limit: int,
         namespace: str | None = None,
         scope: str | None = None,
+        view: str = "current",
+        thread_id: str | None = None,
     ) -> dict[str, Any]:
         """Read opaque public memories and adapt them to Ghost's tool shape."""
 
         body = self._post(
             "/v1/memories/recall",
             {
+                **self._dimensions(thread_id),
                 "query": query,
                 "namespace": namespace or self.settings.namespace,
                 "scope": scope or self.settings.scope,
                 "limit": limit,
+                "view": view,
             },
         )
         memories = body.get("memories")
@@ -280,6 +314,8 @@ class SeamMemory:
                     "id": str(item.get("id") or ""),
                     "kind": "memory",
                     "label": str(item.get("text") or ""),
+                    "status": str(item.get("status") or "unknown"),
+                    "created_at": item.get("created_at"),
                 }
                 for item in memories[:limit]
             ]
@@ -296,12 +332,86 @@ class SeamMemory:
         """Reject a failed run without sending exception text or ingesting it."""
 
         del thread_id, turn_id
-        self._post(
-            "/v1/agent/turns/fail",
+        try:
+            self._post(
+                "/v1/agent/turns/fail",
+                {
+                    **self._dimensions(turn.session_id),
+                    "turn_id": turn.run_id,
+                    "error_type": type(error).__name__,
+                },
+            )
+        finally:
+            self._restore_session(turn)
+
+    def _restore_session(self, turn: SeamTurn) -> None:
+        token = self._session_tokens.pop(turn.run_id, None)
+        if token is not None:
+            self._active_session.reset(token)
+
+    def remember(self, text: str, *, thread_id: str) -> dict[str, Any]:
+        """Explicitly admit one operator-authored memory."""
+
+        return self._post(
+            "/v1/memories",
+            {**self._dimensions(thread_id), "text": text, "agent_id": self.settings.agent_id},
+        )
+
+    def recall(
+        self,
+        query: str,
+        *,
+        thread_id: str,
+        limit: int | None = None,
+        view: str = "current",
+    ) -> dict[str, Any]:
+        """Recall the current view or the retained historical view."""
+
+        return self._post(
+            "/v1/memories/recall",
             {
-                **self._dimensions(),
-                "turn_id": turn.run_id,
-                "error_type": type(error).__name__,
+                **self._dimensions(thread_id),
+                "query": query,
+                "limit": self.settings.recall_budget if limit is None else limit,
+                "view": view,
+            },
+        )
+
+    def correct(
+        self,
+        memory_id: str,
+        text: str,
+        *,
+        thread_id: str,
+        idempotency_key: str,
+    ) -> dict[str, Any]:
+        """Replace a memory additively while retaining its historical record."""
+
+        return self._post(
+            "/v1/memories/correct",
+            {
+                **self._dimensions(thread_id),
+                "memory_ids": [memory_id],
+                "text": text,
+                "idempotency_key": idempotency_key,
+            },
+        )
+
+    def forget(
+        self,
+        memory_id: str,
+        *,
+        thread_id: str,
+        idempotency_key: str,
+    ) -> dict[str, Any]:
+        """Soft-delete one opaque memory through SEAM's lifecycle engine."""
+
+        return self._post(
+            "/v1/memories/delete",
+            {
+                **self._dimensions(thread_id),
+                "memory_ids": [memory_id],
+                "idempotency_key": idempotency_key,
             },
         )
 

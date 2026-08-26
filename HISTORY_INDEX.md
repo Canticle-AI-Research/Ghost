@@ -3,12 +3,13 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `f0c6275b08a76b351c926278ed18574ce95f4e6f0459b0b23086b35fc76d305c`
-- Entries: `46`
-- Latest: `HISTORY#046`
+- Source SHA-256: `01ca1dd1c8c928b3dae93e6dea5f38b14faa3060d44d135affab9ea167025822`
+- Entries: `47`
+- Latest: `HISTORY#047`
 
 | ID | Date | Status | Commit | Topics | Supersedes | Event |
 |---:|---|---|---|---|---|---|
+| 047 | 2026-08-26 | in-progress | `working-tree` | agent, architecture, cli, config, continuity, correction, docs, evaluation, handoff, history, memory, roadmap, security, status, tests, verification, wiki | #046 | Qualify deliberate-memory governance for publication |
 | 046 | 2026-08-25 | done | `cbdd190e8642` | ci, continuity, docs, evaluation, gates, handoff, history, memory, roadmap, security, status, verification | #045 | Publish the frozen Stage 1 evaluation substrate |
 | 045 | 2026-08-25 | in-progress | `bc18555d364a` | ci, continuity, docs, evaluation, gates, handoff, history, roadmap, security, status, tests, verification | #044 | Qualify the Stage 1 evaluation candidate for publication |
 | 044 | 2026-08-25 | in-progress | `ee4f63b5b2be` | ci, continuity, evaluation, gates, handoff, history, memory, snapshot, status, tests, verification | #043 | Freeze the final post-review Stage 1 baseline |

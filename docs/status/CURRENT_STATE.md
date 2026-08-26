@@ -1,4 +1,4 @@
-# Current state: 2026-08-25
+# Current state: 2026-08-26
 
 This report separates landed source, local work, remote state, verification,
 and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
@@ -7,7 +7,7 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 
 | Plane | Observed state |
 |---|---|
-| Default branch | `main@86774efb45c4f93b7e83272c9f1ce638e8c46fb7` |
+| Default branch | `main@e1d1b9a8e72cf47f813a57febf6edd3959429b3b` |
 | Stage 1 evaluation substrate | merged through PR #10: 20 frozen cases, real-lifecycle BIL-0 smoke/verifier/gate, step ceiling, final clean baseline |
 | Public transport | merged through PR #8; public install and opaque transport source published |
 | Primary working branch | `agent/avatar-u1-temporal-integration`, preserving avatar-only WIP on its earlier reviewed base |
@@ -16,7 +16,7 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 | Remote visibility | public |
 | Merged PRs | PR #1 and PRs #5 through #10 |
 | Open PRs | Dependabot #2 and #4 |
-| Exact-head public CI | run `32927031615` green on `86774ef`; all six required jobs passed |
+| Exact-head public CI | run `32927357539` green on `e1d1b9a`; all six required jobs passed |
 | Public transport proof | 200 provider-free tests, Ruff, build, clean wheel install, real `ghost --help`, and protected PR/main CI passed; 8 live tests deselected |
 
 This is a status snapshot, not authorization to delete or combine local files.
@@ -47,8 +47,8 @@ This is a status snapshot, not authorization to delete or combine local files.
   foundation, and multi-harness launcher tooling.
 - Full provider-free suite on hosted Python 3.11 and 3.13, clean wheel install,
   and real command smoke, all required by protected main.
-- Coordinated SEAM server source through SEAM PR #231; this is not a hosted
-  deployment claim.
+- Coordinated deliberate-memory SEAM server source through protected PR #233 at
+  `main@0b07244`; this is not a hosted deployment claim.
 - `ghost-stage1-frozen-v1` 20-case corpus and immutable manifest.
 - Deterministic two-arm BIL-0 bundle, verifier, and safety gate.
 - Tracked non-claimable baseline bound to clean source `bc18555` and bundle
@@ -60,6 +60,11 @@ This is a status snapshot, not authorization to delete or combine local files.
 - `GHOST_MAX_STEPS` runtime superstep ceiling and explicit non-streaming policy.
 
 ## Local-only capability
+
+- Deliberate-memory branch: deterministic admission, explicit remember,
+  correction/supersession, forgetting, current/history views, and
+  principal/workspace/project/thread transport isolation with provider-free
+  tests. It is not merged or quality-qualified yet.
 
 - `ghost-avatar` WebSocket/HTTP/browser overlay runner.
 - GTK desktop pet using the selected B2 art direction.
@@ -114,13 +119,13 @@ closeout is recorded in the latest history entry after completion.
    should be removed in a dedicated reviewed cleanup.
 4. Stage 1 provider-live and exact release-candidate qualification remain open;
    the frozen deterministic artifact is explicitly non-claimable.
-5. Selective memory admission, correction, forgetting, and principal isolation
-   remain absent.
+5. The SEAM server half of deliberate-memory governance is protected-main;
+   Ghost's client/policy half remains local, and a sealed Q3 memory-quality
+   comparison remains absent.
 6. The license structure needs counsel review and a written founder IP
     assignment after the company is legally formed.
 
 ## Next issue
 
-Implement and qualify deliberate memory admission, correction, forgetting, and
-principal isolation against the frozen Stage 1 baseline while preserving the
-avatar candidate in its isolated primary working branch.
+Publish the deliberate-memory mechanism candidate, then build the sealed Q3
+memory-quality comparison without touching the isolated avatar branch.

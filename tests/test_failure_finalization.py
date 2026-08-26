@@ -23,6 +23,7 @@ import pytest
 
 from ghost.application import GhostAgent
 from ghost.config import GhostSettings
+from ghost.lifecycle import run_turn
 from ghost.seam_memory import SeamMemory, SeamTurn
 
 
@@ -42,8 +43,8 @@ class _RecordingMemory:
         self.completed: dict[str, Any] | None = None
         self.closed = False
 
-    def begin_turn(self, user_input: str) -> SeamTurn:
-        return SeamTurn("run-1", "", ("clm:1",))
+    def begin_turn(self, user_input: str, *, thread_id: str) -> SeamTurn:
+        return SeamTurn("run-1", "", ("clm:1",), thread_id)
 
     def complete_turn(self, turn: SeamTurn, **kwargs: Any) -> tuple[str, ...]:
         self.completed = kwargs
@@ -102,6 +103,51 @@ def test_an_empty_response_is_a_failure_not_a_silent_success() -> None:
 
     assert memory.failed is not None
     assert memory.completed is None
+
+
+def test_admission_classifier_failure_rejects_the_open_reasoning_run() -> None:
+    memory = _RecordingMemory()
+
+    class AnswerGraph:
+        def invoke(self, input, *, context, config):
+            return {"messages": ["answer"]}
+
+    def broken_policy(_user: str, _answer: str):
+        raise RuntimeError("classifier failed")
+
+    with pytest.raises(RuntimeError, match="classifier failed"):
+        run_turn(
+            memory=memory,
+            graph=AnswerGraph(),
+            user_input="hello",
+            thread_id="thread-a",
+            admit_memory=broken_policy,
+        )
+
+    assert memory.completed is None
+    assert memory.failed is not None
+    assert isinstance(memory.failed["error"], RuntimeError)
+
+
+def test_finalization_failure_does_not_mask_the_original_turn_error() -> None:
+    memory = _RecordingMemory()
+
+    def fail_finalization(_turn: SeamTurn, **_kwargs: Any) -> None:
+        raise ConnectionError("SEAM unavailable")
+
+    memory.fail_turn = fail_finalization  # type: ignore[method-assign]
+    original = RuntimeError("model failed")
+
+    with pytest.raises(RuntimeError, match="model failed") as captured:
+        run_turn(
+            memory=memory,
+            graph=_ExplodingGraph(original),
+            user_input="hello",
+            thread_id="thread-a",
+        )
+
+    assert captured.value is original
+    assert any("failed to finalize" in note for note in captured.value.__notes__)
 
 
 def test_a_successful_turn_does_not_finalize_as_failed() -> None:

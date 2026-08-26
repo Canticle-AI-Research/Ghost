@@ -1097,3 +1097,43 @@ This closes the provider-free frozen-substrate issue, not the whole Stage 1
 product gate. The deterministic artifact remains non-claimable. Provider-live,
 paid judge, exact release-candidate, package release, and deployment proof
 remain open. Deliberate memory governance is the next implementation issue.
+
+## HISTORY#047 — Qualify deliberate-memory governance for publication
+- Date: `2026-08-26T00:09:10-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `agent, architecture, cli, config, continuity, correction, docs, evaluation, handoff, history, memory, roadmap, security, status, tests, verification, wiki`
+- Commits: `working-tree`
+- Refs: `src/ghost/memory_policy.py, src/ghost/seam_memory.py, src/ghost/lifecycle.py, src/ghost/cli.py, evals/stage2, docs/handoffs/2026-08-26-deliberate-memory-qualified.md, https://github.com/Canticle-AI-Research/Seam/pull/233`
+- Supersedes: `HISTORY#046`
+- Verification: `uv run ruff check . passed; uv run pytest -q passed 257 provider-free tests with 8 live tests deselected; uv build passed; git diff --check passed; final CodeRabbit full-delta review returned zero findings after earlier invalid-thread, failure-finalization, ContextVar-restore, documentation, and CI-contract repairs; protected SEAM main@0b07244 supplies the exact server contract through PR #233; Ghost exact-head CI and merge pending`
+
+The Ghost half of deliberate-memory governance is locally qualified on an
+isolated worktree based on `main@e1d1b9a`. The provider-free admission policy
+trusts operator input rather than model output, records admit/reject/review,
+and persists only explicit admissions. Ordinary chatter is rejected; durable
+but unconfirmed input is review-only and performs no durable write.
+
+The operator can explicitly remember, recall current or historical state,
+correct one opaque memory additively, and forget one memory only after repeating
+its exact opaque ID with `--confirm`. Correction preserves a `supersedes`
+history edge through the protected SEAM public contract. Workspace, project,
+namespace, scope, and thread dimensions are carried consistently, while failed
+or completed turns restore their active thread context. If failure finalization
+also fails, Ghost preserves the original turn error and annotates the secondary
+failure instead of masking it.
+
+The frozen `ghost-stage2-memory-governance-v1` fixture has ten cases across
+relevance, contradiction, idempotency, staleness, and isolation with canonical
+hash `32ed350b167b1a412e9afabcdc75657afcc96c141937d267dcdb9a5830c69a7c`.
+It proves mechanism behavior through the real policy and opaque adapter against
+a stateful contract fake. It runs no model, has no matched no-memory answer
+arm, and cannot support a G2 quality-improvement claim.
+
+All governing architecture, command, how-to, installation, configuration,
+trust, lifecycle, evaluation, glossary, status, ledger, roadmap, and wiki index
+pages were updated in the same candidate. The primary avatar worktree remains
+untouched. Advance the handoff to
+`docs/handoffs/2026-08-26-deliberate-memory-qualified.md`, publish this exact
+candidate through protected Ghost CI, and retain the sealed Q3 memory-quality
+comparison as separate follow-up work.
