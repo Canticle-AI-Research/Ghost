@@ -3,12 +3,13 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `3278fc55d6e01702eaf547935d6606fe523920eeb9c592a4cdb1e7be79fed83f`
-- Entries: `34`
-- Latest: `HISTORY#034`
+- Source SHA-256: `13816f6b7ab720dc462180eca8e417e06bb8cd83ccb8093562fac4f4e147551b`
+- Entries: `35`
+- Latest: `HISTORY#035`
 
 | ID | Date | Status | Commit | Topics | Supersedes | Event |
 |---:|---|---|---|---|---|---|
+| 035 | 2026-08-25 | done | `dcbad97b9583` | ci, continuity, docs, handoff, history, packaging, repository, status, verification, wiki | #034 | Merge the canonical Ghost foundation |
 | 034 | 2026-08-25 | in-progress | `working-tree` | architecture, ci, continuity, docs, gates, handoff, history, packaging, security, tests, tools, verification, wiki | #033 | Isolate and qualify the canonical foundation candidate |
 | 033 | 2026-08-25 | done | `232048faefee` | ci, correction, gates, history, repository, security, status, verification | #032 | Close the public repository and private-runner safety boundary |
 | 032 | 2026-08-25 | done | `working-tree` | ci, gates, roadmap, security, status, tests, verification | #031 | Split CI so public verification needs no self-hosted runner |

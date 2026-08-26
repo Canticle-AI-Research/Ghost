@@ -719,3 +719,28 @@ The documentation was also reconciled to merged `main@dbd421b`, the exact
 harness-installer boundary, credential-free public bundle verification, and
 machine-neutral handoff commands. Publication remains in progress until the
 exact pushed head passes required CI and merges through protected `main`.
+
+## HISTORY#035 — Merge the canonical Ghost foundation
+- Date: `2026-08-25T20:25:44-05:00`
+- Agent: `codex`
+- Status: `done`
+- Topics: `ci, continuity, docs, handoff, history, packaging, repository, status, verification, wiki`
+- Commits: `dcbad97b9583de403438241384e5dffb9776c810, fc0ebbb31966cf35fd36d442d603ac81e14a90ee, a5997c616e946496875a3ba4772ab9759b46f2d7`
+- Refs: `docs/updates/2026-08-25-canonical-foundation.md, docs/handoffs/2026-08-25-canonical-foundation-merged.md, https://github.com/Canticle-AI-Research/Ghost/pull/6, https://github.com/Canticle-AI-Research/Ghost/actions/runs/32918686149, https://github.com/Canticle-AI-Research/Ghost/actions/runs/32918733013`
+- Supersedes: `HISTORY#034`
+- Verification: `PR #6 required jobs repo-hygiene, brand-assets, and package-smoke passed on exact head fc0ebbb; PR #6 merged as a5997c6; exact merge-head push run 32918733013 passed the same three jobs; complete committed-diff re-review reported zero findings; private integration and paid/live tests not run`
+
+The canonical foundation is no longer a local or branch-only candidate. PR #6
+merged the engineering wiki, build blueprint, Temporal Chain, license/company
+foundation, and launcher tooling through protected `main`. The automatic hosted
+workflow proved append-only history, continuity, documentation routing, package
+construction, brand assets, lint, diff hygiene, and secret scanning on both the
+exact pull-request head and the exact merge head.
+
+The original dirty checkout was preserved throughout. After fast-forwarding it
+to `main@a5997c6`, its remaining changes are limited to the avatar runtime and
+assets, avatar test/tools, CLI hook, WebSocket dependency, and lock update. The
+visual provenance audit found selected B2 sources mixed with rejected/provider
+intermediates and a browser bridge that can open desktop items; that track stays
+local until asset routing and the consequential-action boundary receive their
+own review. Nothing was deleted or promoted silently.

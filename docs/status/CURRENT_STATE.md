@@ -7,20 +7,19 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 
 | Plane | Observed state |
 |---|---|
-| Publication branch | `docs/canonical-blueprint`, based on `main@dbd421b` |
-| Primary working branch | `agent/avatar-u1-temporal-integration`, preserving avatar-only WIP after the split |
-| Fetched `origin/main` | `dbd421babf0703c8c339e7b8db8d51fc51b58282` |
-| Canonical candidate | documentation, continuity, licensing, and launcher changes isolated in a clean worktree |
+| Default branch | `main@a5997c616e946496875a3ba4772ab9759b46f2d7` |
+| Primary working branch | `agent/avatar-u1-temporal-integration`, fast-forwarded to main and preserving avatar-only WIP |
+| Canonical foundation | merged through PR #6 |
 | Preserved local work | avatar source/tests/assets/tools plus CLI/package/lock changes in the primary checkout |
 | Remote visibility | public |
-| Merged PRs | PR #1 and PR #5 |
+| Merged PRs | PR #1, PR #5, and PR #6 |
 | Open PRs | Dependabot #2 and #4 |
-| Exact-head public CI | run `32907313331` green on `dbd421b`; all three required jobs passed |
+| Exact-head public CI | run `32918733013` green on `a5997c6`; all three required jobs passed |
 | Private integration CI | not run; Ghost has no assigned self-hosted runner |
 
 This is a status snapshot, not authorization to delete or combine local files.
 
-## Landed capability at `main@dbd421b`
+## Landed capability at `main@a5997c6`
 
 - DeepAgents root agent with provider routing through LangChain.
 - OpenAI reasoning-model use through the Responses API.
@@ -40,14 +39,12 @@ This is a status snapshot, not authorization to delete or combine local files.
 - Hosted automatic Public CI separated from manual-only Private CI.
 - Required protected-main checks, external-contributor approval, secret
   scanning/push protection, and zero assigned repository runners.
+- Canonical wiki, complete build blueprint, command/how-to/install docs,
+  append-only history, Temporal Chain gates/template, licensing/company
+  foundation, and multi-harness launcher tooling.
 
 ## Local-only capability
 
-- Append-only history, generated index, bounded packs, snapshots, and verified
-  single-head handoff chain.
-- Repository-neutral continuity installer and standard-library starter.
-- Public CI additions that enforce the local Temporal Chain and documentation
-  gates without resolving the private SDK.
 - `ghost-avatar` WebSocket/HTTP/browser overlay runner.
 - GTK desktop pet using the selected B2 art direction.
 - CLI notifications from agent-turn start/end to the avatar bridge.
@@ -57,9 +54,9 @@ This is a status snapshot, not authorization to delete or combine local files.
 The local avatar is not present on `origin/main`. Documentation must not call it
 shipped.
 
-## Local licensing and company-structure candidate
+## Licensing and company boundary
 
-- Ghost now carries a local PolyForm Shield 1.0.0 candidate with required
+- Ghost now carries merged PolyForm Shield 1.0.0 package metadata with required
   notice and separated trademark/brand assets.
 - The adjacent clean SEAM SDK checkout carries a local BUSL-to-PolyForm Shield
   candidate; it is not committed or published.
@@ -72,9 +69,9 @@ shipped.
 - Nicholas Thomas remains the identified copyright holder. No Canticle legal
   entity or founder-to-company IP assignment is evidenced by this repository.
 
-These are local legal/architecture candidates, not counsel approval, company
-formation, IP assignment, release, or an assertion that the canonical private
-SEAM runtime has already been relicensed.
+The cross-product matrix is an architecture decision, not counsel approval,
+company formation, IP assignment, release, or evidence that adjacent private
+runtime repositories have already been relicensed.
 
 ## Verification boundary
 
@@ -95,22 +92,21 @@ closeout is recorded in the latest history entry after completion.
 
 1. Private integration CI remains unavailable without a deliberately assigned,
    reviewed runner; public exact-head CI is green.
-2. The large local candidate still needs publication in reviewable slices.
-3. Desktop-avatar work remains local and must stay isolated from the
+2. Desktop-avatar work remains local and must stay isolated from the
    documentation/history foundation.
-4. A tracked repository-root `checkpoints.db` is generated execution state and
+3. A tracked repository-root `checkpoints.db` is generated execution state and
    should be removed in a dedicated reviewed cleanup.
-5. The current wheel depends on private Git-over-SSH sources and is not fit for
+4. The current wheel depends on private Git-over-SSH sources and is not fit for
    public PyPI.
-6. Stage 1 lacks frozen task/memory exit qualification.
-7. Selective memory admission, correction, forgetting, and principal isolation
+5. Stage 1 lacks frozen task/memory exit qualification.
+6. Selective memory admission, correction, forgetting, and principal isolation
    remain absent.
-8. The API/client path needed for a publicly installable Ghost is planned, not
+7. The API/client path needed for a publicly installable Ghost is planned, not
    implemented; current Ghost still imports the in-process SDK.
-9. The license structure needs counsel review and a written founder IP
+8. The license structure needs counsel review and a written founder IP
     assignment after the company is legally formed.
 
 ## Next issue
 
-Publish the canonical documentation/history/licensing/launcher foundation,
-then isolate the avatar candidate for its own review.
+Design and qualify the public API/client distribution boundary while preserving
+the avatar candidate in its isolated primary working branch.
