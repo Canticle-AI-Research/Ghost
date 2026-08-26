@@ -8,7 +8,7 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 | Plane | Observed state |
 |---|---|
 | Default branch | `main@620caee333d8ddf22c4fd983475031a3c7e37f21` |
-| Stage 1 evaluation candidate | `feat/stage1-frozen-evals`: 20 frozen cases, real-lifecycle BIL-0 smoke/verifier/gate, step ceiling; eight CodeRabbit findings repaired, final clean baseline pending |
+| Stage 1 evaluation candidate | `feat/stage1-frozen-evals`: 20 frozen cases, real-lifecycle BIL-0 smoke/verifier/gate, step ceiling; eight CodeRabbit findings repaired, final clean baseline qualified |
 | Public transport | merged through PR #8; public install and opaque transport source published |
 | Primary working branch | `agent/avatar-u1-temporal-integration`, preserving avatar-only WIP on its earlier reviewed base |
 | Canonical foundation | merged through PRs #6 and #7 |
@@ -57,7 +57,9 @@ This is a status snapshot, not authorization to delete or combine local files.
 - Tracked non-claimable baseline bound to clean source `bc18555` and bundle
   hash `6b16ad74`.
 - Lifecycle-executing successor bound to clean source `78a5035` and bundle
-  hash `9ce3f9d8`; this is the current BIL-0 comparison artifact.
+  hash `9ce3f9d8`; preserved as the pre-CodeRabbit lifecycle baseline.
+- Final post-review artifact bound to clean source `ee4f63b` and bundle hash
+  `57ca22ea`; this supersedes earlier artifacts for current comparisons.
 - `GHOST_MAX_STEPS` runtime superstep ceiling and explicit non-streaming policy.
 
 - `ghost-avatar` WebSocket/HTTP/browser overlay runner.

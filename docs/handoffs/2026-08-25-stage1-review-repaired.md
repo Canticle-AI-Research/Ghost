@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-stage1-review-repaired-20260825`
 supersedes: `ghost-stage1-lifecycle-baseline-qualified-20260825`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#043`
 created_at: `2026-08-25T22:23:34-05:00`
 

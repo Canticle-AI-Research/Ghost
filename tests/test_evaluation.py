@@ -37,6 +37,13 @@ LIFECYCLE_BASELINE = (
     / "stage1"
     / "ghost-stage1-frozen-v1-bil0-lifecycle-baseline.json"
 )
+FINAL_BASELINE = (
+    ROOT
+    / "evals"
+    / "runs"
+    / "stage1"
+    / "ghost-stage1-frozen-v1-bil0-final-baseline.json"
+)
 
 
 def test_frozen_manifest_matches_the_exact_fixture_corpus() -> None:
@@ -111,6 +118,19 @@ def test_tracked_lifecycle_baseline_executes_both_terminal_paths() -> None:
     )
     assert accepted["lifecycle_events"] == ["begin", "record_actions", "complete"]
     assert rejected["lifecycle_events"] == ["begin", "fail"]
+
+
+def test_final_review_repaired_baseline_is_the_current_clean_artifact() -> None:
+    bundle = json.loads(FINAL_BASELINE.read_text(encoding="utf-8"))
+
+    assert verify_bundle(bundle)["status"] == "PASS"
+    assert gate_bundle(bundle)["status"] == "PASS"
+    assert bundle["manifest"]["git_sha"] == "ee4f63b5b2be5ac1272caf1d33ff29f09701ad3a"
+    assert bundle["manifest"]["dirty_worktree"] is False
+    assert bundle["hashes"]["bundle_sha256"] == (
+        "57ca22ea5706f78e8513b92c8569fb8641e3e58c43cfedf3df0e39d81512a959"
+    )
+    assert bundle["result"]["summary"]["claimable"] is False
 
 
 def test_bundle_verification_detects_result_and_manifest_tampering() -> None:

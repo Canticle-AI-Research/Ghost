@@ -30,6 +30,13 @@ and bundle hash
 Use this successor for current BIL-0 harness comparisons; preserve the first
 artifact as historical evidence.
 
+The post-CodeRabbit final artifact is
+`evals/runs/stage1/ghost-stage1-frozen-v1-bil0-final-baseline.json`.
+It binds source `ee4f63b5b2be5ac1272caf1d33ff29f09701ad3a` and bundle
+hash `57ca22ea5706f78e8513b92c8569fb8641e3e58c43cfedf3df0e39d81512a959`.
+This is the current BIL-0 comparison artifact; the predecessors remain for
+audit chronology.
+
 ```bash
 uv run python -m tools.evaluation validate-fixtures
 uv run python -m tools.evaluation smoke --output /tmp/ghost-stage1-smoke.json

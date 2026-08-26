@@ -1004,3 +1004,36 @@ The current clean-source lifecycle baseline remains valid for its exact prior
 runner, but it predates these repairs. Preserve it and generate a separately
 named final bundle from the committed review-repair source. No provider/live,
 paid judge, release-candidate, release, or deployment work ran.
+
+## HISTORY#044 — Freeze the final post-review Stage 1 baseline
+- Date: `2026-08-25T22:24:57-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `ci, continuity, evaluation, gates, handoff, history, memory, snapshot, status, tests, verification`
+- Commits: `ee4f63b5b2be5ac1272caf1d33ff29f09701ad3a`
+- Refs: `evals/runs/stage1/ghost-stage1-frozen-v1-bil0-final-baseline.json, docs/evaluation/STAGE1_FROZEN_SUITE.md, docs/handoffs/2026-08-25-stage1-final-baseline-qualified.md`
+- Supersedes: `HISTORY#043`
+- Verification: `clean-source final bundle 57ca22ea5706f78e8513b92c8569fb8641e3e58c43cfedf3df0e39d81512a959 sealed from post-review source ee4f63b; all eleven integrity checks and gate_case_coverage, gate_candidate_outcomes, gate_safety passed; zero candidate contract failures, isolation violations, or forbidden effects; claimable false; final successor-tree suite/build and exact-head CI pending`
+
+The final local BIL-0 artifact is bound to the exact clean source containing all
+eight CodeRabbit repairs: `ee4f63b5b2be5ac1272caf1d33ff29f09701ad3a`.
+The bundle hash is
+`57ca22ea5706f78e8513b92c8569fb8641e3e58c43cfedf3df0e39d81512a959`,
+and its manifest retains the unchanged frozen fixture and per-case identities.
+
+Verification passed the eleven bundle and cross-identity checks. The derived
+gate independently reconstructed exactly one `ghost-memory` and one
+`no-memory` record for every manifest case, required every candidate case to
+pass, and inspected per-case forbidden-evidence/effect verdicts. All three gate
+checks passed with zero candidate failures or safety violations.
+
+The artifact is still a deterministic BIL-0 contract smoke with null provider
+usage/cost and `claimable: false`. Earlier baseline artifacts remain preserved
+to make the review progression auditable; this post-review artifact is the
+current comparison baseline.
+
+Advance the handoff to
+`docs/handoffs/2026-08-25-stage1-final-baseline-qualified.md`, finish exact
+successor-tree qualification, publish the PR, require the hosted evaluation
+context, and merge through protected main. No paid/live or release-candidate
+qualification ran.

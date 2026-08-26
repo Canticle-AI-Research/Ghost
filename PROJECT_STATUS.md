@@ -15,8 +15,8 @@ adds 20 frozen cases, a BIL-0 sealed verifier/gate, and a hard turn-step ceiling
 its first clean-source BIL-0 baseline is sealed and verified. Review then
 strengthened the smoke to execute Ghost's real framework-free lifecycle and
 fail closed on malformed bundle shapes. CodeRabbit then completed and all eight
-findings were repaired; a final clean-source baseline, exact-head CI, and
-protected merge remain pending. The isolated avatar
+findings were repaired and the final clean-source baseline is sealed, verified,
+and gated. Exact-head CI and protected merge remain pending. The isolated avatar
 remains separate WIP. No package or service is released or deployed, and
 nothing is assigned to a company or counsel-approved.**
 

@@ -89,7 +89,8 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [history/PATH_MOVES.md](history/PATH_MOVES.md) | ledger that keeps immutable history refs resolvable after a rename |
 | [Temporal Chain template](../templates/temporal-chain/README.md) | reusable standard-library history + git protocol starter for other repositories |
 | [handoffs/INDEX.md](handoffs/INDEX.md) | canonical single-head handoff registry |
-| [handoffs/2026-08-25-stage1-review-repaired.md](handoffs/2026-08-25-stage1-review-repaired.md) | current Stage 1 evaluation review-repair boundary |
+| [handoffs/2026-08-25-stage1-final-baseline-qualified.md](handoffs/2026-08-25-stage1-final-baseline-qualified.md) | current post-review clean-source Stage 1 baseline boundary |
+| [handoffs/2026-08-25-stage1-review-repaired.md](handoffs/2026-08-25-stage1-review-repaired.md) | superseded Stage 1 evaluation review-repair boundary |
 | [handoffs/2026-08-25-stage1-lifecycle-baseline-qualified.md](handoffs/2026-08-25-stage1-lifecycle-baseline-qualified.md) | superseded clean-source lifecycle-executing BIL-0 baseline boundary |
 | [handoffs/2026-08-25-stage1-lifecycle-smoke-repaired.md](handoffs/2026-08-25-stage1-lifecycle-smoke-repaired.md) | superseded real-lifecycle BIL-0 smoke repair boundary |
 | [handoffs/2026-08-25-stage1-baseline-frozen.md](handoffs/2026-08-25-stage1-baseline-frozen.md) | superseded initial clean-source BIL-0 baseline boundary |
