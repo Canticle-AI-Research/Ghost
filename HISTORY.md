@@ -807,3 +807,32 @@ head must still pass all hosted jobs, protected-main requirements must add both
 Python matrix contexts without weakening existing policy, and PR #8 must merge
 before the client boundary is published. No live provider/service test, paid
 benchmark, release, or deployment was run.
+
+## HISTORY#038 — Publish the public Ghost-to-SEAM transport
+- Date: `2026-08-25T21:49:58-05:00`
+- Agent: `codex`
+- Status: `done`
+- Topics: `architecture, ci, continuity, handoff, history, packaging, repository, sdk, security, status, tests, verification`
+- Commits: `7a8228a7de823881a26644973a2c225e0f8a252b, 66841fc3450b93a275b5e13e4fa82e9531be93b7`
+- Refs: `src/ghost/seam_memory.py, pyproject.toml, uv.lock, .github/workflows/public-ci.yml, docs/architecture/SEAM_HTTP_CONTRACT.md, docs/handoffs/2026-08-25-public-seam-transport-published.md, https://github.com/Canticle-AI-Research/Ghost/pull/8, https://github.com/Canticle-AI-Research/Ghost/actions/runs/32924071820, https://github.com/Canticle-AI-Research/Ghost/actions/runs/32924125667, https://github.com/Canticle-AI-Research/Seam/pull/231`
+- Supersedes: `HISTORY#037`
+- Verification: `PR #8 exact head 7a8228a passed repo-hygiene, brand-assets, tests (3.11), tests (3.13), and package-smoke; PR #8 merged as 66841fc; exact merge-head run 32924125667 passed the same five jobs; protected main requires all five contexts with strict up-to-date enforcement; provider/live tests, package release, and deployment not run`
+
+Ghost's public dependency and opaque SEAM transport boundary is protected-main
+source through PR #8. The package graph contains no private SEAM implementation
+or Git source. The built wheel clean-installs from public dependencies and the
+real `ghost --help` imports. Begin, action recording, accepted completion,
+failed-turn rejection, and recall cross an independently authored bounded HTTP
+adapter; SEAM remains authoritative for MIRL, reasoning graphs, evidence,
+verification, and durable persistence.
+
+The exact PR head and exact merge head each passed the five-job hosted suite.
+Protected main now requires both Python matrix jobs in addition to repository
+hygiene, brand assets, and package smoke. Existing administrator enforcement,
+conversation resolution, and force-push/deletion restrictions were preserved.
+
+This closes roadmap item R2 and the source/install portion of R4. It does not
+publish a package artifact, tag, GitHub Release, or compatible hosted endpoint.
+No live provider/service test or paid benchmark ran. The canonical handoff
+advances to `docs/handoffs/2026-08-25-public-seam-transport-published.md`; the
+next product gate is the frozen Stage 1 task/memory evaluation baseline.

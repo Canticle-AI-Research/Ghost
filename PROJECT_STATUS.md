@@ -6,21 +6,19 @@
 
 ## Current headline
 
-**2026-08-25 — `main@10a2b45` contains the verified memory-backed single-agent
-spine, public/private CI safety boundary, canonical engineering wiki and build
-history, Temporal Chain tooling/template, Ghost licensing foundation, and
-multi-harness launchers. `feat/public-seam-transport` is a separate locally
-qualified candidate that removes the private package dependency and preserves
-Ghost's reasoning lifecycle through an opaque SEAM service. The isolated
-desktop avatar remains separate WIP. Nothing is released, deployed, assigned
-to a company, or counsel-approved.**
+**2026-08-25 — `main@66841fc` publishes Ghost's public-only install boundary
+and opaque SEAM lifecycle through PR #8, alongside the verified memory-backed
+single-agent spine, hardened CI, canonical engineering wiki/build history,
+Temporal Chain, licensing foundation, and multi-harness launchers. Exact merge
+head run `32924125667` passed all five hosted jobs. The isolated desktop avatar
+remains separate WIP. No package or service is released or deployed, and
+nothing is assigned to a company or counsel-approved.**
 
-PRs #6 and #7 and their exact merge-head Public CI are green. SEAM PR #231 is
-now protected-main source; Ghost PR #8 remains a client candidate. Its first
-hosted run exposed shallow-history and isolated-test dependency defects, both
-repaired locally with regression assertions. Ghost behavior remains unmerged
-until the repaired exact head is green. See `docs/status/CURRENT_STATE.md`,
-HISTORY#022, HISTORY#035, and the current handoff.
+PRs #6, #7, and #8 and their exact merge-head Public CI are green. SEAM PR #231
+is protected-main server source; Ghost PR #8 is protected-main client source.
+This proves public installability and contract parity, not a compatible hosted
+endpoint, package release, or deployment. See `docs/status/CURRENT_STATE.md`,
+HISTORY#022, HISTORY#038, and the current handoff.
 
 Live GitHub reconciliation on 2026-08-25 established:
 
@@ -28,11 +26,11 @@ Live GitHub reconciliation on 2026-08-25 established:
 - PR #5 merged the hosted automatic/manual-private workflow boundary;
 - PR #6 merged the canonical wiki/history/licensing/launcher foundation;
 - PR #7 merged the canonical follow-up through `main@10a2b45`;
-- exact `main@10a2b45` passed all three hosted required checks;
+- exact `main@66841fc` passed all five hosted required checks;
 - all external-contributor workflows require approval;
 - secret scanning and push protection are enabled;
 - Ghost has no repository secret and no assigned runner; and
-- protected `main` requires PRs and the three strict hosted checks, enforces
+- protected `main` requires PRs and the five strict hosted checks, enforces
   administrators and conversation resolution, and blocks force pushes/deletes.
 
 Organization runner-group inventory was unavailable without organization-admin
@@ -74,13 +72,12 @@ incomplete.
 
 ## Active order
 
-1. Push the Ghost public-CI repair, require the two hosted Python matrix jobs,
-   and merge PR #8 only after its repaired exact head is green.
-2. Require the full hosted Ghost suite as a protected-main check.
-3. Obtain counsel review and execute founder-to-company IP assignment after
+1. Obtain counsel review and execute founder-to-company IP assignment after
    the legal entity is formed.
-4. Complete Stage 1 frozen task/memory evaluations.
-5. Resume the isolated desktop-avatar workstream after its asset and
+2. Complete Stage 1 frozen task/memory evaluations.
+3. Implement deliberate memory admission, correction, forgetting, and
+   isolation only after the Stage 1 baseline is frozen.
+4. Resume the isolated desktop-avatar workstream after its asset and
    consequential-action boundaries are approved.
 
 ## Resume route

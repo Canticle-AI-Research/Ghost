@@ -7,24 +7,25 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 
 | Plane | Observed state |
 |---|---|
-| Default branch | `main@10a2b45eeed68bdc9aeb4fca5f1d066982192fcf` |
-| Public transport candidate | PR #8 at `e450012`; first hosted run failed on shallow history and missing isolated-lane `httpx`, both repaired locally |
+| Default branch | `main@66841fc3450b93a275b5e13e4fa82e9531be93b7` |
+| Public transport | merged through PR #8; public install and opaque transport source published |
 | Primary working branch | `agent/avatar-u1-temporal-integration`, preserving avatar-only WIP on its earlier reviewed base |
 | Canonical foundation | merged through PRs #6 and #7 |
 | Preserved local work | avatar source/tests/assets/tools plus CLI/package/lock changes in the primary checkout |
 | Remote visibility | public |
-| Merged PRs | PR #1, PR #5, PR #6, and PR #7 |
-| Open PRs | public transport PR #8; Dependabot #2 and #4 |
-| Exact-head public CI | run `32919476787` green on `10a2b45`; all three current required jobs passed |
-| Public transport local proof | 200 provider-free tests, Ruff, build, clean wheel install, and real `ghost --help` passed; 8 live tests deselected |
+| Merged PRs | PR #1, PR #5, PR #6, PR #7, and PR #8 |
+| Open PRs | Dependabot #2 and #4 |
+| Exact-head public CI | run `32924125667` green on `66841fc`; all five required jobs passed |
+| Public transport proof | 200 provider-free tests, Ruff, build, clean wheel install, real `ghost --help`, and protected PR/main CI passed; 8 live tests deselected |
 
 This is a status snapshot, not authorization to delete or combine local files.
 
-## Landed capability at `main@10a2b45`
+## Landed capability at `main@66841fc`
 
 - DeepAgents root agent with provider routing through LangChain.
 - OpenAI reasoning-model use through the Responses API.
-- Private exact-revision `seam-sdk[pgvector]` dependency.
+- Independently authored `httpx` adapter for the opaque public SEAM lifecycle;
+  no private package or Git source is installed.
 - Framework-free lifecycle and framework-specific adapter separation.
 - Pre-turn mixed SEAM recall with graph expansion.
 - Transient, escaped, bounded MIRL context injection.
@@ -43,14 +44,12 @@ This is a status snapshot, not authorization to delete or combine local files.
 - Canonical wiki, complete build blueprint, command/how-to/install docs,
   append-only history, Temporal Chain gates/template, licensing/company
   foundation, and multi-harness launcher tooling.
+- Full provider-free suite on hosted Python 3.11 and 3.13, clean wheel install,
+  and real command smoke, all required by protected main.
+- Coordinated SEAM server source through SEAM PR #231; this is not a hosted
+  deployment claim.
 
 ## Local-only capability
-
-- Public `httpx` SEAM adapter with begin/actions/complete/fail/recall routes.
-- Public dependency graph with no private Git or SEAM implementation package.
-- Automatic full hosted tests plus clean wheel install/CLI smoke candidate.
-- Coordinated SEAM server PR #231 is merged at `main@9d29c24`; source parity
-  exists but no compatible hosted deployment or release is claimed.
 
 - `ghost-avatar` WebSocket/HTTP/browser overlay runner.
 - GTK desktop pet using the selected B2 art direction.
