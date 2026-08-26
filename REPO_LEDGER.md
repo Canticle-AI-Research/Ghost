@@ -73,6 +73,9 @@ chronology, transient branch state, or duplicated implementation narratives.
 - Do not copy private SDK/runtime code into this repository.
 - The `canticle-ghost` wheel clean-installs without private source access.
   Installability is not publication approval or a hosted-service claim.
+- Protected main requires `repo-hygiene`, `brand-assets`, `tests (3.11)`,
+  `tests (3.13)`, and `package-smoke`, all bound to GitHub Actions with strict
+  up-to-date enforcement. PR #8 and merge run `32924125667` passed that set.
 - Public client distribution, private runtime distribution, GitHub release,
   and hosted deployment are distinct boundaries requiring separate evidence.
 - Canticle uses three license lanes: Apache-2.0 for thin clients/protocols with

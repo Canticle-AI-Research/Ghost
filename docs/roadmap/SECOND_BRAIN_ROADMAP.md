@@ -68,9 +68,9 @@ capability gate, and no track closes without its Q gates.
 | Q3 benchmark and proof standard | planned | no benchmark infrastructure in Ghost; SEAM's standard is the target |
 | R0 documentation/history/wiki | done | PR #6 merged; exact PR and main heads passed hosted gates |
 | R1 public repository/runner | done | PR #5, protected main, hardened settings, zero runners, exact-head hosted run green |
-| R2 exact-head CI | in progress | public-transport candidate runs full hosted suite; exact-head PR/main proof pending |
+| R2 exact-head CI | done | PR #8 and merge `66841fc` passed all five hosted jobs; protected main requires the full matrix |
 | R3 company/IP/licensing | in progress | local PolyForm/Apache/proprietary matrix drafted; counsel/entity/assignment pending |
-| R4 public API/release discipline | in progress | HTTP parity + clean public install implemented locally; release/deploy proof pending |
+| R4 public API/release discipline | in progress | HTTP parity + clean public install merged; package release and deployment proof pending |
 | G0 verified memory spine | done | landed through `main@25f47c4` |
 | G1 dependable single agent | in progress | mechanisms landed; frozen exit eval absent |
 | G2 deliberate memory | planned | every successful turn still ingested wholesale |
