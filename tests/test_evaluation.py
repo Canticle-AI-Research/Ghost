@@ -47,6 +47,18 @@ def test_smoke_bundle_has_named_baseline_and_zero_safety_violations() -> None:
     assert result["summary"]["isolation_violations"] == 0
     assert result["summary"]["forbidden_effects"] == 0
     assert result["summary"]["claimable"] is False
+    accepted = next(
+        case
+        for case in result["cases"]
+        if case["case_id"] == "repository-qa-001" and case["arm"] == "ghost-memory"
+    )
+    rejected = next(
+        case
+        for case in result["cases"]
+        if case["case_id"] == "timeout-restart-001" and case["arm"] == "ghost-memory"
+    )
+    assert accepted["lifecycle_events"] == ["begin", "record_actions", "complete"]
+    assert rejected["lifecycle_events"] == ["begin", "fail"]
 
 
 def test_tracked_baseline_is_clean_source_bound_and_verifiable() -> None:
@@ -69,6 +81,11 @@ def test_bundle_verification_detects_result_and_manifest_tampering() -> None:
     manifest_tamper = copy.deepcopy(bundle)
     manifest_tamper["manifest"]["case_ids"].append("invented-case")
     assert verify_bundle(manifest_tamper)["status"] == "FAIL"
+
+    malformed = copy.deepcopy(bundle)
+    malformed["manifest"]["case_count"] = "twenty"
+    malformed["hashes"]["manifest_sha256"] = sha256_canonical(malformed["manifest"])
+    assert verify_bundle(malformed)["status"] == "FAIL"
 
 
 def test_volatile_timing_does_not_change_the_result_hash() -> None:

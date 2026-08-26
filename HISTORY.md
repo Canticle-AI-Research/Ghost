@@ -905,3 +905,39 @@ This event advances the handoff to
 build, exact-head hosted CI, protected merge, and publication closeout remain.
 No provider/live test, paid judge, release candidate, package release, or
 deployment was run.
+
+## HISTORY#041 — Repair the Stage 1 smoke to execute Ghost's lifecycle
+- Date: `2026-08-25T22:15:15-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `agent, ci, correction, docs, evaluation, gates, handoff, history, memory, tests, verification`
+- Commits: `working-tree`
+- Refs: `tools/evaluation/runner.py, tools/evaluation/fixtures.py, tools/evaluation/integrity.py, tools/evaluation/__main__.py, tests/test_evaluation.py, .github/workflows/public-ci.yml, docs/evaluation/STAGE1_FROZEN_SUITE.md, docs/handoffs/2026-08-25-stage1-lifecycle-smoke-repaired.md`
+- Supersedes: `HISTORY#040`
+- Verification: `focused evaluation, CI-contract, and layering tests passed after repair; CodeRabbit CLI 0.7.5 authenticated but review did not run because the unconnected repository exhausted its free allowance and returned a five-minute rate limit; full suite/build, clean successor baseline, and exact-head CI pending`
+
+Manual review found that the first BIL-0 runner scored scripted records without
+invoking Ghost's framework-free lifecycle. The artifact was already explicitly
+non-claimable, but calling it lifecycle accounting was weaker than the product
+contract. The runner now executes `run_turn` against deterministic graph and
+memory doubles. Accepted cases traverse begin, optional action recording, and
+completion; rejected cases traverse begin and failure. Regression assertions
+pin both sequences.
+
+The same review closed three fail-open validation edges. Fixtures now reject
+unknown evidence references, hidden evidence marked required, forbidden
+evidence marked visible, and scripted steps/tools/context beyond declared
+budgets. Bundle verification treats malformed case-count and case-ID types as
+failed checks instead of throwing. The command gate likewise treats malformed
+arm summaries as failure. Hosted evaluation CI installs the locked project so
+the real lifecycle import is available.
+
+CodeRabbit was invoked under its documented skill after a secret-safe changed-
+path inspection; local `gitleaks` was unavailable. The CLI connected but did
+not analyze the diff because the repository was not attached to the accessible
+organization and the free allowance was rate-limited. No finding is attributed
+to CodeRabbit.
+
+The first baseline remains preserved as historical BIL-0 harness evidence.
+Commit this repair, generate and preserve a new clean-source lifecycle-executing
+baseline, then rerun full qualification before publication.

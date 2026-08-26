@@ -3,12 +3,13 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `d92e8323a564c49eb8d5681977ddd8de95e3da6d5c2e3c0133fcd2300e01b694`
-- Entries: `40`
-- Latest: `HISTORY#040`
+- Source SHA-256: `c6cef968a4ee2393cc0132204c8445362da8ec29b60801d34a2ea0ab7d0ae676`
+- Entries: `41`
+- Latest: `HISTORY#041`
 
 | ID | Date | Status | Commit | Topics | Supersedes | Event |
 |---:|---|---|---|---|---|---|
+| 041 | 2026-08-25 | in-progress | `working-tree` | agent, ci, correction, docs, evaluation, gates, handoff, history, memory, tests, verification | #040 | Repair the Stage 1 smoke to execute Ghost's lifecycle |
 | 040 | 2026-08-25 | in-progress | `bc18555d364a` | ci, continuity, docs, evaluation, gates, handoff, history, memory, snapshot, status, tests, verification | #039 | Freeze the clean-source Stage 1 BIL-0 baseline |
 | 039 | 2026-08-25 | in-progress | `working-tree` | agent, ci, config, continuity, docs, evaluation, gates, handoff, history, memory, roadmap, status, tests, verification | #038 | Qualify the frozen Stage 1 evaluation substrate |
 | 038 | 2026-08-25 | done | `7a8228a7de82` | architecture, ci, continuity, handoff, history, packaging, repository, sdk, security, status, tests, verification | #037 | Publish the public Ghost-to-SEAM transport |

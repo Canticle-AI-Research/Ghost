@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-stage1-baseline-frozen-20260825`
 supersedes: `ghost-stage1-frozen-evals-qualified-20260825`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#040`
 created_at: `2026-08-25T22:10:35-05:00`
 

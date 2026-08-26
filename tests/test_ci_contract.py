@@ -79,6 +79,7 @@ def test_stage1_smoke_is_sealed_verified_and_gated(public_workflow) -> None:
     assert job["runs-on"] == "ubuntu-latest"
     assert job["steps"][0].get("with", {}).get("fetch-depth") == 0
     for marker in (
+        "uv sync --frozen",
         "tools.evaluation validate-fixtures",
         "tools.evaluation smoke",
         "tools.evaluation verify",

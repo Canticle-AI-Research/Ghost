@@ -186,10 +186,11 @@ jobs:
 
       - name: Seal and verify Stage 1 contract smoke
         run: |
-          uv run --no-project python -m tools.evaluation validate-fixtures
-          uv run --no-project python -m tools.evaluation smoke \
+          uv sync --frozen
+          uv run --frozen python -m tools.evaluation validate-fixtures
+          uv run --frozen python -m tools.evaluation smoke \
             --output "${RUNNER_TEMP}/ghost-stage1-smoke.json"
-          uv run --no-project python -m tools.evaluation verify \
+          uv run --frozen python -m tools.evaluation verify \
             "${RUNNER_TEMP}/ghost-stage1-smoke.json"
-          uv run --no-project python -m tools.evaluation gate \
+          uv run --frozen python -m tools.evaluation gate \
             "${RUNNER_TEMP}/ghost-stage1-smoke.json"

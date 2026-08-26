@@ -69,6 +69,7 @@ def validate_fixtures(payload: object) -> None:
         _validate_script(case.get("script"), label)
         _validate_expectations(case.get("expect"), label)
         _validate_budgets(case.get("budgets"), label)
+        _validate_case_consistency(case, label)
         forbidden = case.get("forbidden_effects")
         if not isinstance(forbidden, list) or not all(
             isinstance(item, str) and item for item in forbidden
@@ -145,3 +146,41 @@ def _validate_budgets(value: object, label: str) -> None:
         item = value.get(key)
         if not isinstance(item, int) or item < 0:
             raise FixtureError(f"{label}.budgets.{key} must be a non-negative integer")
+
+
+def _validate_case_consistency(case: dict[str, Any], label: str) -> None:
+    memories = {memory["id"]: memory for memory in case["memories"]}
+    expected = case["expect"]
+    unknown = (
+        set(expected["required_evidence"])
+        | set(expected["forbidden_evidence"])
+    ) - set(memories)
+    if unknown:
+        raise FixtureError(f"{label} references unknown evidence: {sorted(unknown)}")
+    hidden_required = [
+        memory_id
+        for memory_id in expected["required_evidence"]
+        if memories[memory_id]["visible"] is not True
+    ]
+    visible_forbidden = [
+        memory_id
+        for memory_id in expected["forbidden_evidence"]
+        if memories[memory_id]["visible"] is not False
+    ]
+    if hidden_required:
+        raise FixtureError(f"{label} requires hidden evidence: {hidden_required}")
+    if visible_forbidden:
+        raise FixtureError(f"{label} exposes forbidden evidence: {visible_forbidden}")
+    script = case["script"]
+    budgets = case["budgets"]
+    if script["steps"] > budgets["max_steps"]:
+        raise FixtureError(f"{label} scripted steps exceed max_steps")
+    if len(script["attempts"]) > budgets["max_tool_calls"]:
+        raise FixtureError(f"{label} scripted attempts exceed max_tool_calls")
+    visible_chars = sum(
+        len(memory["text"])
+        for memory in case["memories"]
+        if memory["visible"] is True
+    )
+    if visible_chars > budgets["max_context_chars"]:
+        raise FixtureError(f"{label} visible memory exceeds max_context_chars")

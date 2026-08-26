@@ -14,12 +14,92 @@ import time
 from pathlib import Path
 from typing import Any
 
+from ghost.context import GhostTurnContext
+from ghost.lifecycle import ToolAttempt, run_turn
+from ghost.seam_memory import SeamTurn
+
 from .fixtures import load_fixtures
 from .integrity import case_hashes, seal_bundle, sha256_canonical
 
 
 class EvaluationError(RuntimeError):
     """The evaluation cannot produce an honest sealed result."""
+
+
+class _ScriptedRejection(RuntimeError):
+    """The frozen scenario deliberately takes Ghost's rejected-turn path."""
+
+
+class _SmokeMemory:
+    def __init__(self, memories: list[dict[str, Any]], *, use_memory: bool) -> None:
+        self.selected = [
+            memory for memory in memories if use_memory and memory["visible"] is True
+        ]
+        self.events: list[str] = []
+        self.terminal_state = "open"
+
+    def begin_turn(self, user_input: str) -> SeamTurn:
+        self.events.append("begin")
+        rendered = "\n".join(
+            json.dumps(memory, sort_keys=True) for memory in self.selected
+        )
+        return SeamTurn(
+            run_id="smoke-turn",
+            rendered_memory=rendered,
+            evidence_refs=tuple(memory["id"] for memory in self.selected),
+        )
+
+    def record_actions(
+        self, turn: SeamTurn, attempts: tuple[ToolAttempt, ...]
+    ) -> tuple[str, ...]:
+        del turn
+        self.events.append("record_actions")
+        return tuple(
+            f"check-{index}" for index, attempt in enumerate(attempts) if attempt.ok
+        )
+
+    def complete_turn(self, turn: SeamTurn, **kwargs: object) -> tuple[str, ...]:
+        del turn, kwargs
+        self.events.append("complete")
+        self.terminal_state = "accepted"
+        return ("receipt-smoke",)
+
+    def fail_turn(self, turn: SeamTurn, **kwargs: object) -> None:
+        del turn, kwargs
+        self.events.append("fail")
+        self.terminal_state = "rejected"
+
+    def close(self) -> None:
+        return None
+
+
+class _SmokeGraph:
+    def __init__(
+        self,
+        *,
+        answer: str,
+        terminal_state: str,
+        attempts: tuple[ToolAttempt, ...],
+        expected_limit: int,
+    ) -> None:
+        self.answer = answer
+        self.terminal_state = terminal_state
+        self.attempts = attempts
+        self.expected_limit = expected_limit
+
+    def invoke(
+        self,
+        input: dict[str, Any],
+        *,
+        context: GhostTurnContext,
+        config: dict[str, Any],
+    ) -> dict[str, Any]:
+        del input, context
+        if config.get("recursion_limit") != self.expected_limit:
+            raise EvaluationError("lifecycle did not receive the frozen step budget")
+        if self.terminal_state == "rejected":
+            raise _ScriptedRejection("frozen rejected-turn scenario")
+        return {"messages": [self.answer], "_attempts": self.attempts}
 
 
 def git_identity(repo_root: Path) -> tuple[str, bool]:
@@ -91,16 +171,33 @@ def run_smoke(
 
 def _evaluate_case(case: dict[str, Any], *, arm: str) -> dict[str, Any]:
     use_memory = arm == "ghost-memory"
-    selected = [
-        memory["id"]
-        for memory in case["memories"]
-        if use_memory and memory["visible"] is True
-    ]
     script = case["script"]
     expected = case["expect"]
     answer = script["answer_with_memory"] if use_memory else script["answer_without_memory"]
-    attempts = script["attempts"]
-    observed_tools = [attempt["name"] for attempt in attempts]
+    attempts = tuple(
+        ToolAttempt(name=attempt["name"], request="{}", ok=attempt["ok"])
+        for attempt in script["attempts"]
+    )
+    memory = _SmokeMemory(case["memories"], use_memory=use_memory)
+    graph = _SmokeGraph(
+        answer=answer,
+        terminal_state=script["terminal_state"],
+        attempts=attempts,
+        expected_limit=case["budgets"]["max_steps"],
+    )
+    try:
+        answer = run_turn(
+            memory=memory,
+            graph=graph,
+            user_input=case["prompt"],
+            thread_id=f"eval-{case['id']}",
+            max_steps=case["budgets"]["max_steps"],
+            extract_attempts=lambda result: result["_attempts"],
+        )
+    except _ScriptedRejection:
+        answer = ""
+    selected = [memory["id"] for memory in memory.selected]
+    observed_tools = [attempt.name for attempt in attempts]
     checks = {
         "required_evidence": set(expected["required_evidence"]).issubset(selected),
         "forbidden_evidence": set(expected["forbidden_evidence"]).isdisjoint(selected),
@@ -112,7 +209,7 @@ def _evaluate_case(case: dict[str, Any], *, arm: str) -> dict[str, Any]:
             term.casefold() not in answer.casefold()
             for term in expected["answer_excludes"]
         ),
-        "terminal_state": script["terminal_state"] == expected["terminal_state"],
+        "terminal_state": memory.terminal_state == expected["terminal_state"],
         "required_tools": set(expected["required_tools"]).issubset(observed_tools),
         "forbidden_tools": set(expected["forbidden_tools"]).isdisjoint(observed_tools),
         "step_budget": script["steps"] <= case["budgets"]["max_steps"],
@@ -131,10 +228,11 @@ def _evaluate_case(case: dict[str, Any], *, arm: str) -> dict[str, Any]:
         "category": case["category"],
         "arm": arm,
         "status": "PASS" if passed else "FAIL",
-        "terminal_state": script["terminal_state"],
+        "terminal_state": memory.terminal_state,
+        "lifecycle_events": memory.events,
         "selected_evidence_ids": selected,
         "answer": answer,
-        "attempts": attempts,
+        "attempts": script["attempts"],
         "checks": checks,
         "metrics": {
             "steps": script["steps"],

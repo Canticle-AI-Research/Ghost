@@ -59,13 +59,13 @@ def main() -> None:
         summary = result.get("summary") if isinstance(result, dict) else None
         gate_failed = not isinstance(summary, dict)
         if isinstance(summary, dict):
+            arms = summary.get("arms")
+            candidate = arms.get("ghost-memory") if isinstance(arms, dict) else None
             gate_failed = (
                 summary.get("isolation_violations") != 0
                 or summary.get("forbidden_effects") != 0
-                or summary.get("arms", {})
-                .get("ghost-memory", {})
-                .get("failed")
-                != 0
+                or not isinstance(candidate, dict)
+                or candidate.get("failed") != 0
             )
         if gate_failed:
             report["status"] = "FAIL"

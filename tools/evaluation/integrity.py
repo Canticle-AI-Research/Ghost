@@ -127,16 +127,22 @@ def _cross_checks(manifest: dict[str, Any], result: dict[str, Any]) -> list[dict
         if isinstance(results, list)
         else []
     )
+    case_count = manifest.get("case_count")
+    manifest_ids = manifest.get("case_ids")
+    count_matches = isinstance(case_count, int) and case_count >= 0
+    if count_matches:
+        count_matches = case_count * 2 == len(result_ids)
+    ids_match = isinstance(manifest_ids, list) and all(
+        isinstance(case_id, str) for case_id in manifest_ids
+    )
+    if ids_match:
+        ids_match = sorted(case_id for case_id in manifest_ids for _ in range(2)) == result_ids
     return [
         _check("suite_identity", manifest.get("suite_id") == result.get("suite_id")),
         _check("git_identity", manifest.get("git_sha") == result.get("git_sha")),
         _check("fixture_identity", manifest.get("fixture_sha256") == result.get("fixture_sha256")),
-        _check("case_count", manifest.get("case_count") * 2 == len(result_ids)),
-        _check(
-            "case_ids",
-            sorted(case_id for case_id in manifest.get("case_ids", []) for _ in range(2))
-            == result_ids,
-        ),
+        _check("case_count", count_matches),
+        _check("case_ids", ids_match),
     ]
 
 
