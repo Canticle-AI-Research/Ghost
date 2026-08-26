@@ -97,6 +97,14 @@ Before any production claim:
 - exact release artifact identity; and
 - live smoke against the deployed artifact.
 
+Ghost's local checkpoint backup/verify/restore primitives satisfy only the
+mechanical beginning of the checkpoint recovery bullet. They do not establish
+a schedule, retention, encryption, off-host copy, SEAM recovery, migration,
+RPO/RTO, or deployed restore drill. The redacted health and specialist event
+types similarly define a safe data contract but expose no endpoint or hosted
+telemetry backend. See
+[recovery and observability](RECOVERY_AND_OBSERVABILITY.md).
+
 ## Runner boundary
 
 Every workflow job targets `ubuntu-latest`; Ghost has no assigned self-hosted

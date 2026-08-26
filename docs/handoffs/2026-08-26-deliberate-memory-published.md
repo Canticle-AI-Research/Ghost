@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-deliberate-memory-published-20260826`
 supersedes: `ghost-deliberate-memory-qualified-20260826`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#048`
 created_at: `2026-08-26T00:12:30-05:00`
 

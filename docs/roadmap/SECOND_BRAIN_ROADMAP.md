@@ -74,8 +74,8 @@ capability gate, and no track closes without its Q gates.
 | G0 verified memory spine | done | landed through `main@25f47c4` |
 | G1 dependable single agent | in progress | 20-case frozen BIL-0 suite + step ceiling implemented; live/release-candidate exit proof remains |
 | G2 deliberate memory | in progress | protected-main mechanisms cover admission/mutation/isolation; sealed quality comparison remains |
-| G3 graph-aware specialists | planned | waits on G1 and G2 gates |
-| G4 measured product | exploratory | waits on repository, safety, memory, recovery gates |
+| G3 graph-aware specialists | planned | provider-free envelope/provenance/failure contract exists; model-backed activation and comparison wait on G1/G2 |
+| G4 measured product | exploratory | checkpoint recovery and redacted-health primitives exist; hosted product still waits on R4/G2 and production gates |
 | U0 static identity | done | SVG/PNG/ICO/faces and reproducible toolkit landed |
 | U0b multi-harness launchers | in progress | four launchers local; Grok/Antigravity definitions tracked; charter, Claude definition, and Codex profile external |
 | U1 desktop avatar | in progress | local dirty working tree only; qualification pending |
@@ -478,6 +478,12 @@ Q3 bundle diffed against a named baseline and passing the gate.
 Prerequisites: G1 and G2 exit. Specialists may not invent new memory owners or
 broaden tools implicitly.
 
+Foundation now implemented: provider-free `DelegationEnvelope`, hard budget and
+scope types, opaque evidence linkage, content-free lifecycle events, and
+normalized success/refusal/timeout/cancellation/failure outcomes. This does not
+register a live specialist, satisfy the prerequisites, or support an
+improvement claim.
+
 Candidate roles:
 
 - research specialist for source discovery/evidence extraction;
@@ -503,6 +509,11 @@ budgets.
 **Status: exploratory**
 
 Prerequisites: R4 and G2; G3 only if specialists are part of the candidate.
+
+Foundation now implemented: consistent checkpoint backup, SHA-256 plus SQLite
+verification, non-overwriting restore, fail-closed component health, and the
+redacted specialist-event schema. Hosted endpoints, SEAM backup, migration,
+supervision, dashboards, tenancy, rate limits, and deployed drills remain open.
 
 Potential deliverables:
 

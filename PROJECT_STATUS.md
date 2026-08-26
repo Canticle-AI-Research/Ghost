@@ -6,15 +6,22 @@
 
 ## Current headline
 
-**2026-08-26 — `main@2a23fdc` publishes deliberate-memory mechanisms through
-PR #12.** Ghost now has deterministic admit/reject/review policy, explicit remember,
+**2026-08-26 — `main@4cebdd8` publishes deliberate-memory mechanisms and their
+canonical closeout through PRs #12 and #13.** Ghost now has deterministic admit/reject/review policy, explicit remember,
 additive correction/supersession, scoped forgetting, current/history views,
 opaque lifecycle status/references, and concrete
 principal/workspace/project/thread transport isolation. Exact source `3c21112`
 passed all six protected jobs in run `32933045239`; the 257-test provider-free
 suite and merge-head run `32933109326` passed the same matrix. The 10-case Stage
-2 fixture proves mechanisms only. A sealed Q3
-memory-quality comparison remains open. The avatar worktree is untouched.
+2 fixture proves mechanisms only. Exact closeout-head run `32933523547` passed
+all six required jobs. A sealed Q3 memory-quality comparison remains open. The
+avatar worktree is untouched.
+
+The isolated `feat/specialist-ops-foundation` candidate adds provider-free
+specialist envelope/provenance/failure contracts, checkpoint
+backup/verify/non-overwriting restore, redacted health types, tests, and full
+operator/architecture documentation. It does not activate specialists, expose
+a hosted endpoint, or qualify G3/G4.
 
 **2026-08-25 — `main@e1d1b9a` publishes Ghost's public-only install boundary,
 opaque SEAM lifecycle, and frozen Stage 1 evaluation substrate. PR #10 merged
@@ -26,10 +33,10 @@ non-claimable; provider-live and release-candidate qualification are still open.
 The isolated avatar remains separate WIP. No package or service is released or
 deployed, and nothing is assigned to a company or counsel-approved.**
 
-PRs #6 through #10 and their exact merge-head Public CI are green. SEAM PR #233
+PRs #6 through #13 and their exact merge-head Public CI are green. SEAM PR #233
 is protected-main deliberate-memory server source at `main@0b07244`; Ghost PR
-#8 is protected-main base client source, while this client-policy extension is
-still branch-local.
+#8 is protected-main base client source and PR #12 publishes its deliberate
+memory policy extension.
 This proves public installability and contract parity, not a compatible hosted
 endpoint, package release, or deployment. See `docs/status/CURRENT_STATE.md`,
 HISTORY#022, HISTORY#038, and the current handoff.
@@ -45,6 +52,8 @@ Live GitHub reconciliation on 2026-08-25 established:
   `32927357539`;
 - exact `main@2a23fdc` passed the same six checks in run `32933109326` after PR
   #12 published deliberate-memory mechanisms;
+- exact `main@4cebdd8` passed the same six checks in run `32933523547` after PR
+  #13 published the canonical closeout;
 - all external-contributor workflows require approval;
 - secret scanning and push protection are enabled;
 - Ghost has no repository secret and no assigned runner; and
@@ -85,8 +94,10 @@ qualification, release, and deployment remain incomplete.
   remain incomplete.
 - Stage 2 deliberate memory: mechanisms are protected-main; a sealed Q3
   quality comparison remains incomplete.
-- Stage 3 graph-aware specialists: not implemented.
-- Stage 4 measured product: exploratory.
+- Stage 3 graph-aware specialists: provider-free contract candidate only; no
+  model-backed topology or improvement evidence.
+- Stage 4 measured product: exploratory recovery/health foundation candidate;
+  no hosted product or deployment.
 - Desktop avatar: local/in-progress parallel UX track, not a roadmap gate.
 - Multi-harness launchers: Ghost starts from `claude`, `codex`, `grok`, and
   `agy`; the shared charter is still untracked outside the repository.

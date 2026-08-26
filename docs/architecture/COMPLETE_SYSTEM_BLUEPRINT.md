@@ -314,14 +314,38 @@ This is documented in [avatar system](AVATAR_SYSTEM.md) but remains local. It
 must not be required to rebuild
 `main@dbd421babf0703c8c339e7b8db8d51fc51b58282`.
 
+## Specialist and operations foundation
+
+The merged runtime remains single-agent. The provider-free foundation adds
+contracts around future extensions. `src/ghost/specialists.py` owns delegation
+types and terminal normalization; `src/ghost/operations.py` owns checkpoint
+recovery and health types:
+
+```text
+root turn ─► DelegationEnvelope ─► future specialist adapter
+   ▲          budget + scope              │
+   └──── SpecialistOutcome + evidence ◄───┘
+
+checkpoint.db ─► online backup ─► SHA-256 + quick_check
+                                     │
+                                     └─► verified non-overwriting restore
+
+component probes ─► redacted readiness snapshot
+specialist run ───► content-free start/finish events
+```
+
+See [bounded specialist contract](SPECIALIST_CONTRACT.md) and
+[recovery and observability](../operations/RECOVERY_AND_OBSERVABILITY.md).
+No adapter, hosted endpoint, dashboard, deployment, or G3 comparison is implied.
+
 ## Planned extensions
 
 - selective memory admission and user-directed correction/forgetting;
 - frozen task/memory evaluation fixtures;
 - true principal/workspace/project partitioning;
-- bounded specialist agents after single-agent qualification;
+- model-backed bounded specialist adapters after single-agent qualification;
 - authenticated service and operator UI;
 - sandboxed or separately isolated execution boundary;
-- backup/restore, observability, release, and incident operations.
+- SEAM recovery, hosted observability, release, and incident operations.
 
 Planned arrows do not change current ownership boundaries.

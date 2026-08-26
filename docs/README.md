@@ -73,6 +73,7 @@ checkpoints remember where a conversation got to; they are not semantic memory.
 - [System map](architecture/SYSTEM_MAP.md)
 - [Memory layers](architecture/MEMORY_LAYERS.md)
 - [Knowledge and reasoning graphs](architecture/KNOWLEDGE_GRAPH.md)
+- [Bounded specialist contract](architecture/SPECIALIST_CONTRACT.md)
 - [Avatar system](architecture/AVATAR_SYSTEM.md)
 
 ### Installation and operation
@@ -86,6 +87,7 @@ checkpoints remember where a conversation got to; they are not semantic memory.
 - [Agent harnesses and launchers](operations/AGENT_HARNESSES.md)
 - [Development and documentation workflow](operations/DEVELOPMENT_WORKFLOW.md)
 - [Release and deployment boundaries](operations/RELEASE_AND_DEPLOYMENT.md)
+- [Recovery, health, and observability](operations/RECOVERY_AND_OBSERVABILITY.md)
 
 ### Safety and evidence
 

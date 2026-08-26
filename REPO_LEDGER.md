@@ -31,6 +31,10 @@ chronology, transient branch state, or duplicated implementation narratives.
 - The framework-free turn contract lives in `src/ghost/lifecycle.py`.
 - The DeepAgents/LangChain/LangGraph adapter lives in
   `src/ghost/application.py`.
+- Future specialists cross the provider-free contract in
+  `src/ghost/specialists.py`; role names grant no authority, and every
+  delegation carries its complete budget, tool/root scope, memory dimensions,
+  parent turn, terminal state, and opaque evidence references.
 - Recall precedes execution; completed successful turns receive a recorded
   admit/reject/review decision, and only admitted turns are ingested afterward.
 - Failed turns are rejected and never ingested as completed memory.
@@ -72,6 +76,12 @@ chronology, transient branch state, or duplicated implementation narratives.
 - Repository-root `checkpoints.db` is a historical tracked artifact and a known
   hygiene defect. Do not use it as runtime truth; remove it in a separately
   reviewed cleanup change.
+- Checkpoint backup and restore use SQLite-consistent snapshots, SHA-256 plus
+  `quick_check`, and new destinations only. They recover execution state, not
+  SEAM semantic memory, and never overwrite an operator path.
+- Operational health and specialist lifecycle events expose fixed safe status
+  codes and exclude prompts, answers, memory text, raw tool data, exception
+  classes/messages, and credentials by default.
 
 ## Dependency and distribution policy
 
