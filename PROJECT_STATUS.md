@@ -15,9 +15,11 @@ Ghost's reasoning lifecycle through an opaque SEAM service. The isolated
 desktop avatar remains separate WIP. Nothing is released, deployed, assigned
 to a company, or counsel-approved.**
 
-PRs #6 and #7 and their exact merge-head Public CI are green. The public-SEAM
-candidate is not protected-main behavior until its coordinated SEAM and Ghost
-PRs pass exact-head checks and merge. See `docs/status/CURRENT_STATE.md`,
+PRs #6 and #7 and their exact merge-head Public CI are green. SEAM PR #231 is
+now protected-main source; Ghost PR #8 remains a client candidate. Its first
+hosted run exposed shallow-history and isolated-test dependency defects, both
+repaired locally with regression assertions. Ghost behavior remains unmerged
+until the repaired exact head is green. See `docs/status/CURRENT_STATE.md`,
 HISTORY#022, HISTORY#035, and the current handoff.
 
 Live GitHub reconciliation on 2026-08-25 established:
@@ -72,8 +74,8 @@ incomplete.
 
 ## Active order
 
-1. Merge the coordinated SEAM/Ghost public transport candidates after
-   exact-head review and CI.
+1. Push the Ghost public-CI repair, require the two hosted Python matrix jobs,
+   and merge PR #8 only after its repaired exact head is green.
 2. Require the full hosted Ghost suite as a protected-main check.
 3. Obtain counsel review and execute founder-to-company IP assignment after
    the legal entity is formed.

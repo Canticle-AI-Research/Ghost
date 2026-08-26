@@ -55,6 +55,7 @@ jobs:
         run: |
           uv run --no-project python -m tools.history.verify_continuity
           uv run --no-project --with 'pytest>=8.3,<10' --with 'pyyaml>=6,<7' \
+            --with 'httpx>=0.27,<1' \
             pytest tests/test_docs.py tests/test_history_tools.py tests/test_licensing.py \
             tests/test_temporal_chain.py tests/test_ci_contract.py \
             tests/test_recorded_facts.py tests/test_local_gates.py -q
@@ -105,10 +106,11 @@ jobs:
           echo "renderers present: $(command -v google-chrome || command -v chromium), $(command -v fc-match)"
 
       - name: Verify brand asset toolkit
-        # Pillow only -- the brand tier needs no private dependency, so it stays
-        # green even when the private repos are unreachable.
+        # Pillow renders the assets. httpx supports the shared public-SEAM test
+        # fake imported by conftest; neither dependency reaches a private source.
         run: >-
           uv run --no-project --with 'pytest>=8.3,<10' --with 'pillow>=11,<14'
+          --with 'httpx>=0.27,<1'
           pytest tests/test_brand_assets.py -q
 
   tests:
@@ -123,6 +125,10 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          # History verification in the complete suite resolves every recorded
+          # commit, so a shallow checkout is not a valid test environment.
+          fetch-depth: 0
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v6

@@ -88,7 +88,8 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [history/PATH_MOVES.md](history/PATH_MOVES.md) | ledger that keeps immutable history refs resolvable after a rename |
 | [Temporal Chain template](../templates/temporal-chain/README.md) | reusable standard-library history + git protocol starter for other repositories |
 | [handoffs/INDEX.md](handoffs/INDEX.md) | canonical single-head handoff registry |
-| [handoffs/2026-08-25-public-seam-transport-qualified.md](handoffs/2026-08-25-public-seam-transport-qualified.md) | current locally qualified public-transport merge boundary |
+| [handoffs/2026-08-25-public-seam-transport-ci-repaired.md](handoffs/2026-08-25-public-seam-transport-ci-repaired.md) | current exact-head public-CI repair boundary |
+| [handoffs/2026-08-25-public-seam-transport-qualified.md](handoffs/2026-08-25-public-seam-transport-qualified.md) | superseded locally qualified public-transport boundary |
 | [handoffs/2026-08-25-canonical-foundation-merged.md](handoffs/2026-08-25-canonical-foundation-merged.md) | superseded merged-foundation and public-API resume boundary |
 | [handoffs/2026-08-25-canonical-foundation-candidate.md](handoffs/2026-08-25-canonical-foundation-candidate.md) | superseded isolated canonical-foundation publication boundary |
 | [handoffs/2026-08-25-public-runner-closed.md](handoffs/2026-08-25-public-runner-closed.md) | superseded safety closure and foundation-publication boundary |

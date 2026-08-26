@@ -777,3 +777,33 @@ Neither source candidate is a compatible hosted deployment or package release.
 This event advances the one-live-head handoff chain to
 `docs/handoffs/2026-08-25-public-seam-transport-qualified.md`; protected merge
 and a successor publication handoff remain before this item is done.
+
+## HISTORY#037 — Repair exact-head public transport CI
+- Date: `2026-08-25T21:46:52-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `ci, continuity, handoff, history, packaging, sdk, tests, verification`
+- Commits: `working-tree`
+- Refs: `.github/workflows/public-ci.yml, tests/test_ci_contract.py, docs/handoffs/2026-08-25-public-seam-transport-ci-repaired.md, https://github.com/Canticle-AI-Research/Ghost/pull/8, https://github.com/Canticle-AI-Research/Ghost/actions/runs/32923573440, https://github.com/Canticle-AI-Research/Seam/pull/231`
+- Supersedes: `HISTORY#036`
+- Verification: `SEAM PR #231 exact source head 40562b3 passed seven hosted jobs and merged as 9d29c24; Ghost PR #8 package-smoke passed; focused local CI-contract, history, recorded-fact, and brand tests passed after repair; Ruff and git diff --check passed; repaired exact-head Ghost CI pending`
+
+The coordinated SEAM server contract is now protected-main source. Ghost PR
+#8's first hosted run proved the public wheel clean-installs and the real CLI
+imports, but exposed two CI-environment defects. The full Python matrix used a
+shallow checkout even though canonical history tests resolve every recorded
+commit. The isolated hygiene and brand lanes imported the shared opaque HTTP
+fake from `conftest.py` without installing its public `httpx` dependency.
+
+The Python 3.11 and 3.13 jobs now fetch complete Git history. The isolated
+lanes explicitly install `httpx`, and CI-contract tests pin both properties so
+the same false-red environment cannot return silently. The repair leaves the
+runtime, wire contract, dependency lock, wheel, and primary avatar WIP
+unchanged.
+
+This event advances the live handoff to
+`docs/handoffs/2026-08-25-public-seam-transport-ci-repaired.md`. The repaired
+head must still pass all hosted jobs, protected-main requirements must add both
+Python matrix contexts without weakening existing policy, and PR #8 must merge
+before the client boundary is published. No live provider/service test, paid
+benchmark, release, or deployment was run.

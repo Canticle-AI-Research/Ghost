@@ -41,6 +41,8 @@ def test_full_provider_free_suite_runs_automatically(public_workflow) -> None:
     commands = _job_commands(public_workflow, "tests")
     assert re.search(r"pytest(?!\s+\S*tests/)", commands)
     assert "-m live" not in commands
+    checkout = public_workflow["jobs"]["tests"]["steps"][0]
+    assert checkout.get("with", {}).get("fetch-depth") == 0
 
 
 def test_every_automatic_job_uses_disposable_hosted_infrastructure(public_workflow) -> None:
@@ -129,6 +131,13 @@ def test_public_continuity_and_secret_scan_remain_automatic(public_workflow) -> 
         assert marker in commands
     checkout = public_workflow["jobs"]["repo-hygiene"]["steps"][0]
     assert checkout.get("with", {}).get("fetch-depth") == 0
+    assert "httpx" in commands
+
+
+def test_brand_lane_installs_the_shared_test_fake_dependency(public_workflow) -> None:
+    commands = _job_commands(public_workflow, "brand-assets")
+    assert "pillow" in commands
+    assert "httpx" in commands
 
 
 def test_linter_covers_the_whole_tree(public_workflow) -> None:

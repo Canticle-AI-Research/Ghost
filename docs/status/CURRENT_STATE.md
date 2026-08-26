@@ -8,13 +8,13 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 | Plane | Observed state |
 |---|---|
 | Default branch | `main@10a2b45eeed68bdc9aeb4fca5f1d066982192fcf` |
-| Public transport candidate | `feat/public-seam-transport`, based on exact main and locally qualified |
+| Public transport candidate | PR #8 at `e450012`; first hosted run failed on shallow history and missing isolated-lane `httpx`, both repaired locally |
 | Primary working branch | `agent/avatar-u1-temporal-integration`, preserving avatar-only WIP on its earlier reviewed base |
 | Canonical foundation | merged through PRs #6 and #7 |
 | Preserved local work | avatar source/tests/assets/tools plus CLI/package/lock changes in the primary checkout |
 | Remote visibility | public |
 | Merged PRs | PR #1, PR #5, PR #6, and PR #7 |
-| Open PRs | Dependabot #2 and #4 |
+| Open PRs | public transport PR #8; Dependabot #2 and #4 |
 | Exact-head public CI | run `32919476787` green on `10a2b45`; all three current required jobs passed |
 | Public transport local proof | 200 provider-free tests, Ruff, build, clean wheel install, and real `ghost --help` passed; 8 live tests deselected |
 
@@ -49,8 +49,8 @@ This is a status snapshot, not authorization to delete or combine local files.
 - Public `httpx` SEAM adapter with begin/actions/complete/fail/recall routes.
 - Public dependency graph with no private Git or SEAM implementation package.
 - Automatic full hosted tests plus clean wheel install/CLI smoke candidate.
-- Coordinated private SEAM server PR #231; source exists but no compatible
-  hosted deployment or release is claimed.
+- Coordinated SEAM server PR #231 is merged at `main@9d29c24`; source parity
+  exists but no compatible hosted deployment or release is claimed.
 
 - `ghost-avatar` WebSocket/HTTP/browser overlay runner.
 - GTK desktop pet using the selected B2 art direction.

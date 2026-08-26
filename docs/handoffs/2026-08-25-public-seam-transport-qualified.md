@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-public-seam-transport-qualified-20260825`
 supersedes: `ghost-canonical-foundation-merged-20260825`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#036`
 created_at: `2026-08-25T21:37:11-05:00`
 
