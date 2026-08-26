@@ -90,8 +90,9 @@ sequenceDiagram
 | Verified action graph (decision → tool check → verified outcome) | Current | `SeamMemory.record_actions` |
 | Injection-resistant transient recall | Current | `src/ghost/middleware.py` |
 | Persistent LangGraph checkpoint | Current | `SqliteSaver` in `src/ghost/application.py` |
-| Persistent checkpoint | Planned | roadmap stage 1 |
-| Curated domain tools | Planned | roadmap stage 1 |
+| Read-first tools | Current | memory recall, bounded file read and literal search |
+| Opt-in shell control | Current | unsandboxed, approval/timeout/verification bounded |
+| Frozen Stage 1 task qualification | Planned next | roadmap G1 exit gate |
 | Selective memory admission | Planned | roadmap stage 2 |
 | Correction and forgetting UX | Planned | roadmap stage 2 |
 | Custom research/coding/verifier subagents | Planned | roadmap stage 3 |
@@ -107,4 +108,3 @@ agent policy to evolve independently.
 
 See [ADR-0001](../decisions/0001-seam-memory-boundary.md) for the durable
 decision.
-

@@ -129,3 +129,28 @@ def test_lifecycle_can_drive_a_graph_that_is_not_langchain() -> None:
         "recall must happen before the turn is written, so an answer cannot "
         f"cite the memory it creates; got {calls}"
     )
+
+
+MODULE_LINE_CEILING = 450
+
+
+def test_no_module_grows_into_a_god_file() -> None:
+    """Cap module size so responsibilities split before they fuse.
+
+    A module that accumulates every concern cannot be reviewed, tested in
+    isolation, or replaced. This is a ratchet, not a style preference: the
+    ceiling exists to force the split at the point where it is still cheap.
+    """
+    oversized = []
+    roots = [SRC, SRC.parents[1] / "tools"]
+    for root in roots:
+        for module in sorted(root.rglob("*.py")):
+            if "__pycache__" in module.parts:
+                continue
+            lines = len(module.read_text(encoding="utf-8").splitlines())
+            if lines > MODULE_LINE_CEILING:
+                oversized.append(f"{module.name}: {lines} lines")
+    assert not oversized, (
+        f"modules over {MODULE_LINE_CEILING} lines; split them rather than raising "
+        f"the ceiling: {oversized}"
+    )

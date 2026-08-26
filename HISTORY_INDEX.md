@@ -1,0 +1,50 @@
+# Ghost History Index
+
+> Derived from `HISTORY.md`; do not edit by hand. Regenerate with
+> `uv run python -m tools.history.rebuild_index`.
+
+- Source SHA-256: `3278fc55d6e01702eaf547935d6606fe523920eeb9c592a4cdb1e7be79fed83f`
+- Entries: `34`
+- Latest: `HISTORY#034`
+
+| ID | Date | Status | Commit | Topics | Supersedes | Event |
+|---:|---|---|---|---|---|---|
+| 034 | 2026-08-25 | in-progress | `working-tree` | architecture, ci, continuity, docs, gates, handoff, history, packaging, security, tests, tools, verification, wiki | #033 | Isolate and qualify the canonical foundation candidate |
+| 033 | 2026-08-25 | done | `232048faefee` | ci, correction, gates, history, repository, security, status, verification | #032 | Close the public repository and private-runner safety boundary |
+| 032 | 2026-08-25 | done | `working-tree` | ci, gates, roadmap, security, status, tests, verification | #031 | Split CI so public verification needs no self-hosted runner |
+| 031 | 2026-08-25 | done | `working-tree` | ci, continuity, correction, docs, gates, history, tests, tools, verification | #030 | Enforce the protocol at the commit gate and audit recorded facts |
+| 030 | 2026-08-25 | done | `working-tree` | evaluation, ledger, roadmap, status, verification | #029 | Adopt SEAM's benchmark and proof standard as Q3 |
+| 029 | 2026-08-25 | done | `working-tree` | correction, docs, evaluation, roadmap, status, tests | #028 | Correct the Q1 gate to behavior verification |
+| 028 | 2026-08-25 | done | `working-tree` | continuity, docs, history, roadmap, tests, tools, verification | #027 | Name the Temporal Chain and gate documentation drift |
+| 027 | 2026-08-25 | done | `working-tree` | architecture, docs, packaging, sdk, security, status, verification | #026 | Qualify the licensing and company-readiness foundation |
+| 026 | 2026-08-25 | in-progress | `working-tree` | architecture, docs, packaging, sdk, security, status | #025 | Place the company licensing architecture |
+| 025 | 2026-08-25 | done | `working-tree` | ci, continuity, handoff, history, repository, security, tools, verification | #024 | Integrate reusable continuity and safe workflow candidate |
+| 024 | 2026-08-25 | done | `working-tree` | architecture, commands, continuity, docs, history, installation, roadmap, verification, wiki | #023 | Locally qualify the rebuildable wiki and continuity foundation |
+| 023 | 2026-08-25 | in-progress | `working-tree` | continuity, docs, handoff, history, ledger, status, wiki | #022 | Begin canonical documentation and continuity foundation |
+| 022 | 2026-08-21 | in-progress | `working-tree` | avatar, handoff, tools, verification | #021 | Preserve the local desktop-avatar workstream |
+| 021 | 2026-08-19 | done | `25f47c4de994` | agent, architecture, roadmap, status | #020 | Mainline Stage 1 mechanism boundary |
+| 020 | 2026-08-19 | done | `25f47c4de994` | ci, correction, security, verification | #019 | Consolidate linting on Ruff |
+| 019 | 2026-08-19 | done | `ce812de5dd47` | agent, security, shell, tools, verification | #018 | Add opt-in operating-system control |
+| 018 | 2026-08-19 | done | `696c479dc780` | agent, provenance, tools, verification | #017 | Turn tool activity into verified reasoning graphs |
+| 017 | 2026-08-19 | done | `8f6ec11cff69` | architecture, memory, operations, verification | #016 | Persist threads and separate the three runtime layers |
+| 016 | 2026-08-19 | done | `eba3ee579b5e` | agent, evaluation, memory, verification | #015 | Prove the live root-agent and memory round trip |
+| 015 | 2026-08-19 | done | `2f017a620c59` | agent, memory, security, tools, verification | #014 | Finalize failed turns and add read-first tools |
+| 014 | 2026-08-19 | done | `f69cff6d84dd` | docs, history, provenance | #013 | Establish the dated update provenance track |
+| 013 | 2026-08-19 | done | `c9f40dacfab5` | ci, correction, provenance, verification | #012 | Merge the first protected review slice |
+| 012 | 2026-08-19 | done | `648940decbd7` | ci, security, verification | #011 | Add tiered continuous integration |
+| 011 | 2026-08-19 | done | `d43840cd372e` | architecture, memory, trust, verification | #010 | Enforce the single durable-memory owner |
+| 010 | 2026-08-19 | done | `f372670f48c6` | cli, config, correction, tests, verification | #009 | Make the documented test command real and cover missing surfaces |
+| 009 | 2026-08-19 | done | `e3a6a045bb77` | memory, correction, security, verification | #008 | Repair graph-triple memory rendering |
+| 008 | 2026-08-19 | done | `94d49a00e697` | branding, correction, docs | #007 | Correct vendored brand metadata |
+| 007 | 2026-08-18 | done | `7ac103fe5fde` | ci, verification | #006 | Add the initial Pylint workflow |
+| 006 | 2026-08-15 | changed | `5df8bea902b2` | architecture, memory, sdk, packaging | #005 | Move the memory dependency behind the private SEAM SDK |
+| 005 | 2026-08-14 | done | `6537e95d48bb` | branding, build, tools, verification | #004 | Vendor reproducible brand tooling |
+| 004 | 2026-08-14 | done | `cde39de949ba` | avatar, branding, docs | #003 | Add the Ghost expression system |
+| 003 | 2026-08-14 | done | `2869bf4e3850` | agent, architecture, branding, docs, memory, sdk, verification | #002 | Land the DeepAgent, architecture documentation, and identity |
+| 002 | 2026-08-14 | done | `e03d29288a95` | agent, architecture, memory, sdk, docs | #001 | Define Ghost as a SEAM-backed DeepAgent |
+| 001 | 2026-08-14 | done | `fb341001ddd4` | repository, docs | — | Seed the Ghost repository |
+
+## Bounded retrieval
+
+Use `uv run python -m tools.history.build_context_pack --latest 5` or select
+topics/entry IDs. Do not load the full history during routine startup.

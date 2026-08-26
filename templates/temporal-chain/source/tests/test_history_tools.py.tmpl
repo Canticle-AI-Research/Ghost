@@ -1,0 +1,32 @@
+"""Standard-library checks for the repository continuity substrate."""
+
+import unittest
+
+from tools.history.model import HISTORY_PATH, INDEX_PATH, load_history
+from tools.history.rebuild_index import render_index
+from tools.history.verify_append_only import verify_append_only
+from tools.history.verify_handoffs import verify as verify_handoffs
+
+
+class ContinuityTests(unittest.TestCase):
+    def test_history_is_contiguous(self) -> None:
+        entries = load_history()
+        self.assertEqual([entry.id for entry in entries], list(range(1, len(entries) + 1)))
+
+    def test_index_is_exact_generated_output(self) -> None:
+        self.assertEqual(INDEX_PATH.read_text(encoding="utf-8"), render_index())
+
+    def test_handoffs_form_one_chain(self) -> None:
+        verify_handoffs()
+
+    def test_history_rewrite_is_rejected(self) -> None:
+        text = HISTORY_PATH.read_text(encoding="utf-8")
+        verify_append_only(text, text)
+        with self.assertRaises(ValueError):
+            verify_append_only(text.replace("HISTORY#001", "HISTORY#999", 1), text)
+        with self.assertRaises(ValueError):
+            verify_append_only(text, text + "prose without a successor entry\n")
+
+
+if __name__ == "__main__":
+    unittest.main()

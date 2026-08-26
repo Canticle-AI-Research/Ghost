@@ -27,9 +27,12 @@ CI_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "ci.yml"
 PUBLIC_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "public-ci.yml"
 TESTS_DIR = REPO_ROOT / "tests"
 
-# Jobs that must never resolve the private SEAM dependency.
+# Jobs that must never resolve the private SEAM dependency. They live in the
+# PUBLIC workflow: Ghost is public, so hosted minutes are free, and running them
+# on every push and pull request is strictly better than gating them behind a
+# manual dispatch that needs a registered self-hosted runner to move at all.
 CREDENTIAL_FREE_JOBS = ("repo-hygiene", "brand-assets", "package-smoke")
-# The job that installs the project and runs everything.
+# The job that installs the project and runs everything, in the PRIVATE workflow.
 PRIVATE_TIER_JOB = "tests"
 
 _GHOST_IMPORT = re.compile(r"^\s*(?:from|import)\s+ghost\b", re.MULTILINE)
@@ -45,13 +48,15 @@ def workflow() -> dict:
 
 @pytest.fixture(scope="module")
 def public_workflow() -> dict:
-    assert PUBLIC_WORKFLOW.exists(), f"missing public workflow at {PUBLIC_WORKFLOW}"
+    assert PUBLIC_WORKFLOW.exists(), (
+        f"missing public workflow at {PUBLIC_WORKFLOW}"
+    )
     return yaml.safe_load(PUBLIC_WORKFLOW.read_text(encoding="utf-8"))
 
 
-def _triggers(document: dict) -> dict:
-    # PyYAML 1.1 interprets an unquoted `on` key as boolean true.
-    return document.get("on") or document.get(True) or {}
+def _triggers(workflow: dict) -> dict:
+    # PyYAML 1.1 parses the unquoted YAML key `on` as boolean true.
+    return workflow.get("on") or workflow.get(True) or {}
 
 
 def _job_commands(workflow: dict, job: str) -> str:
@@ -86,7 +91,8 @@ def test_credential_free_tests_also_run_without_the_private_sdk(public_workflow)
 
     Every test file that does not import `ghost` must be named by a job that
     never syncs the project. Otherwise CI's only meaningful signal depends on
-    two private repositories being reachable.
+    two private repositories being reachable -- and, since the private workflow
+    needs a registered self-hosted runner, on that runner existing at all.
     """
     credential_free_commands = " ".join(
         _job_commands(public_workflow, job) for job in CREDENTIAL_FREE_JOBS
@@ -156,16 +162,42 @@ def test_credential_free_jobs_never_sync_the_project(public_workflow) -> None:
         )
 
 
-def test_private_tier_waits_for_the_fast_gates(workflow) -> None:
-    """seam-box runs one job at a time; a lint error must not wait on a sync."""
-    needs = workflow["jobs"][PRIVATE_TIER_JOB].get("needs") or []
-    missing = sorted(set(CREDENTIAL_FREE_JOBS) - set(needs))
-    assert not missing, f"`{PRIVATE_TIER_JOB}` does not wait for: {missing}"
+def test_fast_gates_run_automatically_rather_than_gating_the_private_tier(
+    public_workflow,
+) -> None:
+    """The fast gates must report without anyone dispatching anything.
+
+    They used to be `needs:` of the private tier, which is impossible across
+    workflows and was worse anyway: it made lint and docs results depend on a
+    manual dispatch reaching a registered runner. Running them automatically on
+    hosted infrastructure is the stronger guarantee, so this asserts that rather
+    than a cross-workflow dependency that cannot exist.
+    """
+    triggers = _triggers(public_workflow)
+    assert "pull_request" in triggers and "push" in triggers
+    for job in CREDENTIAL_FREE_JOBS:
+        assert job in public_workflow["jobs"], f"fast gate `{job}` is not in the public workflow"
+        assert public_workflow["jobs"][job]["runs-on"] == "ubuntu-latest", (
+            f"fast gate `{job}` left hosted infrastructure and now needs a runner to exist"
+        )
 
 
-def test_linter_runs_in_a_required_job(public_workflow) -> None:
-    """pyproject configures ruff; CI must actually run it."""
-    assert "ruff check" in _job_commands(public_workflow, "repo-hygiene")
+def test_linter_runs_over_the_whole_tree_in_a_required_job(public_workflow) -> None:
+    """pyproject configures ruff; CI must run it over everything.
+
+    A narrowed scope is how a finding in an unlisted path stays green forever.
+    """
+    commands = _job_commands(public_workflow, "repo-hygiene")
+    assert "ruff check ." in commands, "the lint step no longer covers the whole tree"
+
+
+def test_canonical_docs_and_history_run_in_the_credential_free_gate(public_workflow) -> None:
+    """Code, blueprint, history index, and handoff chain must move together."""
+    commands = _job_commands(public_workflow, "repo-hygiene")
+    assert "tests/test_docs.py" in commands
+    assert "tests/test_history_tools.py" in commands
+    assert "tests/test_licensing.py" in commands
+    assert "tools.history.verify_continuity" in commands
 
 
 def test_secret_scanning_runs(public_workflow) -> None:
@@ -199,31 +231,43 @@ def test_python_floor_is_exercised(workflow) -> None:
     )
 
 
-def test_all_jobs_target_the_self_hosted_runner(workflow) -> None:
-    """Hosted runners have neither the SSH credentials nor the brand renderers."""
+def test_all_private_jobs_target_the_self_hosted_runner(workflow) -> None:
+    """Only work that genuinely needs the private SDK may remain on the runner.
+
+    Anything else belongs on hosted infrastructure, where it runs without a
+    registered runner existing.
+    """
     for name, job in workflow["jobs"].items():
         assert job.get("runs-on") == ["self-hosted", "seam-box"], (
             f"job `{name}` does not target seam-box: {job.get('runs-on')}"
         )
 
 
-def test_public_workflow_is_automatic_and_hosted(public_workflow) -> None:
-    triggers = _triggers(public_workflow)
-    assert "pull_request" in triggers and "push" in triggers
-    for name, job in public_workflow["jobs"].items():
-        assert job.get("runs-on") == "ubuntu-latest", (
-            f"public job `{name}` can reach a non-hosted runner: {job.get('runs-on')}"
-        )
-
-
-def test_private_workflow_is_manual_only(workflow) -> None:
+def test_privileged_workflow_is_manual_only(workflow) -> None:
+    """Public PR code must never receive an automatic seam-box assignment."""
     triggers = _triggers(workflow)
-    assert set(triggers) == {"workflow_dispatch"}, (
-        f"private workflow must allow only workflow_dispatch, got {set(triggers)}"
-    )
+    assert set(triggers) == {"workflow_dispatch"}
+    assert "pull_request" not in triggers
+    assert "push" not in triggers
 
 
-def test_public_diff_hygiene_checks_event_range(public_workflow) -> None:
+def test_public_continuity_runs_on_hosted_infrastructure(public_workflow) -> None:
+    """Fork-safe continuity is automatic and cannot resolve private dependencies."""
+    triggers = _triggers(public_workflow)
+    assert "pull_request" in triggers
+    assert "push" in triggers
+    job = public_workflow["jobs"]["repo-hygiene"]
+    assert job["runs-on"] == "ubuntu-latest"
+    commands = _job_commands(public_workflow, "repo-hygiene")
+    assert "uv sync" not in commands
+    assert "tools.history.verify_append_only" in commands
+    assert "tools.history.verify_continuity" in commands
+    assert "tests/test_history_tools.py" in commands
+    assert "tests/test_licensing.py" in commands
+    assert "gitleaks" in commands
+
+
+def test_public_diff_hygiene_checks_the_event_range(public_workflow) -> None:
     commands = _job_commands(public_workflow, "repo-hygiene")
     assert "git diff --check" in commands
     assert "BASE_SHA" in commands and "HEAD_SHA" in commands

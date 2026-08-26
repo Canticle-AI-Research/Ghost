@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Keep this launcher on the cached Grok subscription login even when an API key
+# is exported for standalone applications in the parent shell.
+unset XAI_API_KEY
+unset GROK_API_KEY
+
+exec grok --agent canticle-ghost "$@"

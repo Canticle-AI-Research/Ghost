@@ -1,0 +1,32 @@
+name: Repository continuity
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  continuity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify append-only history
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -n "${BASE_SHA}" ] && [ "${BASE_SHA}" != "0000000000000000000000000000000000000000" ]; then
+            python -m tools.history.verify_append_only --base-ref "${BASE_SHA}"
+          fi
+      - name: Verify continuity
+        run: |
+          python -m tools.history.verify_continuity
+          python -m unittest discover -s tests -p test_history_tools.py
+          git diff --check

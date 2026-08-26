@@ -1,0 +1,202 @@
+# Operator and developer how-tos
+
+These recipes describe outcomes and evidence boundaries. Start from the
+repository root unless stated otherwise.
+
+## Run a one-shot question
+
+```bash
+uv run ghost "What do you remember about the current research objective?"
+```
+
+Ghost recalls before answering and ingests only after a successful turn.
+
+## Resume a named conversation
+
+```bash
+uv run ghost --thread-id architecture-review
+```
+
+Reuse the same ID after restarting the process. The checkpoint resumes message
+execution state; SEAM provides cross-session semantic memory.
+
+## Use an isolated test brain
+
+```bash
+tmp_dir=$(mktemp -d)
+GHOST_SEAM_DB="$tmp_dir/seam.db" \
+GHOST_CHECKPOINT_DB="$tmp_dir/checkpoints.db" \
+uv run ghost --thread-id isolated "Remember that this is an isolated run."
+```
+
+Remove the temporary directory only after confirming it contains no needed
+evidence. Do not point experiments at the operator's canonical store.
+
+## Share one canonical SEAM store intentionally
+
+```bash
+export GHOST_SEAM_DB="/absolute/path/to/canonical/seam.db"
+export GHOST_SEAM_NAMESPACE="ghost.default"
+uv run ghost --thread-id shared-agent
+```
+
+This changes the durable memory boundary. Back up and verify the target first.
+
+## Grant read-only repository access
+
+```bash
+export GHOST_TOOL_ROOTS="/path/to/repository:/path/to/research-notes"
+uv run ghost "Find the roadmap's current Stage 1 exit condition and cite the file."
+```
+
+Ghost cannot read outside the resolved roots through these tools.
+
+## Enable shell access with approval
+
+```bash
+export GHOST_ENABLE_SHELL=1
+export GHOST_SHELL_WORKDIR="/path/to/repository"
+export GHOST_SHELL_TIMEOUT=120
+uv run ghost "Run the CLI test file and explain any failure."
+```
+
+The CLI asks on `/dev/tty` before each command. Declining returns a normal tool
+result to the model.
+
+## Run unattended only inside a deliberate boundary
+
+```bash
+export GHOST_ENABLE_SHELL=1
+export GHOST_SHELL_APPROVAL=0
+export GHOST_SHELL_WORKDIR="/isolated/worktree"
+uv run ghost "Run the pre-approved provider-free verification plan."
+```
+
+This disables consent prompts; it does not sandbox the process. Use a separate
+OS/container/VM boundary and restricted credentials if authority must be
+limited.
+
+## Inspect remembered evidence mid-turn
+
+Ask Ghost to use `seam_recall` and cite `record_id` values:
+
+```bash
+uv run ghost "Use seam_recall to find the exact source of the last release decision. Cite record IDs."
+```
+
+An empty result is evidence of no retrieved match, not proof that the fact was
+never stored.
+
+## Verify the agent without provider spend
+
+```bash
+uv run ruff check .
+uv run pytest
+uv build
+git diff --check
+```
+
+Report live tests as deselected unless separately run.
+
+## Run approved live tests
+
+After confirming model, key source, expected call count, and spend boundary:
+
+```bash
+uv run pytest -m live tests/test_live_agent.py -q
+```
+
+Do not place the key on the command line or in history output.
+
+## Add a tool safely
+
+1. Classify it read-only or write-capable.
+2. Add narrow typed inputs and explicit bounds.
+3. Resolve paths/authority before action.
+4. Bound result bytes/chars and time.
+5. Add it to `WRITE_TOOLS` if it can change anything.
+6. Wire it in `_build_tools` only behind the correct operator gate.
+7. Add success, refusal, traversal, timeout, output, and verification tests.
+8. Update trust boundaries, complete blueprint, command reference, and roadmap.
+9. Append history and run closeout.
+
+## Add or change an environment variable
+
+1. Parse it in `GhostSettings` or the clearly owned optional subsystem.
+2. Define a conservative default and numeric/path bounds.
+3. Add it to `.env.example` without a real value.
+4. Add config tests for default, valid, invalid, and boundary cases.
+5. Update [configuration](CONFIGURATION.md) and this how-to if operator behavior
+   changes.
+
+## Add a documentation page
+
+1. Put it under the correct `docs/` domain.
+2. Link it from `docs/INDEX.md` and the relevant `docs/README.md` route.
+3. Use relative repository links and label landed/local/planned state.
+4. Run `uv run pytest tests/test_docs.py -q`.
+5. Append history if the page changes a governing/current/build boundary.
+
+## Record a material build change
+
+1. Append one new `HISTORY#NNN` entry.
+2. Update status/ledger/ADR as required.
+3. Register a successor handoff when the resume boundary changes.
+4. Run:
+
+```bash
+uv run python -m tools.history.closeout --agent codex
+```
+
+5. Then run code/package verification appropriate to the change.
+
+## Recover from a handoff
+
+```bash
+sed -n '1,180p' docs/handoffs/INDEX.md
+latest=$(sed -n 's/^latest: `\(.*\)`/\1/p' docs/handoffs/INDEX.md)
+sed -n '1,260p' "$latest"
+git status --short --branch
+git fetch --prune origin
+```
+
+Reconcile the handoff with live state. A handoff records what was true at its
+timestamp; it does not override later remote facts.
+
+## Regenerate Ghost branding
+
+```bash
+uv run python -m tools.branding.assets fonts
+uv run python -m tools.branding.assets png branding/ghost.svg /tmp/ghost.png --width 1024
+uv run python -m tools.branding.assets ico branding/ghost-mark.svg /tmp/ghost.ico
+uv run pytest tests/test_brand_assets.py -q
+```
+
+Use `/tmp` or another external review directory until outputs are intentionally
+approved for the repository.
+
+## Start the local avatar lane
+
+Browser/bridge experiment:
+
+```bash
+uv run ghost-avatar
+GHOST_AVATAR=1 uv run ghost "Open the requested research task."
+```
+
+Direct desktop experiment:
+
+```bash
+DISPLAY=<x11-display> /usr/bin/python3 src/ghost/avatar/desktop_pet.py
+```
+
+These commands operate unmerged code. Follow the avatar handoff and do not call
+the result shipped.
+
+## Diagnose “docs say one thing, code says another”
+
+1. Identify the exact source line and reproducible command.
+2. Check `REPO_LEDGER.md` and relevant ADR for the intended invariant.
+3. Check `HISTORY_INDEX.md` and dated update/audit for temporal context.
+4. Treat code plus reproduced behavior as implemented state.
+5. Correct current docs/status and append history; do not rewrite older history.

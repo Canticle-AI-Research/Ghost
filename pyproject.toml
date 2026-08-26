@@ -7,6 +7,8 @@ name = "canticle-ghost"
 version = "0.1.0"
 description = "A DeepAgent with durable MIRL memory through the private SEAM SDK"
 readme = "README.md"
+license = "LicenseRef-PolyForm-Shield-1.0.0"
+license-files = ["LICENSE", "NOTICE"]
 requires-python = ">=3.11,<3.15"
 dependencies = [
   "deepagents>=0.5.9,<0.6",
@@ -94,3 +96,8 @@ select = [
 # The brand toolkit shells out to Chrome and ffmpeg by design, resolved from
 # PATH because that is where those tools live on a developer machine.
 "tools/branding/assets.py" = ["S603", "S607"]
+# Continuity tools invoke only the current interpreter or fixed Git subcommands;
+# subprocess use is the operator-facing feature and receives no model input.
+"tools/history/closeout.py" = ["S603"]
+"tools/history/model.py" = ["S603", "S607"]
+"tools/history/write_snapshot.py" = ["S603", "S607"]

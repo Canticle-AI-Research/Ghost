@@ -1,6 +1,7 @@
 .env
 .env.local
 .ghost/
+.blender-toolkit/
 .pytest_cache/
 .ruff_cache/
 .venv/

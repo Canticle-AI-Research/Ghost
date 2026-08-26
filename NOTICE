@@ -1,0 +1,15 @@
+Required Notice: Copyright 2026 Nicholas Thomas. Ghost is licensed under the PolyForm Shield License 1.0.0.
+Licensor Line of Business: Persistent AI agents and agent applications, including Ghost, and related hosted, enterprise, and operator-facing services.
+
+The PolyForm Shield license applies to Ghost software and repository
+documentation unless a file or directory carries a different notice.
+
+The Ghost, SEAM, MIRL, Canticle, Canticle Core, and SEAM-U names, logos, marks,
+mascots, and trade dress are not licensed by the PolyForm Shield License.
+Files under branding/ and assets/ are Copyright 2026 Nicholas Thomas, All Rights
+Reserved, unless a file-specific notice says otherwise. Their presence in this
+repository does not grant permission to use them as a trademark, imply
+endorsement, or brand a modified or competing product.
+
+Third-party dependencies and incorporated materials remain under their own
+licenses. See pyproject.toml, uv.lock, and applicable file-level notices.

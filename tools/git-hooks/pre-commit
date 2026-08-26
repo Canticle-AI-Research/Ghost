@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# Ghost canonical pre-commit hook.
+#
+# Git runs this for every commit regardless of who started it — Claude, Codex,
+# Grok, Antigravity, or the operator at a terminal. That is the point: Ghost's
+# continuity gates were previously enforced only by an agent remembering to run
+# closeout, which is not enforcement at all.
+#
+# Two responsibilities:
+#   1. Scope block — reject paths that must never enter version control.
+#   2. Verify chain — run the continuity gates; any non-zero result blocks.
+#
+# Bypass with --no-verify only when the operator explicitly authorizes it, and
+# record the bypass in HISTORY.md.
+
+set -uo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "${REPO_ROOT}" || exit 1
+
+# --- 1. Scope block ----------------------------------------------------------
+# Agent-local config and generated execution state are never Ghost's source.
+BLOCKED_PATTERNS='^(\.claude/|\.ghost/|\.opencode/|\.agents/|checkpoints\.db$|.*\.db-wal$|.*\.db-shm$)'
+staged="$(git diff --cached --name-only --diff-filter=ACMR)"
+blocked="$(printf '%s\n' "${staged}" | grep -E "${BLOCKED_PATTERNS}" || true)"
+if [ -n "${blocked}" ]; then
+  echo "pre-commit: refusing to stage agent-local or generated paths:" >&2
+  printf '  %s\n' ${blocked} >&2
+  echo "Unstage them, or add an explicit exception if this is genuinely source." >&2
+  exit 1
+fi
+
+# --- 2. Verify chain ---------------------------------------------------------
+# Merges and rebases produce intermediate states that need not satisfy
+# continuity on their own.
+if [ -f .git/MERGE_HEAD ] || [ -d .git/rebase-merge ] || [ -d .git/rebase-apply ]; then
+  echo "pre-commit: merge or rebase in progress; skipping the verify chain."
+  exit 0
+fi
+
+if command -v uv >/dev/null 2>&1; then
+  PY_RUN=(uv run --no-project python)
+else
+  PY_RUN=(python3)
+fi
+
+failed=0
+run_gate() {
+  local name="$1"; shift
+  if ! "$@" >/dev/null 2>&1; then
+    echo "pre-commit: GATE FAILED — ${name}" >&2
+    "$@" >&2 || true
+    failed=1
+  fi
+}
+
+run_gate "verify_continuity" "${PY_RUN[@]}" -m tools.history.verify_continuity
+run_gate "verify_handoffs"   "${PY_RUN[@]}" -m tools.history.verify_handoffs
+run_gate "recorded_facts"    "${PY_RUN[@]}" -m tools.history.recorded_fact_audit
+
+if [ "${failed}" -ne 0 ]; then
+  echo "pre-commit: commit blocked. Fix the gate above, or rerun with --no-verify only if the operator authorized it." >&2
+  exit 1
+fi
+
+echo "pre-commit: continuity, handoffs, and recorded facts verified."
+exit 0

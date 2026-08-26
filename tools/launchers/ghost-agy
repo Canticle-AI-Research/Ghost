@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Keep this launcher on the Antigravity OAuth login rather than a Gemini API
+# key exported for standalone applications in the parent shell.
+unset GEMINI_API_KEY
+unset GOOGLE_API_KEY
+unset GOOGLE_GENAI_API_KEY
+
+exec agy --agent canticle-ghost "$@"

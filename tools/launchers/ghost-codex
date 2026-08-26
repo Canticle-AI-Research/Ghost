@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Keep this launcher on ChatGPT subscription authentication even when an API
+# key is exported for standalone applications in the parent shell.
+unset OPENAI_API_KEY
+
+exec codex --profile ghost "$@"

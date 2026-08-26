@@ -1,0 +1,300 @@
+# Complete Ghost system blueprint
+
+This page maps every active subsystem, its owner, inputs, outputs, trust
+boundary, and source location. It is descriptive of
+`main@dbd421babf0703c8c339e7b8db8d51fc51b58282` unless a
+section is explicitly labeled local or planned.
+
+## Whole system
+
+```text
+                                     GHOST
+
+  ┌──────────────┐    argv/env     ┌───────────────────────────────┐
+  │ operator     │ ──────────────► │ CLI                           │
+  │ terminal     │ ◄────────────── │ ghost.cli                     │
+  └──────────────┘    answer/error └──────────────┬────────────────┘
+                                                   │ settings + prompt
+                                                   ▼
+  ┌──────────────┐   provider API  ┌───────────────────────────────┐
+  │ model        │ ◄─────────────► │ agent adapter                 │
+  │ OpenAI/etc.  │                 │ ghost.application             │
+  └──────────────┘                 │ DeepAgents + LangChain        │
+                                   │ LangGraph + SqliteSaver       │
+                                   └───────┬──────────┬────────────┘
+                                           │          │
+                             transient     │          │ tool calls
+                             middleware    │          ▼
+                                           │   ┌────────────────────┐
+                                           │   │ ghost.tools        │
+                                           │   │ recall/read/search │
+                                           │   │ optional shell     │
+                                           │   └─────────┬──────────┘
+                                           ▼             │ real result
+                                   ┌───────────────────────────────┐
+                                   │ framework-free lifecycle      │
+                                   │ ghost.lifecycle               │
+                                   │ begin/run/verify/complete/fail│
+                                   └──────────────┬────────────────┘
+                                                  │ narrow MemoryLayer
+                                                  ▼
+                                   ┌───────────────────────────────┐
+                                   │ Ghost SEAM adapter            │
+                                   │ ghost.seam_memory             │
+                                   └──────────────┬────────────────┘
+                                                  │ exact private SDK
+                                                  ▼
+  ┌─────────────────────┐              ┌────────────────────────────┐
+  │ checkpoint SQLite   │              │ SEAM                       │
+  │ execution state     │              │ RAW + MIRL + retrieval     │
+  │ NOT semantic truth  │              │ knowledge/reasoning graphs │
+  └─────────────────────┘              └────────────────────────────┘
+```
+
+The diagram above is the implemented internal development path. It is not the
+target public distribution path.
+
+## Company distribution architecture
+
+```text
+PUBLIC / SOURCE-AVAILABLE PRODUCT PLANES
+
+  Ghost (PolyForm Shield)           Canticle Core (PolyForm Shield, planned)
+          │                                      │
+          └──────────────┬───────────────────────┘
+                         ▼
+             thin API clients/protocols
+                    (Apache-2.0)
+                         │
+                         ▼
+              auth + metering + policy edge
+                         │
+       ┌─────────────────┼───────────────────┐
+       ▼                 ▼                   ▼
+ private SEAM       licensed SEAM Node   SEAM-U inference
+ SDK/runtime/MIRL   (Shield/commercial)  (planned proprietary model)
+       │                 │                   │
+       └─────────────────┴───────────────────┘
+                         │
+                         ▼
+              proprietary cloud/control plane
+```
+
+Implemented today: Ghost's direct private SDK path. Planned: complete Ghost API
+parity, Canticle Core runtime, SEAM Node delivery, and SEAM-U. The licensing
+decision does not turn planned interfaces into working software.
+
+## Repository topology
+
+```text
+Ghost/
+├── AGENTS.md                  cross-agent work protocol
+├── PROJECT_STATUS.md          current-state router
+├── REPO_LEDGER.md             stable decisions
+├── HISTORY.md                 append-only build event stream
+├── HISTORY_INDEX.md           generated bounded history map
+├── README.md                  repository overview and quick start
+├── pyproject.toml             package, dependencies, entry points, test/lint config
+├── uv.lock                    exact resolved dependency graph
+├── src/ghost/
+│   ├── application.py         framework/model/checkpoint adapter
+│   ├── lifecycle.py           framework-free turn contract
+│   ├── seam_memory.py         private SDK boundary
+│   ├── middleware.py          transient recall injection
+│   ├── tools.py               memory/filesystem/shell tools
+│   ├── config.py              environment parsing and bounds
+│   ├── context.py             per-invocation transient context
+│   ├── cli.py                 console operator interface
+│   └── avatar/                local unmerged avatar lane
+├── tests/                     provider-free and live verification
+├── tools/
+│   ├── branding/              deterministic asset tooling
+│   └── history/               canonical continuity tooling
+├── branding/                  identity sources and tokens
+└── docs/                      rebuildable wiki and evidence records
+```
+
+## One successful turn
+
+```text
+1  CLI parses argv and environment
+2  GhostSettings validates bounds and authority switches
+3  GhostAgent constructs model, tools, recall middleware, and checkpoint saver
+4  lifecycle.run_turn trims input and opens a SEAM reasoning run
+5  SeamMemory retrieves bounded `mix` evidence with graph expansion
+6  middleware adds escaped JSONL evidence to the system message transiently
+7  DeepAgent invokes the model and executes permitted tools
+8  adapter translates provider ToolMessages into plain ToolAttempt records
+9  SeamMemory records one decision + verification per attempted tool
+10 SeamMemory ingests the completed user/assistant pair into MIRL
+11 the reasoning run finalizes against passed verification IDs
+12 CLI prints the answer and closes SDK/checkpoint connections on exit
+```
+
+Detailed sequence:
+
+```text
+Operator     CLI       Lifecycle      SEAM       Middleware/Model      Tool
+   │          │            │            │                │              │
+   │ prompt   │            │            │                │              │
+   ├─────────►│ invoke     │            │                │              │
+   │          ├───────────►│ begin_turn │                │              │
+   │          │            ├───────────►│ retrieve       │              │
+   │          │            │◄───────────┤ MIRL evidence  │              │
+   │          │            ├────────────────────────────►│ inject+run   │
+   │          │            │            │                ├─────────────►│
+   │          │            │            │                │◄─────────────┤
+   │          │            │◄────────────────────────────┤ answer/calls │
+   │          │            ├───────────►│ verify actions │              │
+   │          │            ├───────────►│ ingest turn    │              │
+   │          │            ├───────────►│ finalize       │              │
+   │          │◄───────────┤ answer     │                │              │
+   │◄─────────┤ print      │            │                │              │
+```
+
+## Failure and cancellation
+
+```text
+begin SEAM run
+      │
+      ▼
+model/tool/checkpoint exception or KeyboardInterrupt
+      │
+      ├─ DO NOT ingest the incomplete turn
+      ├─ add an outcome node describing bounded failure type
+      ├─ transition outcome to rejected
+      └─ re-raise so CLI/supervisor receives the real failure
+```
+
+`BaseException` is intentionally caught around the open-run window so
+cancellation and Ctrl-C do not strand reasoning state.
+
+## Memory planes
+
+```text
+canonical evidence                         execution state
+┌────────────────────────────┐             ┌──────────────────────────┐
+│ SEAM SQLite                │             │ LangGraph checkpoint DB  │
+│ RAW + MIRL                 │             │ messages / graph cursor  │
+│ lifecycle/provenance       │             │ thread resume state      │
+└────────────┬───────────────┘             └──────────────────────────┘
+             │
+             ├─ derived knowledge graph
+             ├─ derived retrieval indexes
+             ├─ bounded prompt evidence
+             └─ reasoning/action verification graph
+```
+
+The checkpoint database may be discarded without deleting semantic memory.
+Deleting the SEAM database deletes the local durable knowledge store and is a
+different, consequential operation.
+
+## Tool authority ladder
+
+```text
+default
+  └─ seam_recall                    read Ghost memory
+
+GHOST_TOOL_ROOTS set
+  ├─ seam_recall
+  ├─ read_file                      bounded UTF-8 file read
+  └─ search_repo                    bounded literal search
+
+GHOST_ENABLE_SHELL=1
+  ├─ all above
+  └─ run_command                    full account authority; unsandboxed
+         ├─ approval default ON
+         ├─ timeout bounded
+         └─ result verified/fingerprinted
+```
+
+There is no denylist. A shell denylist would not create a security boundary.
+
+## Configuration path
+
+```text
+process environment
+       ▲
+       │ wins
+.env.local (loaded without override)
+       ▲
+       │ copied selectively from
+.env.example
+       │
+       ▼
+GhostSettings.from_env()
+       │
+       ├─ parse model/provider
+       ├─ expand paths
+       ├─ resolve readable roots
+       ├─ enforce recall/hop/timeout bounds
+       └─ preserve shell-off default
+```
+
+## Package path
+
+```text
+pyproject.toml + uv.lock
+       │
+       ├─ uv sync --frozen ─► runnable development environment
+       │
+       └─ uv build ─────────► dist/canticle_ghost-0.1.0.whl
+                               dist/canticle_ghost-0.1.0.tar.gz
+```
+
+The wheel is buildable but not publicly publishable because its runtime
+metadata points at a private Git-over-SSH dependency.
+
+## Continuity path
+
+```text
+material change
+   ├─ update blueprint/how-to/commands
+   ├─ update status or ledger if authority changed
+   ├─ append HISTORY#NNN
+   ├─ register successor handoff when resume state changed
+   ├─ regenerate HISTORY_INDEX.md
+   ├─ write ignored snapshot
+   └─ run docs/history/code/package verification
+```
+
+On a public pull request, `public-ci.yml` adds an exact-base prefix check:
+
+```text
+base HISTORY.md ──must be exact prefix──► candidate HISTORY.md
+       │                                      │
+       └─ immutable prior bytes               └─ zero or more new entries
+```
+
+The repository-neutral Temporal Chain starter under
+`templates/temporal-chain/` reproduces this core path for other repositories. SEAM's routing and stream
+split is an optional scale layer, not a prerequisite for the append-only core.
+
+## Local avatar lane
+
+The current working tree contains an additional unmerged path:
+
+```text
+Ghost CLI ──WebSocket──► AvatarBridge ──► browser overlay / desktop sensor
+    │
+    └─ start/end notifications ─────────► director actions/faces
+
+separate GTK path:
+system python + GTK ──► desktop_pet.py ──► real desktop override-redirect pet
+```
+
+This is documented in [avatar system](AVATAR_SYSTEM.md) but remains local. It
+must not be required to rebuild
+`main@dbd421babf0703c8c339e7b8db8d51fc51b58282`.
+
+## Planned extensions
+
+- selective memory admission and user-directed correction/forgetting;
+- frozen task/memory evaluation fixtures;
+- true principal/workspace/project partitioning;
+- bounded specialist agents after single-agent qualification;
+- authenticated service and operator UI;
+- sandboxed or separately isolated execution boundary;
+- backup/restore, observability, release, and incident operations.
+
+Planned arrows do not change current ownership boundaries.
