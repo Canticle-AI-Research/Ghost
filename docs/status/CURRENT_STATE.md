@@ -7,21 +7,21 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 
 | Plane | Observed state |
 |---|---|
-| Default branch | `main@e1d1b9a8e72cf47f813a57febf6edd3959429b3b` |
+| Default branch | `main@2a23fdcd730c051a83bab26622154df993431980` |
 | Stage 1 evaluation substrate | merged through PR #10: 20 frozen cases, real-lifecycle BIL-0 smoke/verifier/gate, step ceiling, final clean baseline |
 | Public transport | merged through PR #8; public install and opaque transport source published |
 | Primary working branch | `agent/avatar-u1-temporal-integration`, preserving avatar-only WIP on its earlier reviewed base |
 | Canonical foundation | merged through PRs #6 and #7 |
 | Preserved local work | avatar source/tests/assets/tools plus CLI/package/lock changes in the primary checkout |
 | Remote visibility | public |
-| Merged PRs | PR #1 and PRs #5 through #10 |
+| Merged PRs | PR #1 and PRs #5 through #12 |
 | Open PRs | Dependabot #2 and #4 |
-| Exact-head public CI | run `32927357539` green on `e1d1b9a`; all six required jobs passed |
+| Exact-head public CI | run `32933109326` green on `2a23fdc`; all six required jobs passed |
 | Public transport proof | 200 provider-free tests, Ruff, build, clean wheel install, real `ghost --help`, and protected PR/main CI passed; 8 live tests deselected |
 
 This is a status snapshot, not authorization to delete or combine local files.
 
-## Landed capability at `main@86774ef`
+## Landed capability at `main@2a23fdc`
 
 - DeepAgents root agent with provider routing through LangChain.
 - OpenAI reasoning-model use through the Responses API.
@@ -58,13 +58,13 @@ This is a status snapshot, not authorization to delete or combine local files.
 - Final post-review artifact bound to clean source `ee4f63b` and bundle hash
   `57ca22ea`; this supersedes earlier artifacts for current comparisons.
 - `GHOST_MAX_STEPS` runtime superstep ceiling and explicit non-streaming policy.
+- Deterministic admit/reject/review policy that cannot promote model output.
+- Explicit remember, current/history recall, additive correction, and
+  confirmed soft-forgetting commands over opaque IDs.
+- Workspace/project/thread durable-memory isolation and lifecycle status.
+- Frozen 10-case Stage 2 memory-governance mechanism fixture.
 
 ## Local-only capability
-
-- Deliberate-memory branch: deterministic admission, explicit remember,
-  correction/supersession, forgetting, current/history views, and
-  principal/workspace/project/thread transport isolation with provider-free
-  tests. It is not merged or quality-qualified yet.
 
 - `ghost-avatar` WebSocket/HTTP/browser overlay runner.
 - GTK desktop pet using the selected B2 art direction.
@@ -119,13 +119,12 @@ closeout is recorded in the latest history entry after completion.
    should be removed in a dedicated reviewed cleanup.
 4. Stage 1 provider-live and exact release-candidate qualification remain open;
    the frozen deterministic artifact is explicitly non-claimable.
-5. The SEAM server half of deliberate-memory governance is protected-main;
-   Ghost's client/policy half remains local, and a sealed Q3 memory-quality
-   comparison remains absent.
+5. Both repository halves of deliberate-memory governance are protected-main,
+   but a sealed Q3 memory-quality comparison remains absent.
 6. The license structure needs counsel review and a written founder IP
     assignment after the company is legally formed.
 
 ## Next issue
 
-Publish the deliberate-memory mechanism candidate, then build the sealed Q3
-memory-quality comparison without touching the isolated avatar branch.
+Build the sealed Q3 memory-quality comparison against a named baseline without
+touching the isolated avatar branch.

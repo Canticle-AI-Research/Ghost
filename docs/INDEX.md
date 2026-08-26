@@ -89,7 +89,8 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [history/PATH_MOVES.md](history/PATH_MOVES.md) | ledger that keeps immutable history refs resolvable after a rename |
 | [Temporal Chain template](../templates/temporal-chain/README.md) | reusable standard-library history + git protocol starter for other repositories |
 | [handoffs/INDEX.md](handoffs/INDEX.md) | canonical single-head handoff registry |
-| [handoffs/2026-08-26-deliberate-memory-qualified.md](handoffs/2026-08-26-deliberate-memory-qualified.md) | current deliberate-memory mechanism publication candidate |
+| [handoffs/2026-08-26-deliberate-memory-published.md](handoffs/2026-08-26-deliberate-memory-published.md) | current protected-main deliberate-memory mechanism boundary |
+| [handoffs/2026-08-26-deliberate-memory-qualified.md](handoffs/2026-08-26-deliberate-memory-qualified.md) | superseded deliberate-memory mechanism publication candidate |
 | [handoffs/2026-08-25-stage1-frozen-published.md](handoffs/2026-08-25-stage1-frozen-published.md) | superseded protected-main Stage 1 evaluation boundary |
 | [handoffs/2026-08-25-stage1-candidate-ready.md](handoffs/2026-08-25-stage1-candidate-ready.md) | superseded exact-head CI publication boundary for Stage 1 evaluation |
 | [handoffs/2026-08-25-stage1-final-baseline-qualified.md](handoffs/2026-08-25-stage1-final-baseline-qualified.md) | superseded post-review clean-source Stage 1 baseline boundary |
