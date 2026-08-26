@@ -6,13 +6,15 @@
 
 ## Current headline
 
-**2026-08-26 — deliberate-memory mechanisms are branch-local and in progress.**
-The candidate adds deterministic admit/reject/review policy, explicit remember,
+**2026-08-26 — `main@2a23fdc` publishes deliberate-memory mechanisms through
+PR #12.** Ghost now has deterministic admit/reject/review policy, explicit remember,
 additive correction/supersession, scoped forgetting, current/history views,
 opaque lifecycle status/references, and concrete
-principal/workspace/project/thread transport isolation. Provider-free behavior
-tests are local evidence only; protected merge and a sealed Q3 memory-quality
-comparison remain open. The avatar worktree is untouched.
+principal/workspace/project/thread transport isolation. Exact source `3c21112`
+passed all six protected jobs in run `32933045239`; the 257-test provider-free
+suite and merge-head run `32933109326` passed the same matrix. The 10-case Stage
+2 fixture proves mechanisms only. A sealed Q3
+memory-quality comparison remains open. The avatar worktree is untouched.
 
 **2026-08-25 — `main@e1d1b9a` publishes Ghost's public-only install boundary,
 opaque SEAM lifecycle, and frozen Stage 1 evaluation substrate. PR #10 merged
@@ -41,6 +43,8 @@ Live GitHub reconciliation on 2026-08-25 established:
 - PR #10 merged the frozen Stage 1 evaluation substrate;
 - exact `main@e1d1b9a` passed all six hosted required checks in run
   `32927357539`;
+- exact `main@2a23fdc` passed the same six checks in run `32933109326` after PR
+  #12 published deliberate-memory mechanisms;
 - all external-contributor workflows require approval;
 - secret scanning and push protection are enabled;
 - Ghost has no repository secret and no assigned runner; and
@@ -79,8 +83,8 @@ qualification, release, and deployment remain incomplete.
 - Stage 1 dependable single agent: 20-case frozen corpus, smoke verifier/gate,
   and step ceiling are merged; provider-live and release-candidate exit proof
   remain incomplete.
-- Stage 2 deliberate memory: branch-local mechanism candidate; not merged or
-  quality-qualified.
+- Stage 2 deliberate memory: mechanisms are protected-main; a sealed Q3
+  quality comparison remains incomplete.
 - Stage 3 graph-aware specialists: not implemented.
 - Stage 4 measured product: exploratory.
 - Desktop avatar: local/in-progress parallel UX track, not a roadmap gate.
@@ -91,8 +95,8 @@ qualification, release, and deployment remain incomplete.
 
 1. Obtain counsel review and execute founder-to-company IP assignment after
    the legal entity is formed.
-2. Publish deliberate memory admission, correction, forgetting, and isolation,
-   then create the sealed Q3 quality comparison.
+2. Create the sealed Q3 deliberate-memory quality comparison against a named
+   baseline.
 3. Complete provider-live and exact release-candidate Stage 1 qualification
    only with explicit spend/release authorization.
 4. Resume the isolated desktop-avatar workstream after its asset and

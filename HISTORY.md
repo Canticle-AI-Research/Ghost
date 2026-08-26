@@ -1137,3 +1137,33 @@ untouched. Advance the handoff to
 `docs/handoffs/2026-08-26-deliberate-memory-qualified.md`, publish this exact
 candidate through protected Ghost CI, and retain the sealed Q3 memory-quality
 comparison as separate follow-up work.
+
+## HISTORY#048 — Publish deliberate-memory governance
+- Date: `2026-08-26T00:13:27-05:00`
+- Agent: `codex`
+- Status: `done`
+- Topics: `agent, ci, continuity, docs, evaluation, gates, handoff, history, memory, roadmap, security, status, tests, verification`
+- Commits: `2a23fdcd730c051a83bab26622154df993431980`
+- Refs: `https://github.com/Canticle-AI-Research/Ghost/pull/12, https://github.com/Canticle-AI-Research/Ghost/actions/runs/32933045239, https://github.com/Canticle-AI-Research/Ghost/actions/runs/32933109326, docs/handoffs/2026-08-26-deliberate-memory-published.md`
+- Supersedes: `HISTORY#047`
+- Verification: `exact PR source 3c21112 passed repo-hygiene, brand-assets, tests (3.11), tests (3.13), package-smoke, and stage1-evals in run 32933045239; PR #12 merged as 2a23fdc; exact merge-head run 32933109326 passed the same six protected jobs; SEAM PR #233 source and all seven jobs were already protected-main at 0b07244; no paid/live lane ran`
+
+Deliberate-memory governance is now protected-main source in both Ghost and
+SEAM. Ghost PR #12 published deterministic operator-input admission,
+non-admitting reject/review decisions, explicit remember, current/history
+recall, additive correction, confirmed forgetting, workspace/project/thread
+isolation, thread-context restoration, and the frozen 10-case Stage 2 mechanism
+fixture. SEAM PR #233 supplies the protected opaque lifecycle enforcement.
+
+Both the exact Ghost source head and merge head passed the full six-job matrix.
+No private SEAM implementation entered Ghost, no avatar work was mixed into the
+candidate, and no provider-live, paid judge, package release, or deployment
+work ran.
+
+This closes issue 6's implementation/publication boundary, not the G2 quality
+exit. The fixture is mechanism-only and cannot establish task improvement. A
+sealed Q3 bundle must still compare a named candidate against an identical-
+budget baseline before any G2 or specialist-improvement claim. Advance the
+handoff to `docs/handoffs/2026-08-26-deliberate-memory-published.md` and preserve
+the avatar worktree while beginning only roadmap-compatible issue-7 foundation
+work.

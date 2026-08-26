@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-deliberate-memory-qualified-20260826`
 supersedes: `ghost-stage1-frozen-published-20260825`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#047`
 created_at: `2026-08-26T00:08:48-05:00`
 
