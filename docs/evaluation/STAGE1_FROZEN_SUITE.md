@@ -192,6 +192,19 @@ The first tracked baseline is
 The recorded no-memory difference is a scripted harness diagnostic, not a
 measured model-quality lift.
 
+Review produced a lifecycle-executing successor:
+
+- artifact:
+  `evals/runs/stage1/ghost-stage1-frozen-v1-bil0-lifecycle-baseline.json`;
+- exact repaired source: `78a5035929f03ab94e1f8f5e1cd3cb76829f7e07`;
+- bundle hash: `9ce3f9d80ab2a08de3767c0eaf48d84d74e02e73ef64db03891594e6c788cad2`;
+- accepted lifecycle: `begin → record_actions → complete`;
+- rejected lifecycle: `begin → fail`; and
+- verifier/gate: pass with `claimable: false`.
+
+Use the successor as the current BIL-0 baseline. The first artifact is retained
+so the review correction remains auditable rather than rewritten.
+
 A provider-backed qualification is a separate operator-gated workflow:
 
 1. select exact Ghost and compatible deployed SEAM revisions;

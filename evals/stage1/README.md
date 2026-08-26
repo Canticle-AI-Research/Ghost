@@ -22,6 +22,14 @@ source `bc18555d364a9ed49ce9be2e6c35378bbad29467`, this fixture hash, and bundle
 hash `6b16ad744b1dc585fc197150d0e0aee4254c985b1e0810619f0ed64f44fb03ad`.
 It remains smoke-only and non-claimable.
 
+The lifecycle-executing successor is
+`evals/runs/stage1/ghost-stage1-frozen-v1-bil0-lifecycle-baseline.json`.
+It binds repaired source `78a5035929f03ab94e1f8f5e1cd3cb76829f7e07`
+and bundle hash
+`9ce3f9d80ab2a08de3767c0eaf48d84d74e02e73ef64db03891594e6c788cad2`.
+Use this successor for current BIL-0 harness comparisons; preserve the first
+artifact as historical evidence.
+
 ```bash
 uv run python -m tools.evaluation validate-fixtures
 uv run python -m tools.evaluation smoke --output /tmp/ghost-stage1-smoke.json

@@ -941,3 +941,37 @@ to CodeRabbit.
 The first baseline remains preserved as historical BIL-0 harness evidence.
 Commit this repair, generate and preserve a new clean-source lifecycle-executing
 baseline, then rerun full qualification before publication.
+
+## HISTORY#042 — Freeze the lifecycle-executing Stage 1 baseline
+- Date: `2026-08-25T22:16:51-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `agent, ci, continuity, evaluation, gates, handoff, history, memory, snapshot, status, tests, verification`
+- Commits: `78a5035929f03ab94e1f8f5e1cd3cb76829f7e07`
+- Refs: `evals/runs/stage1/ghost-stage1-frozen-v1-bil0-lifecycle-baseline.json, tools/evaluation/runner.py, docs/evaluation/STAGE1_FROZEN_SUITE.md, docs/handoffs/2026-08-25-stage1-lifecycle-baseline-qualified.md`
+- Supersedes: `HISTORY#041`
+- Verification: `clean-source lifecycle smoke sealed bundle 9ce3f9d80ab2a08de3767c0eaf48d84d74e02e73ef64db03891594e6c788cad2 from 78a5035; public verifier passed all eleven checks; gate passed with zero candidate failures, isolation violations, or forbidden effects; accepted and rejected lifecycle event sequences matched; claimable false; final successor-tree full suite/build and exact-head CI pending`
+
+The reviewed BIL-0 successor is bound to clean exact source
+`78a5035929f03ab94e1f8f5e1cd3cb76829f7e07` and stored separately from the
+initial artifact. Its bundle hash is
+`9ce3f9d80ab2a08de3767c0eaf48d84d74e02e73ef64db03891594e6c788cad2`;
+the manifest retains the frozen fixture hash and reports a clean worktree.
+
+The result now contains actual framework-free lifecycle events from `run_turn`.
+An accepted tool case records begin, action recording, and completion. A
+rejected timeout scenario records begin and failure, with no completion.
+Credential-free verification passed all eleven integrity/cross-identity checks,
+and the gate found zero candidate contract failures, isolation violations, or
+forbidden effects.
+
+The artifact remains BIL-0, deterministic, and explicitly non-claimable. Its
+scripted no-memory difference does not become a memory-quality claim merely
+because the real lifecycle ran. The first baseline remains preserved as the
+pre-review record; this successor is the current comparison artifact.
+
+Advance the handoff to
+`docs/handoffs/2026-08-25-stage1-lifecycle-baseline-qualified.md`, finish full
+successor-tree qualification, push, require the hosted evaluation context, and
+merge through protected main. Provider/live and release-candidate proof were
+not run.

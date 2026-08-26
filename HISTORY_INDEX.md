@@ -3,12 +3,13 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `c6cef968a4ee2393cc0132204c8445362da8ec29b60801d34a2ea0ab7d0ae676`
-- Entries: `41`
-- Latest: `HISTORY#041`
+- Source SHA-256: `625e5c04ae87f9f4488b17f2b80fe08b8fdeee5e2d5a3342c2396a7a69440df5`
+- Entries: `42`
+- Latest: `HISTORY#042`
 
 | ID | Date | Status | Commit | Topics | Supersedes | Event |
 |---:|---|---|---|---|---|---|
+| 042 | 2026-08-25 | in-progress | `78a5035929f0` | agent, ci, continuity, evaluation, gates, handoff, history, memory, snapshot, status, tests, verification | #041 | Freeze the lifecycle-executing Stage 1 baseline |
 | 041 | 2026-08-25 | in-progress | `working-tree` | agent, ci, correction, docs, evaluation, gates, handoff, history, memory, tests, verification | #040 | Repair the Stage 1 smoke to execute Ghost's lifecycle |
 | 040 | 2026-08-25 | in-progress | `bc18555d364a` | ci, continuity, docs, evaluation, gates, handoff, history, memory, snapshot, status, tests, verification | #039 | Freeze the clean-source Stage 1 BIL-0 baseline |
 | 039 | 2026-08-25 | in-progress | `working-tree` | agent, ci, config, continuity, docs, evaluation, gates, handoff, history, memory, roadmap, status, tests, verification | #038 | Qualify the frozen Stage 1 evaluation substrate |

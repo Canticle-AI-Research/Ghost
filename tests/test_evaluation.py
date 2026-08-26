@@ -20,6 +20,13 @@ MANIFEST = ROOT / "evals" / "stage1" / "MANIFEST.json"
 BASELINE = (
     ROOT / "evals" / "runs" / "stage1" / "ghost-stage1-frozen-v1-bil0-baseline.json"
 )
+LIFECYCLE_BASELINE = (
+    ROOT
+    / "evals"
+    / "runs"
+    / "stage1"
+    / "ghost-stage1-frozen-v1-bil0-lifecycle-baseline.json"
+)
 
 
 def test_frozen_manifest_matches_the_exact_fixture_corpus() -> None:
@@ -70,6 +77,30 @@ def test_tracked_baseline_is_clean_source_bound_and_verifiable() -> None:
     assert bundle["manifest"]["dirty_worktree"] is False
     assert bundle["manifest"]["fixture_sha256"] == sha256_canonical(fixtures)
     assert bundle["result"]["summary"]["claimable"] is False
+
+
+def test_tracked_lifecycle_baseline_executes_both_terminal_paths() -> None:
+    bundle = json.loads(LIFECYCLE_BASELINE.read_text(encoding="utf-8"))
+    cases = bundle["result"]["cases"]
+
+    assert verify_bundle(bundle)["status"] == "PASS"
+    assert bundle["manifest"]["git_sha"] == "78a5035929f03ab94e1f8f5e1cd3cb76829f7e07"
+    assert bundle["manifest"]["dirty_worktree"] is False
+    assert bundle["hashes"]["bundle_sha256"] == (
+        "9ce3f9d80ab2a08de3767c0eaf48d84d74e02e73ef64db03891594e6c788cad2"
+    )
+    accepted = next(
+        case
+        for case in cases
+        if case["case_id"] == "repository-qa-001" and case["arm"] == "ghost-memory"
+    )
+    rejected = next(
+        case
+        for case in cases
+        if case["case_id"] == "timeout-restart-001" and case["arm"] == "ghost-memory"
+    )
+    assert accepted["lifecycle_events"] == ["begin", "record_actions", "complete"]
+    assert rejected["lifecycle_events"] == ["begin", "fail"]
 
 
 def test_bundle_verification_detects_result_and_manifest_tampering() -> None:
