@@ -13,8 +13,9 @@ The current suite verifies:
 - root-agent recall, invocation, and post-turn persistence ordering;
 - blank-input rejection before recall;
 - OpenAI reasoning models use the Responses API;
-- private SDK ingest produces retrievable MIRL in an isolated SQLite store; and
-- retrying the same turn identity is idempotent.
+- the opaque adapter recalls, records checks, completes, and rejects through
+  the exact public route shapes; and
+- server-side tests prove accepted replay idempotency and failed-turn non-ingest.
 
 A live temporary-store smoke also verified recall across fresh Ghost processes.
 These are foundation checks, not a product-quality benchmark.
@@ -31,7 +32,7 @@ Required on every change:
 - evidence and stored-record references;
 - no memory injection into checkpoint history;
 - malformed settings fail closed; and
-- private SDK version/source boundary.
+- public HTTP contract and no-private-source dependency boundary.
 
 ### Layer 2: retrieval fixtures
 
@@ -133,12 +134,13 @@ separate lane from deterministic memory correctness.
 | Lane | Network | Purpose |
 |---|---:|---|
 | unit | No | policy and adapter behavior |
-| private SDK integration | No | MIRL, SQLite, provenance, idempotency |
+| Ghost HTTP contract | No | payload bounds, opaque IDs, failure redaction |
+| private SEAM service | No | MIRL, graph enforcement, provenance, idempotency |
 | retrieval corpus | Prefer no | fixed recall and graph comparisons |
 | provider smoke | Yes, bounded | model/tool compatibility |
 | external vector | Yes, controlled service | pgvector parity and cleanup |
 | security | No by default | injection, isolation, secret-shaped payloads |
 
-Every report must name the exact code revision, private SEAM revision, corpus,
-configuration, candidate budget, graph-hop setting, model, and skipped lanes.
-
+Every report must name the exact Ghost revision, compatible SEAM service
+revision/deployment, corpus, configuration names (not secret values), candidate
+budget, graph-hop setting, model, and skipped lanes.

@@ -24,23 +24,26 @@ execution state; SEAM provides cross-session semantic memory.
 
 ```bash
 tmp_dir=$(mktemp -d)
-GHOST_SEAM_DB="$tmp_dir/seam.db" \
 GHOST_CHECKPOINT_DB="$tmp_dir/checkpoints.db" \
+GHOST_SEAM_NAMESPACE="ghost.isolated.$(date +%s)-$$" \
 uv run ghost --thread-id isolated "Remember that this is an isolated run."
 ```
 
-Remove the temporary directory only after confirming it contains no needed
-evidence. Do not point experiments at the operator's canonical store.
+Remove the temporary checkpoint directory only after confirming it contains no
+needed execution history. The unique service namespace isolates semantic
+memory; use a dedicated principal as well when testing tenancy.
 
-## Share one canonical SEAM store intentionally
+## Connect to a SEAM service intentionally
 
 ```bash
-export GHOST_SEAM_DB="/absolute/path/to/canonical/seam.db"
+export SEAM_BASE_URL="https://seam.example"
+export SEAM_API_TOKEN="<set without committing>"
 export GHOST_SEAM_NAMESPACE="ghost.default"
 uv run ghost --thread-id shared-agent
 ```
 
-This changes the durable memory boundary. Back up and verify the target first.
+This changes the durable memory boundary. Verify the service, principal,
+namespace, and scope before sending any content.
 
 ## Grant read-only repository access
 

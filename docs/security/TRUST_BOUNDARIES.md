@@ -14,9 +14,10 @@ authorization grant, or verified fact.
 | Model output to MIRL | persisted only after a successful root result; provenance retained | selective admission and optional review gate |
 | Graph to answer | graph hits resolve back to MIRL IDs | user-visible evidence-path policy |
 | Tool request to external action | DeepAgents framework boundary | explicit tool allowlist, permissions, HITL, timeouts |
-| User/workspace isolation | one configured namespace and scope | principal-aware partitioning and authorization |
+| User/workspace isolation | service-derived principal plus configured namespace/scope | Ghost workspace/session UX and hosted authorization proof |
 | Secret handling | ignored env files; no key copied into repository | deployment secret manager and log redaction tests |
-| Private SEAM dependency | exact private Git revision | private CI credentials and controlled upgrade process |
+| SEAM service boundary | public HTTP adapter, opaque handles, no private source dependency | compatible release/deployment and recovery proof |
+| SEAM response to Ghost | streamed 8 MiB cap before JSON parsing | deployment latency/body telemetry without content logging |
 
 ## Memory injection
 
@@ -45,11 +46,11 @@ session link, or unrestricted tool log should become MIRL knowledge.
 
 ## Verified actions
 
-Every tool call is recorded as a `decision` node checked by a `tool`
-verification, and a turn that used tools is finalized with
-`finalize_verified` against the checks that passed. SEAM refuses that call
-when the named checks did not pass, so "the action succeeded" is enforced by
-the store rather than asserted by the model.
+Every tool call is sent through the opaque actions route and recorded as a
+`decision` node checked by a `tool` verification. On completion, SEAM derives
+the passed checks server-side and accepts a verified outcome only against
+those checks. Ghost cannot submit a client-selected verification ID, so "the
+action succeeded" is enforced by the service rather than asserted by the model.
 
 Two consequences matter for future write tools:
 
@@ -78,7 +79,7 @@ them.
 
 ## Failure behavior
 
-Ghost should fail closed when memory scope, SDK compatibility, or authorization
+Ghost should fail closed when memory scope, API compatibility, or authorization
 cannot be established. Availability fallbacks may omit optional recall only
 when product policy explicitly permits a memory-degraded mode and clearly marks
 the response as such.
@@ -92,4 +93,3 @@ service data and should not be written to MIRL or reasoning telemetry.
 Ghost is not ready for multi-user or externally exposed operation until the
 isolation, tool-permission, admission, deletion, failure-finalization, and
 security evaluation gates in this documentation are implemented and passing.
-

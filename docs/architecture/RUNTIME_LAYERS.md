@@ -16,14 +16,14 @@ Layer 2  turn contract   lifecycle.py
                          framework-free sequencing and failure rules
             │
 Layer 1  memory adapter  seam_memory.py
-                         exact private SeamSDK operations
+                         bounded opaque HTTP operations
             │
-Layer 0  SEAM            canonical RAW/MIRL/retrieval/provenance implementation
+Layer 0  SEAM service    canonical RAW/MIRL/retrieval/provenance implementation
 ```
 
 ## Layer 1: memory adapter
 
-`SeamMemory` owns one SDK instance and exposes only the operations a Ghost turn
+`SeamMemory` owns one `httpx.Client` and exposes only the operations a Ghost turn
 needs:
 
 - `begin_turn` — open reasoning and retrieve;
@@ -31,9 +31,11 @@ needs:
 - `complete_turn` — ingest and finalize;
 - `fail_turn` — reject without ingest;
 - `query_knowledge` — read-only tool lookup; and
-- `close` — release the owned SDK.
+- `close` — release the owned HTTP client.
 
-This file must not import agent frameworks. If the SDK changes, this is the
+This file must not import agent frameworks or private SEAM modules. The service
+returns bounded text and opaque handles; it derives evidence and accepted
+verification IDs server-side. If the public HTTP contract changes, this is the
 primary adaptation point.
 
 ## Layer 2: turn contract
@@ -80,7 +82,7 @@ local WIP and not a mainline contract.
 | Change model provider | config/application | lifecycle/seam_memory |
 | Replace DeepAgents | application/middleware | lifecycle/seam_memory |
 | Replace LangGraph checkpoint saver | application | lifecycle/seam_memory |
-| Advance SEAM SDK contract | seam_memory + tests | lifecycle/CLI where possible |
+| Advance SEAM API contract | seam_memory + tests | lifecycle/CLI where possible |
 | Add interface | new interface adapter | memory/lifecycle invariants |
 | Add tool | tools + application + trust docs/tests | memory ownership |
 

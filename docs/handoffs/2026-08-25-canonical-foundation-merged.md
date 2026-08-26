@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-canonical-foundation-merged-20260825`
 supersedes: `ghost-canonical-foundation-candidate-20260825`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#035`
 created_at: `2026-08-25T20:25:44-05:00`
 

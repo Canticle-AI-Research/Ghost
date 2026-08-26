@@ -7,16 +7,15 @@ private conversation history or undocumented machine state.
 ## Inputs
 
 - this Git repository at a named commit;
-- Git/SSH read access to the exact private SEAM SDK/runtime dependencies;
+- an authorized SEAM service implementing the documented opaque v1 routes;
 - Python 3.11–3.14 and `uv`;
 - an OpenAI API key only for model-backed execution or live tests;
 - optional Chrome/fontconfig/ffmpeg for brand outputs;
 - optional Linux X11/GTK/Blender dependencies for the local avatar lane.
 
-This is the current internal/developer rebuild contract. A public Ghost rebuild
-must eventually replace private Git access with the versioned client/API or a
-licensed local SEAM Node described in
-[Canticle product and licensing structure](CANTICLE_PRODUCT_AND_LICENSING_STRUCTURE.md).
+This is the public rebuild contract. It requires service access at runtime but
+never private SEAM source. A hosted service and a licensed local SEAM Node may
+implement the same additive HTTP boundary.
 
 ## Build graph
 
@@ -26,7 +25,7 @@ source checkout
    ├─ pyproject.toml + uv.lock ──► resolved Python environment
    │                                  │
    │                                  ├─ deepagents / langchain / langgraph
-   │                                  └─ exact private seam-sdk → seam-runtime
+   │                                  └─ httpx → authenticated SEAM v1 service
    │
    ├─ src/ghost/ ─────────────────► canticle-ghost wheel
    │                                  │
@@ -41,17 +40,16 @@ source checkout
 
 License and artifact inputs are independently required: `LICENSE`, `NOTICE`,
 package metadata, excluded brand assets, dependency notices, and private-source
-scans must agree before distribution.
+dependency scans must agree before distribution.
 
 ## Reconstruction sequence
 
 1. Follow [installation](../operations/INSTALLATION.md) through `uv sync --frozen`.
-2. Verify the private dependency pin in `pyproject.toml`, `uv.lock`, and
-   `README.md` agrees.
+2. Verify `pyproject.toml` and `uv.lock` contain only public package sources.
 3. Run `uv run ghost --help` to prove the import/entry-point chain.
 4. Run the provider-free qualification in
    [testing and qualification](../evaluation/TESTING_AND_QUALIFICATION.md).
-5. Configure an isolated SEAM and checkpoint database.
+5. Configure a throwaway SEAM namespace and an isolated checkpoint database.
 6. Run one one-shot turn and one restarted-thread turn using
    [operator how-tos](../operations/HOW_TO.md).
 7. Inspect the memory lifecycle against
@@ -66,7 +64,7 @@ scans must agree before distribution.
 | Component | Source authority | Required proof |
 |---|---|---|
 | Settings | `src/ghost/config.py` | bounds/default tests |
-| SEAM adapter | `src/ghost/seam_memory.py` | real SDK round trip in isolated DB |
+| SEAM adapter | `src/ghost/seam_memory.py` | opaque HTTP contract tests + authorized live round trip |
 | Turn contract | `src/ghost/lifecycle.py` | completion/failure/action tests |
 | Agent adapter | `src/ghost/application.py` | real graph construction and live lane |
 | Recall middleware | `src/ghost/middleware.py` | real ModelRequest tests and injection bounds |
@@ -81,9 +79,9 @@ scans must agree before distribution.
 
 The following may remain machine-specific but must be named:
 
-- credentials and private SSH authorization;
+- provider and SEAM service credentials;
 - ignored `.env.local` values;
-- canonical operator databases;
+- service-owned canonical operator data;
 - provider billing authorization;
 - desktop display/compositor and GTK packages;
 - local avatar generation sources or paid provider outputs not approved for
@@ -97,11 +95,11 @@ safe detection command.
 
 The rebuild is successful only when:
 
-- the frozen dependency graph installs without re-resolution;
+- the frozen public dependency graph installs without re-resolution;
 - provider-free tests and Ruff pass;
-- the wheel/sdist build and console-entry inspection pass;
+- the wheel/sdist clean install and console-entry smoke pass;
 - one isolated live model/memory turn passes when explicitly authorized;
 - history, handoffs, docs, and local links verify;
-- no operator database, credential, private session link, or generated local
-  state enters the candidate commit; and
+- no operator data, credential, private session link, or generated local state
+  enters the candidate commit; and
 - all skipped external/live work is named rather than implied complete.

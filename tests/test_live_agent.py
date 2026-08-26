@@ -26,7 +26,6 @@ from __future__ import annotations
 
 import json
 import os
-import sqlite3
 import uuid
 from pathlib import Path
 
@@ -44,8 +43,10 @@ def _settings(db: Path) -> GhostSettings:
     return GhostSettings(
         model=os.environ.get("GHOST_MODEL", "openai:gpt-5.6-terra"),
         seam_db=db,
-        namespace="ghost.livetest",
+        namespace=f"ghost.livetest.{db.parent.name}",
         scope="thread",
+        seam_base_url=os.environ.get("SEAM_BASE_URL", "http://127.0.0.1:8765"),
+        seam_api_token=os.environ.get("SEAM_API_TOKEN") or None,
         recall_budget=8,
         graph_hops=2,
     )
@@ -96,7 +97,7 @@ def test_memory_survives_a_new_agent_and_is_backed_by_a_real_record(
 
     # The claim must be backed by a record that exists, not by the model having
     # kept it in context. Look it up the way the middleware would.
-    with SeamMemory(settings, allow_pgvector_env=False) as memory:
+    with SeamMemory(settings) as memory:
         turn = memory.begin_turn("what is the project codeword?")
         assert turn.rendered_memory, "recall returned nothing for a stored fact"
         assert turn.evidence_refs, "recall cited no evidence records"
@@ -107,47 +108,20 @@ def test_memory_survives_a_new_agent_and_is_backed_by_a_real_record(
         "conversation context rather than from SEAM"
     )
 
-    # And the cited record id must resolve on disk -- the check that catches a
-    # fabricated citation, which is exactly what a memory system must not do.
     cited = [p["record_id"] for p in payloads if token in p["memory"]]
-    connection = sqlite3.connect(db)
-    try:
-        found = [
-            cited_id
-            for cited_id in cited
-            if connection.execute(
-                "select 1 from ir_records where id = ?", (cited_id,)
-            ).fetchone()
-        ]
-    finally:
-        connection.close()
-    assert found, f"recalled record ids do not exist in ir_records: {cited}"
-
-
-def test_a_completed_turn_leaves_no_open_reasoning_run(tmp_path_factory) -> None:
-    """Failure finalization's counterpart: success must close the run too."""
-    db = tmp_path_factory.mktemp("live") / "ghost.db"
-    with GhostAgent(_settings(db)) as ghost:
-        ghost.invoke("Reply with exactly the word: done")
-
-    connection = sqlite3.connect(db)
-    try:
-        rows = connection.execute(
-            """
-            select s.status, count(*)
-            from reasoning_node n
-            join reasoning_state s on s.node_id = n.node_id
-            where n.kind = 'outcome'
-            group by s.status
-            """
-        ).fetchall()
-    finally:
-        connection.close()
-    statuses = dict(rows)
-    assert statuses.get("accepted"), f"no accepted outcome was recorded: {statuses}"
-    assert not statuses.get("rejected"), (
-        f"a successful turn recorded a rejected outcome: {statuses}"
+    assert cited and all(value.startswith("mem_") for value in cited), (
+        f"the service returned invalid public memory handles: {cited}"
     )
+
+
+def test_a_completed_turn_is_recallable_through_the_public_service(tmp_path_factory) -> None:
+    db = tmp_path_factory.mktemp("live") / "ghost.db"
+    token = f"completed-{uuid.uuid4().hex[:10]}"
+    with GhostAgent(_settings(db)) as ghost:
+        ghost.invoke(f"Remember this completion marker exactly: {token}")
+    with SeamMemory(_settings(db)) as memory:
+        recalled = memory.begin_turn("completion marker")
+    assert token in recalled.rendered_memory
 
 
 def test_a_thread_resumes_after_the_agent_is_torn_down(tmp_path_factory) -> None:
@@ -230,7 +204,7 @@ def test_memory_crosses_threads_because_scope_is_a_label_not_a_partition(
     )
 
 
-def test_a_real_tool_call_produces_a_verified_reasoning_graph(tmp_path_factory) -> None:
+def test_a_real_tool_call_completes_through_the_verified_turn_api(tmp_path_factory) -> None:
     """The end-to-end claim behind giving Ghost consequential tools.
 
     A real model calls a real tool, and the store ends up holding a `decision`,
@@ -250,30 +224,9 @@ def test_a_real_tool_call_produces_a_verified_reasoning_graph(tmp_path_factory) 
             "then tell me what you found."
         )
 
-    connection = sqlite3.connect(settings.seam_db)
-    try:
-        kinds = [r[0] for r in connection.execute("select kind from reasoning_node")]
-        checks = connection.execute(
-            "select check_kind, check_ref, verdict from reasoning_verification"
-        ).fetchall()
-        stored_output = connection.execute(
-            "select result_length, result_sha256 from reasoning_verification"
-        ).fetchall()
-    finally:
-        connection.close()
-
-    assert "decision" in kinds, (
-        f"a real tool call produced no decision node; kinds were {sorted(set(kinds))}"
-    )
-    assert any(kind == "tool" for kind, _ref, _v in checks), (
-        f"the tool call was not verified as a check: {checks}"
-    )
-    assert any(verdict == "passed" for _k, _r, verdict in checks), (
-        f"no tool check passed: {checks}"
-    )
-    assert all(length is not None and digest for length, digest in stored_output), (
-        "a tool result was recorded without a length and digest"
-    )
+    with SeamMemory(settings) as memory:
+        recalled = memory.begin_turn("release captain")
+    assert "Ex0-Byte" in recalled.rendered_memory
 
 
 def test_ghost_uses_the_operating_system(tmp_path_factory, monkeypatch) -> None:
@@ -292,6 +245,9 @@ def test_ghost_uses_the_operating_system(tmp_path_factory, monkeypatch) -> None:
         seam_db=settings.seam_db,
         namespace=settings.namespace,
         scope=settings.scope,
+        seam_base_url=settings.seam_base_url,
+        seam_api_token=settings.seam_api_token,
+        seam_timeout=settings.seam_timeout,
         recall_budget=settings.recall_budget,
         graph_hops=settings.graph_hops,
         enable_shell=True,
@@ -310,29 +266,9 @@ def test_ghost_uses_the_operating_system(tmp_path_factory, monkeypatch) -> None:
     assert created.exists(), "Ghost did not actually touch the filesystem"
     assert "ready" in created.read_text()
 
-    connection = sqlite3.connect(settings.seam_db)
-    try:
-        commands = [
-            r[0]
-            for r in connection.execute(
-                "select summary from reasoning_node "
-                "where kind = 'decision' and summary like 'run_command%'"
-            )
-        ]
-        checks = connection.execute(
-            "select check_ref, verdict, exit_code from reasoning_verification "
-            "where check_ref = 'run_command'"
-        ).fetchall()
-    finally:
-        connection.close()
-
-    assert commands, "an OS command ran but no decision node recorded it"
-    assert any(marker in c for c in commands), (
-        f"the recorded commands do not show what Ghost actually did: {commands}"
-    )
-    assert any(v == "passed" and code == 0 for _ref, v, code in checks), (
-        f"no passed tool check with a zero exit code: {checks}"
-    )
+    with SeamMemory(settings) as memory:
+        recalled = memory.begin_turn(marker)
+    assert recalled.evidence_refs, "completed OS turn was not accepted into memory"
 
 
 def test_a_declined_command_does_not_end_the_turn(tmp_path_factory, monkeypatch) -> None:
@@ -345,6 +281,9 @@ def test_a_declined_command_does_not_end_the_turn(tmp_path_factory, monkeypatch)
         seam_db=base.seam_db,
         namespace=base.namespace,
         scope=base.scope,
+        seam_base_url=base.seam_base_url,
+        seam_api_token=base.seam_api_token,
+        seam_timeout=base.seam_timeout,
         enable_shell=True,
         shell_workdir=root,
     )

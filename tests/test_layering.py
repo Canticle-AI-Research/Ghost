@@ -1,6 +1,6 @@
 """The three-layer split, asserted rather than described.
 
-    SEAM SDK          durable memory (no LLM framework dependency at all)
+    SEAM HTTP service durable memory (no LLM framework dependency in Ghost)
     ghost.lifecycle   what a turn is, and what it owes SEAM
     ghost.application LangChain / DeepAgents / model wiring
 
@@ -20,6 +20,7 @@ import pytest
 
 SRC = Path(__file__).resolve().parents[1] / "src" / "ghost"
 FRAMEWORKS = ("langchain", "langgraph", "deepagents")
+PRIVATE_SEAM_MODULES = ("seam_sdk", "seam_runtime")
 
 
 def _imported_frameworks(path: Path) -> list[str]:
@@ -58,6 +59,26 @@ def test_lower_layers_import_no_agent_framework(module: str) -> None:
         f"{module} references {found}. It belongs to a layer that must run "
         "unchanged under a different agent harness."
     )
+
+
+def test_public_source_imports_no_private_seam_module() -> None:
+    offenders: dict[str, list[str]] = {}
+    for path in sorted(SRC.rglob("*.py")):
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        imported: set[str] = set()
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                imported.update(alias.name for alias in node.names)
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                imported.add(node.module)
+        private = sorted(
+            module
+            for module in imported
+            if module.split(".", maxsplit=1)[0] in PRIVATE_SEAM_MODULES
+        )
+        if private:
+            offenders[path.relative_to(SRC).as_posix()] = private
+    assert not offenders, f"private SEAM imports entered the public package: {offenders}"
 
 
 def test_the_turn_rules_live_in_the_lifecycle_not_the_adapter() -> None:

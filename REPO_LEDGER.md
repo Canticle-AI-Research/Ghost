@@ -13,7 +13,8 @@ chronology, transient branch state, or duplicated implementation narratives.
 - Ghost is Canticle's agent application: a research-and-engineering DeepAgent.
 - SEAM is the durable memory, retrieval, provenance, and knowledge substrate.
 - MIRL is SEAM's canonical memory intermediate representation; Ghost consumes
-  it through the private SDK and does not own its format or implementation.
+  only bounded public memory through an opaque service and does not own MIRL's
+  format or implementation.
 - Canticle Core is the planned agent-native operating environment built around
   Ghost mediation and SEAM truth; its current external scaffold is architecture
   documentation, not an implemented operating system.
@@ -25,8 +26,8 @@ chronology, transient branch state, or duplicated implementation narratives.
 - SEAM is Ghost's only durable semantic memory owner.
 - LangGraph checkpoints hold conversation execution state, not semantic truth.
 - DeepAgents owns orchestration and tool calling, never a second memory store.
-- The private SDK boundary lives in `src/ghost/seam_memory.py`; framework code
-  must not enter that adapter.
+- The opaque HTTP boundary lives in `src/ghost/seam_memory.py`; framework and
+  private SEAM code must not enter that adapter.
 - The framework-free turn contract lives in `src/ghost/lifecycle.py`.
 - The DeepAgents/LangChain/LangGraph adapter lives in
   `src/ghost/application.py`.
@@ -51,11 +52,11 @@ chronology, transient branch state, or duplicated implementation narratives.
 
 ## Storage policy
 
-- Default semantic store: `~/.local/share/ghost/seam.db`.
+- Semantic storage is owned exclusively by the configured SEAM service.
 - Default checkpoint store: `~/.local/share/ghost/checkpoints.db`.
-- These stores remain physically distinct.
-- `GHOST_SEAM_DB` is required when Ghost should join another canonical SEAM
-  store; store sharing is an operator decision.
+- Ghost has no canonical-memory filesystem path. `GHOST_SEAM_DB` remains only
+  as a deprecated compatibility input for the checkpoint default; new
+  deployments set `GHOST_CHECKPOINT_DB` directly.
 - The current `thread` scope label does not partition memory by LangGraph
   thread ID. Cross-thread recall inside one namespace is expected in the
   single-operator boundary and is not tenancy.
@@ -65,13 +66,13 @@ chronology, transient branch state, or duplicated implementation narratives.
 
 ## Dependency and distribution policy
 
-- Ghost depends on `seam-sdk[pgvector]` through an exact reviewed private
-  Git-over-SSH revision.
-- Do not substitute public `seam-client`; it reaches the opaque `/v1` API and
-  cannot provide the in-process MIRL contract Ghost uses.
+- Ghost depends only on public Python packages and uses an independently
+  authored `httpx` adapter for the opaque SEAM `/v1` API.
+- `seam-client` 2.x alone is not a lifecycle-parity substitute; Ghost uses the
+  additive agent-turn routes specified by ADR-0005.
 - Do not copy private SDK/runtime code into this repository.
-- The current `canticle-ghost` wheel contains a private Git dependency and is
-  not suitable for public PyPI.
+- The `canticle-ghost` wheel clean-installs without private source access.
+  Installability is not publication approval or a hosted-service claim.
 - Public client distribution, private runtime distribution, GitHub release,
   and hosted deployment are distinct boundaries requiring separate evidence.
 - Canticle uses three license lanes: Apache-2.0 for thin clients/protocols with
@@ -94,8 +95,8 @@ chronology, transient branch state, or duplicated implementation narratives.
 
 ## Verification policy
 
-- Provider-free unit/integration tests must not touch the operator's canonical
-  SEAM database.
+- Provider-free tests use an opaque HTTP contract fake and must not touch any
+  real SEAM deployment or operator data.
 - Live tests carry the `live` marker, cost money, and require explicit operator
   approval plus provider credentials.
 - Strict no-skip is the default; unexplained skips fail the suite.

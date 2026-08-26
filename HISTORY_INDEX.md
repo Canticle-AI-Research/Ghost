@@ -3,12 +3,14 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `13816f6b7ab720dc462180eca8e417e06bb8cd83ccb8093562fac4f4e147551b`
-- Entries: `35`
-- Latest: `HISTORY#035`
+- Source SHA-256: `d5017248554d5830dc393171ca43167fa787ac1d9cd954e41b8c7617168ce3d0`
+- Entries: `37`
+- Latest: `HISTORY#037`
 
 | ID | Date | Status | Commit | Topics | Supersedes | Event |
 |---:|---|---|---|---|---|---|
+| 037 | 2026-08-25 | in-progress | `working-tree` | ci, continuity, handoff, history, packaging, sdk, tests, verification | #036 | Repair exact-head public transport CI |
+| 036 | 2026-08-25 | in-progress | `working-tree` | architecture, ci, config, continuity, docs, handoff, history, installation, ledger, memory, packaging, sdk, security, status, tests, trust, verification, wiki | #035 | Qualify the public Ghost-to-SEAM transport candidate |
 | 035 | 2026-08-25 | done | `dcbad97b9583` | ci, continuity, docs, handoff, history, packaging, repository, status, verification, wiki | #034 | Merge the canonical Ghost foundation |
 | 034 | 2026-08-25 | in-progress | `working-tree` | architecture, ci, continuity, docs, gates, handoff, history, packaging, security, tests, tools, verification, wiki | #033 | Isolate and qualify the canonical foundation candidate |
 | 033 | 2026-08-25 | done | `232048faefee` | ci, correction, gates, history, repository, security, status, verification | #032 | Close the public repository and private-runner safety boundary |

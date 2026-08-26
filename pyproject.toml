@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "canticle-ghost"
 version = "0.1.0"
-description = "A DeepAgent with durable MIRL memory through the private SEAM SDK"
+description = "A DeepAgent with durable memory through the opaque SEAM API"
 readme = "README.md"
 license = "LicenseRef-PolyForm-Shield-1.0.0"
 license-files = ["LICENSE", "NOTICE"]
@@ -19,8 +19,8 @@ dependencies = [
   # only, so an interrupted thread cannot be resumed -- Stage 1's exit
   # condition. Execution state only; SEAM remains the semantic memory.
   "langgraph-checkpoint-sqlite>=3.1,<4",
+  "httpx>=0.27,<1",
   "python-dotenv>=1.1,<2",
-  "seam-sdk[pgvector] @ git+ssh://git@github.com/Canticle-AI-Research/Seam_SDK.git@294ab08919646a03dcdceb3c777dfd7d8eabc624",
 ]
 
 [project.scripts]
@@ -36,9 +36,6 @@ dev = [
   # tests/test_ci_contract.py parses .github/workflows/ci.yml.
   "pyyaml>=6,<7",
 ]
-
-[tool.hatch.metadata]
-allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/ghost"]

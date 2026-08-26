@@ -3,7 +3,7 @@
 ## System boundary
 
 Ghost is an agent application built on DeepAgents, LangChain, LangGraph, and
-the private SEAM runtime. Each layer has a separate responsibility.
+an opaque authenticated SEAM service. Each layer has a separate responsibility.
 
 ```mermaid
 flowchart TB
@@ -13,14 +13,16 @@ flowchart TB
     LC[LangChain model and middleware]
     LG[LangGraph execution and checkpoints]
     ADAPTER[Ghost SEAM adapter]
-    SDK[Private SeamSDK]
+    API[Opaque SEAM v1 API]
+    SDK[Private SEAM runtime]
     MIRL[(RAW and MIRL canonical store)]
     IDX[Lexical vector and graph projections]
     MODEL[OpenAI Responses API or configured model]
 
     UI --> APP
     APP --> ADAPTER
-    ADAPTER --> SDK
+    ADAPTER --> API
+    API --> SDK
     SDK --> MIRL
     MIRL --> IDX
     IDX --> SDK
@@ -28,7 +30,8 @@ flowchart TB
     DA --> LC
     DA --> LG
     LC --> MODEL
-    SDK --> APP
+    SDK --> API
+    API --> ADAPTER
 ```
 
 ## Ownership matrix
@@ -39,7 +42,8 @@ flowchart TB
 | DeepAgents | agent loop, planning, working files, delegation | canonical long-term memory |
 | LangChain | model adapters and middleware | an authorization or truth layer |
 | LangGraph | execution state, checkpoints, interrupts, resumability | the knowledge graph |
-| SEAM SDK | memory operations and typed reasoning sessions | Ghost-specific product policy |
+| SEAM public API | bounded memory and agent-turn operations | private implementation leakage |
+| SEAM runtime | MIRL, storage, retrieval, reasoning, lifecycle | Ghost-specific product policy |
 | MIRL/RAW | canonical meaning and source evidence | disposable prompt context |
 | Knowledge/vector indexes | retrieval acceleration and topology | a second source of truth |
 | Model provider | inference | durable memory or final authority |
@@ -51,14 +55,13 @@ sequenceDiagram
     participant U as User
     participant G as GhostAgent
     participant S as SeamMemory
-    participant SDK as SeamSDK
+    participant API as SEAM HTTP API
     participant M as Model
 
     U->>G: user input
     G->>S: begin_turn(input)
-    S->>SDK: start_reasoning(namespace, scope)
-    S->>SDK: retrieve(mode=mix, graph_hops=N)
-    SDK-->>S: selected MIRL records + evidence ids
+    S->>API: POST /v1/agent/turns/begin
+    API-->>S: selected public memories + opaque ids
     S-->>G: transient JSONL memory
     G->>M: invoke with untrusted memory context
     M-->>G: assistant result
@@ -70,15 +73,16 @@ sequenceDiagram
 sequenceDiagram
     participant G as GhostAgent
     participant S as SeamMemory
-    participant SDK as SeamSDK
-    participant DB as Canonical store
+    participant API as SEAM HTTP API
+    participant DB as Private canonical runtime
 
-    G->>S: complete_turn(user, answer, ids)
-    S->>SDK: ingest(completed turn)
-    SDK->>DB: RAW + compiled MIRL + projections
-    DB-->>SDK: stored record ids
-    S->>SDK: finalize reasoning run
-    SDK->>DB: outcome + evidence and knowledge refs
+    G->>S: record_actions(attempts)
+    S->>API: POST /v1/agent/turns/actions
+    API->>DB: decisions + hashed checks
+    G->>S: complete_turn(user, answer)
+    S->>API: POST /v1/agent/turns/complete
+    API->>DB: compile, persist, finalize with server-derived refs
+    API-->>S: accepted + opaque receipt
 ```
 
 ## Current versus planned
@@ -86,7 +90,7 @@ sequenceDiagram
 | Capability | Status | Evidence or destination |
 |---|---|---|
 | Synchronous root-agent turn | Current | `src/ghost/application.py` |
-| Private SDK recall and MIRL ingest | Current | `src/ghost/seam_memory.py` |
+| Opaque service recall and accepted-turn ingest | Current | `src/ghost/seam_memory.py` |
 | Verified action graph (decision → tool check → verified outcome) | Current | `SeamMemory.record_actions` |
 | Injection-resistant transient recall | Current | `src/ghost/middleware.py` |
 | Persistent LangGraph checkpoint | Current | `SqliteSaver` in `src/ghost/application.py` |
@@ -100,11 +104,12 @@ sequenceDiagram
 
 ## Dependency boundary
 
-The private SEAM SDK stays in the SEAM repository. Ghost pins an exact private
-SEAM revision and imports `SeamSDK`; Ghost contains only the adapter that maps
-agent turns into SDK operations. This keeps MIRL migrations, retrieval, graph
-projection, and storage contracts versioned with SEAM while allowing Ghost's
-agent policy to evolve independently.
+Private SEAM implementation stays in its private repository and deployment.
+Ghost contains only an independently authored HTTP adapter that maps agent
+turns into additive opaque operations. The package has no private Git source,
+does not expose canonical record IDs, and cannot call storage or graph
+internals. This keeps MIRL migrations, retrieval, projection, and storage
+versioned with SEAM while allowing Ghost to install and evolve independently.
 
-See [ADR-0001](../decisions/0001-seam-memory-boundary.md) for the durable
-decision.
+See [ADR-0005](../decisions/0005-opaque-seam-service-boundary.md) for the
+current transport decision. ADR-0001 remains the ownership foundation.

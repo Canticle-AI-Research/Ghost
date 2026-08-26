@@ -17,11 +17,14 @@ process environment  highest precedence
 |---|---|---|
 | `OPENAI_API_KEY` | unset | provider credential; required for OpenAI calls |
 | `GHOST_MODEL` | `openai:gpt-5.6-terra` | `provider:model`; provider controls adapter options |
-| `GHOST_SEAM_DB` | `~/.local/share/ghost/seam.db` | canonical Ghost semantic memory store |
+| `SEAM_BASE_URL` | `http://127.0.0.1:8765` | authenticated SEAM service root; trailing slash ignored |
+| `SEAM_API_TOKEN` | unset | SEAM bearer token; never written to logs or settings repr |
+| `GHOST_SEAM_TIMEOUT` | `30` | HTTP timeout in seconds; number from 0.1–300 |
+| `GHOST_SEAM_DB` | `~/.local/share/ghost/seam.db` | legacy local path used only to place the default checkpoint beside, not semantic storage |
 | `GHOST_CHECKPOINT_DB` | `~/.local/share/ghost/checkpoints.db` | LangGraph execution state only |
 | `GHOST_SEAM_NAMESPACE` | `ghost.default` | logical SEAM namespace |
 | `GHOST_SEAM_SCOPE` | `thread` | SEAM scope label; not automatic thread-ID isolation |
-| `GHOST_RECALL_BUDGET` | `8` | integer 1–64 selected records/budget control |
+| `GHOST_RECALL_BUDGET` | `8` | integer 1–50 selected records/public API bound |
 | `GHOST_GRAPH_HOPS` | `2` | integer 0–3 graph expansion |
 
 ## Read-tool variables
@@ -65,13 +68,14 @@ uv run ghost "Run the narrow provider-free test for the CLI and report the resul
 `GHOST_SHELL_APPROVAL=0` is appropriate only for a separately isolated,
 deliberate unattended environment. It does not create a sandbox.
 
-## SEAM-owned variables
+## SEAM service variables
 
-Ghost passes `allow_pgvector_env=True` when it constructs the SDK. An existing
-SEAM pgvector environment configuration may therefore affect the derived
-retrieval adapter. Those variables are governed by the SEAM runtime, not
-redefined here. Use an isolated SQLite path and clear external DSNs when a test
-must be provider/service-free.
+Ghost sends only the public namespace, scope, optional bearer token, bounded
+turn text, tool-attempt metadata, and raw tool output for server-side hashing.
+Storage, pgvector, graph, MIRL, deletion, and lifecycle policy remain
+service-owned and are never configured through Ghost. `SEAM_BASE_URL` should
+use HTTPS outside trusted loopback. The service must implement the additive
+`/v1/agent/turns/*` routes documented in the architecture blueprint.
 
 ## Safe configuration practices
 

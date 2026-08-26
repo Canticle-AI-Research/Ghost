@@ -744,3 +744,66 @@ visual provenance audit found selected B2 sources mixed with rejected/provider
 intermediates and a browser bridge that can open desktop items; that track stays
 local until asset routing and the consequential-action boundary receive their
 own review. Nothing was deleted or promoted silently.
+
+## HISTORY#036 — Qualify the public Ghost-to-SEAM transport candidate
+- Date: `2026-08-25T21:37:11-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `architecture, ci, config, continuity, docs, handoff, history, installation, ledger, memory, packaging, sdk, security, status, tests, trust, verification, wiki`
+- Commits: `working-tree`
+- Refs: `src/ghost/seam_memory.py, src/ghost/config.py, pyproject.toml, uv.lock, .github/workflows/public-ci.yml, .github/workflows/ci.yml, docs/architecture/SEAM_HTTP_CONTRACT.md, docs/decisions/0005-opaque-seam-service-boundary.md, docs/handoffs/2026-08-25-public-seam-transport-qualified.md, https://github.com/Canticle-AI-Research/Seam/pull/231`
+- Supersedes: `HISTORY#035`
+- Verification: `uv run ruff check . passed; uv run python -m pytest --durations=10 passed 200 provider-free tests with 8 paid/live tests deselected; uv build passed; a fresh wheel environment installed canticle-ghost using public dependencies only and ran the real ghost --help; git diff --check passed; two complete CodeRabbit cycles returned eight findings, all repaired; final no-findings review and exact-head PR CI remain pending`
+
+The locally qualified `feat/public-seam-transport` candidate replaces Ghost's
+private Git/SDK dependency with an independently authored `httpx` adapter for
+the opaque SEAM begin, actions, complete, fail, and recall routes. The adapter
+streams every response under an 8 MiB cap before parsing, rejects malformed
+public memory scores and shapes, redacts the bearer token from settings, sends
+only exception classes on failure, and omits client-selected evidence/check IDs
+from completion so the service remains authoritative.
+
+The public lock and built wheel contain only public package sources. Automatic
+hosted CI now installs Ghost, runs the complete provider-free suite on Python
+3.11 and 3.13, clean-installs the wheel, and smokes the actual command. Manual
+live CI requires explicit provider and SEAM service configuration plus the paid
+run switch; no workflow targets a self-hosted runner.
+
+Documentation now carries the exact HTTP state machine, payloads, limits,
+errors, proof split, installation, configuration, architecture, lifecycle,
+security, licensing, release, rebuild, and roadmap boundary. SEAM PR #231 is
+the coordinated server candidate and remains under exact-head CI/review.
+Neither source candidate is a compatible hosted deployment or package release.
+This event advances the one-live-head handoff chain to
+`docs/handoffs/2026-08-25-public-seam-transport-qualified.md`; protected merge
+and a successor publication handoff remain before this item is done.
+
+## HISTORY#037 — Repair exact-head public transport CI
+- Date: `2026-08-25T21:46:52-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `ci, continuity, handoff, history, packaging, sdk, tests, verification`
+- Commits: `working-tree`
+- Refs: `.github/workflows/public-ci.yml, tests/test_ci_contract.py, docs/handoffs/2026-08-25-public-seam-transport-ci-repaired.md, https://github.com/Canticle-AI-Research/Ghost/pull/8, https://github.com/Canticle-AI-Research/Ghost/actions/runs/32923573440, https://github.com/Canticle-AI-Research/Seam/pull/231`
+- Supersedes: `HISTORY#036`
+- Verification: `SEAM PR #231 exact source head 40562b3 passed seven hosted jobs and merged as 9d29c24; Ghost PR #8 package-smoke passed; focused local CI-contract, history, recorded-fact, and brand tests passed after repair; Ruff and git diff --check passed; repaired exact-head Ghost CI pending`
+
+The coordinated SEAM server contract is now protected-main source. Ghost PR
+#8's first hosted run proved the public wheel clean-installs and the real CLI
+imports, but exposed two CI-environment defects. The full Python matrix used a
+shallow checkout even though canonical history tests resolve every recorded
+commit. The isolated hygiene and brand lanes imported the shared opaque HTTP
+fake from `conftest.py` without installing its public `httpx` dependency.
+
+The Python 3.11 and 3.13 jobs now fetch complete Git history. The isolated
+lanes explicitly install `httpx`, and CI-contract tests pin both properties so
+the same false-red environment cannot return silently. The repair leaves the
+runtime, wire contract, dependency lock, wheel, and primary avatar WIP
+unchanged.
+
+This event advances the live handoff to
+`docs/handoffs/2026-08-25-public-seam-transport-ci-repaired.md`. The repaired
+head must still pass all hosted jobs, protected-main requirements must add both
+Python matrix contexts without weakening existing policy, and PR #8 must merge
+before the client boundary is published. No live provider/service test, paid
+benchmark, release, or deployment was run.

@@ -120,10 +120,8 @@ def test_a_successful_turn_does_not_finalize_as_failed() -> None:
     assert memory.completed is not None
 
 
-def test_fail_turn_rejects_the_outcome_in_a_real_store(tmp_path: Path) -> None:
-    """End to end against the real SDK: the run closes, and its outcome is
-    `rejected` rather than `accepted`, so it cannot be promoted."""
-    with SeamMemory(_settings(tmp_path / "ghost.db"), allow_pgvector_env=False) as memory:
+def test_fail_turn_uses_the_rejected_terminal_route(tmp_path: Path, seam_http) -> None:
+    with SeamMemory(_settings(tmp_path / "ghost.db"), client=seam_http) as memory:
         turn = memory.begin_turn("what happened?")
         memory.fail_turn(
             turn,
@@ -131,21 +129,13 @@ def test_fail_turn_rejects_the_outcome_in_a_real_store(tmp_path: Path) -> None:
             thread_id="t-1",
             turn_id="turn-1",
         )
-
-        run = memory._sdk.reasoning(turn.run_id)
-        outcomes = [n for n in run.graph()["nodes"] if n.get("kind") == "outcome"]
-        assert outcomes, "fail_turn recorded no outcome, so the run is still open"
-        statuses = {str(n.get("status")) for n in outcomes}
-        assert "accepted" not in statuses, (
-            f"a failed turn was accepted ({statuses}); reasoning_promotion would "
-            "treat the crash as promotable knowledge"
-        )
-        assert "rejected" in statuses
+    assert seam_http.turns[turn.run_id] == "rejected"
+    assert seam_http.calls[-1][0] == "/v1/agent/turns/fail"
 
 
-def test_a_failed_turn_writes_no_knowledge(tmp_path: Path) -> None:
-    """The store must be no fuller after a crash than before it."""
-    with SeamMemory(_settings(tmp_path / "ghost.db"), allow_pgvector_env=False) as memory:
+def test_a_failed_turn_writes_no_knowledge(tmp_path: Path, seam_http) -> None:
+    """Ghost never sends failed-turn content to the completion/ingest route."""
+    with SeamMemory(_settings(tmp_path / "ghost.db"), client=seam_http) as memory:
         first = memory.begin_turn("remember my preferred colour")
         memory.fail_turn(
             first, error=RuntimeError("boom"), thread_id="t-1", turn_id="turn-1"
@@ -158,3 +148,5 @@ def test_a_failed_turn_writes_no_knowledge(tmp_path: Path) -> None:
             f"{later.rendered_memory[:200]}"
         )
         assert later.evidence_refs == ()
+    assert not any(path.endswith("/complete") for path, _payload in seam_http.calls)
+    assert seam_http.memories == []

@@ -1,9 +1,9 @@
 # Complete Ghost system blueprint
 
 This page maps every active subsystem, its owner, inputs, outputs, trust
-boundary, and source location. It is descriptive of
-`main@dbd421babf0703c8c339e7b8db8d51fc51b58282` unless a
-section is explicitly labeled local or planned.
+boundary, and source location. It is descriptive of the current source tree;
+`PROJECT_STATUS.md` and the latest handoff identify whether that tree is local,
+under review, protected-main, or released.
 
 ## Whole system
 
@@ -42,7 +42,7 @@ section is explicitly labeled local or planned.
                                    │ Ghost SEAM adapter            │
                                    │ ghost.seam_memory             │
                                    └──────────────┬────────────────┘
-                                                  │ exact private SDK
+                                                  │ authenticated opaque HTTP
                                                   ▼
   ┌─────────────────────┐              ┌────────────────────────────┐
   │ checkpoint SQLite   │              │ SEAM                       │
@@ -51,8 +51,8 @@ section is explicitly labeled local or planned.
   └─────────────────────┘              └────────────────────────────┘
 ```
 
-The diagram above is the implemented internal development path. It is not the
-target public distribution path.
+The diagram above is the public product path. The SEAM box is a separately
+deployed service; none of its private implementation ships in Ghost.
 
 ## Company distribution architecture
 
@@ -71,8 +71,8 @@ PUBLIC / SOURCE-AVAILABLE PRODUCT PLANES
                          │
        ┌─────────────────┼───────────────────┐
        ▼                 ▼                   ▼
- private SEAM       licensed SEAM Node   SEAM-U inference
- SDK/runtime/MIRL   (Shield/commercial)  (planned proprietary model)
+ hosted SEAM        licensed SEAM Node   SEAM-U inference
+ runtime/MIRL       (Shield/commercial)  (planned proprietary model)
        │                 │                   │
        └─────────────────┴───────────────────┘
                          │
@@ -80,9 +80,10 @@ PUBLIC / SOURCE-AVAILABLE PRODUCT PLANES
               proprietary cloud/control plane
 ```
 
-Implemented today: Ghost's direct private SDK path. Planned: complete Ghost API
-parity, Canticle Core runtime, SEAM Node delivery, and SEAM-U. The licensing
-decision does not turn planned interfaces into working software.
+Implemented in this candidate: Ghost's complete reasoning-preserving HTTP path
+and corresponding authenticated routes in the private SEAM service. Planned: hosted operations,
+Canticle Core runtime, SEAM Node delivery, and SEAM-U. The licensing decision
+does not turn planned services into released or deployed software.
 
 ## Repository topology
 
@@ -99,7 +100,7 @@ Ghost/
 ├── src/ghost/
 │   ├── application.py         framework/model/checkpoint adapter
 │   ├── lifecycle.py           framework-free turn contract
-│   ├── seam_memory.py         private SDK boundary
+│   ├── seam_memory.py         opaque public HTTP boundary
 │   ├── middleware.py          transient recall injection
 │   ├── tools.py               memory/filesystem/shell tools
 │   ├── config.py              environment parsing and bounds
@@ -120,15 +121,15 @@ Ghost/
 1  CLI parses argv and environment
 2  GhostSettings validates bounds and authority switches
 3  GhostAgent constructs model, tools, recall middleware, and checkpoint saver
-4  lifecycle.run_turn trims input and opens a SEAM reasoning run
-5  SeamMemory retrieves bounded `mix` evidence with graph expansion
+4  lifecycle.run_turn trims input and asks SEAM to open a reasoning-backed turn
+5  SeamMemory receives bounded public evidence through HTTP
 6  middleware adds escaped JSONL evidence to the system message transiently
 7  DeepAgent invokes the model and executes permitted tools
 8  adapter translates provider ToolMessages into plain ToolAttempt records
-9  SeamMemory records one decision + verification per attempted tool
-10 SeamMemory ingests the completed user/assistant pair into MIRL
-11 the reasoning run finalizes against passed verification IDs
-12 CLI prints the answer and closes SDK/checkpoint connections on exit
+9  SeamMemory sends one bounded attempt per tool for server-side verification
+10 SeamMemory submits the completed user/assistant pair through the public API
+11 SEAM derives evidence and passed checks, ingests, then accepts the outcome
+12 CLI prints the answer and closes HTTP/checkpoint connections on exit
 ```
 
 Detailed sequence:
@@ -139,15 +140,15 @@ Operator     CLI       Lifecycle      SEAM       Middleware/Model      Tool
    │ prompt   │            │            │                │              │
    ├─────────►│ invoke     │            │                │              │
    │          ├───────────►│ begin_turn │                │              │
-   │          │            ├───────────►│ retrieve       │              │
-   │          │            │◄───────────┤ MIRL evidence  │              │
+   │          │            ├───────────►│ begin+retrieve │              │
+   │          │            │◄───────────┤ public evidence│              │
    │          │            ├────────────────────────────►│ inject+run   │
    │          │            │            │                ├─────────────►│
    │          │            │            │                │◄─────────────┤
    │          │            │◄────────────────────────────┤ answer/calls │
-   │          │            ├───────────►│ verify actions │              │
-   │          │            ├───────────►│ ingest turn    │              │
-   │          │            ├───────────►│ finalize       │              │
+   │          │            ├───────────►│ actions        │              │
+   │          │            ├───────────►│ complete       │              │
+   │          │            │◄───────────┤ opaque receipt │              │
    │          │◄───────────┤ answer     │                │              │
    │◄─────────┤ print      │            │                │              │
 ```
@@ -174,7 +175,7 @@ cancellation and Ctrl-C do not strand reasoning state.
 ```text
 canonical evidence                         execution state
 ┌────────────────────────────┐             ┌──────────────────────────┐
-│ SEAM SQLite                │             │ LangGraph checkpoint DB  │
+│ SEAM service-owned store   │             │ LangGraph checkpoint DB  │
 │ RAW + MIRL                 │             │ messages / graph cursor  │
 │ lifecycle/provenance       │             │ thread resume state      │
 └────────────┬───────────────┘             └──────────────────────────┘
@@ -186,8 +187,8 @@ canonical evidence                         execution state
 ```
 
 The checkpoint database may be discarded without deleting semantic memory.
-Deleting the SEAM database deletes the local durable knowledge store and is a
-different, consequential operation.
+Ghost has no filesystem path to the service's canonical store; memory deletion
+and recovery are explicit authenticated SEAM lifecycle operations.
 
 ## Tool authority ladder
 
@@ -242,8 +243,9 @@ pyproject.toml + uv.lock
                                dist/canticle_ghost-0.1.0.tar.gz
 ```
 
-The wheel is buildable but not publicly publishable because its runtime
-metadata points at a private Git-over-SSH dependency.
+The wheel clean-installs using public dependencies only. Artifact publication
+still requires owner approval, version/release evidence, license review, and a
+compatible SEAM service; buildability alone grants none of those.
 
 ## Continuity path
 
