@@ -1288,3 +1288,26 @@ the defect, the avatar checkout remains untouched, and shell/release/live gates
 remain closed. Advance the handoff to the GTOOL-001 qualification record and
 begin GTOOL-002 only as a separate focused slice after this repair's publication
 boundary is resolved.
+
+## HISTORY#053 — Publish repository-search containment
+- Date: `2026-08-27T17:04:08-05:00`
+- Agent: `codex`
+- Status: `done`
+- Topics: `architecture, ci, continuity, docs, gates, handoff, history, security, status, tests, tools, trust, verification`
+- Commits: `ba68c3852a1787efd568d3e221c2935f5a9af4b7`
+- Refs: `https://github.com/Canticle-AI-Research/Ghost/pull/21, https://github.com/Canticle-AI-Research/Ghost/actions/runs/33120765857, https://github.com/Canticle-AI-Research/Ghost/actions/runs/33120850903, docs/handoffs/2026-08-27-gtool-001-search-containment-published.md`
+- Supersedes: `HISTORY#052`
+- Verification: `exact PR source fbe1744e7c1025161a4808dc78bf020df59f39b6 passed all six protected jobs in run 33120765857; PR #21 merged as ba68c3852a1787efd568d3e221c2935f5a9af4b7; exact merge-head run 33120850903 passed the same six jobs; local closeout, Ruff, 281 provider-free tests with 8 live tests deselected, build, and diff hygiene passed; no provider/live/paid/package-publication/release/deployment lane ran`
+
+The structural-remediation ledger and GTOOL-001 repair are protected-main
+source. Repository search now rejects escape-form globs, contains every
+candidate within the configured root that produced it, and validates the
+opened descriptor before metadata or content access. Adversarial symlink,
+traversal, root-position, descriptor-race, and fail-closed regressions are part
+of the hosted provider-free suite.
+
+This closes one of the seven audited P0 boundaries. Six P0 items remain, so
+normal shell use and artifact publication remain blocked. There is no package
+release, deployment, live provider or SEAM qualification, Q3 quality claim, or
+avatar publication. Advance the handoff to the protected-main publication
+record and begin GTOOL-002 only in a separate focused slice.

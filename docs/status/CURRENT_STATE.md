@@ -7,24 +7,24 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 
 | Plane | Observed state |
 |---|---|
-| Default branch | `main@cccf99ae53dc144c68594ef3cfb67f4aa1471fd0` |
+| Default branch | `main@ba68c3852a1787efd568d3e221c2935f5a9af4b7` |
 | Stage 1 evaluation substrate | merged through PR #10: 20 frozen cases, real-lifecycle BIL-0 smoke/verifier/gate, step ceiling, final clean baseline |
 | Public transport | merged through PR #8; public install and opaque transport source published |
 | Primary working branch | `agent/avatar-u1-temporal-integration`, preserving avatar-only WIP on its earlier reviewed base |
 | Canonical foundation | merged through PRs #6 and #7 |
 | Preserved local work | avatar source/tests/assets/tools plus CLI/package/lock changes in the primary checkout |
 | Remote visibility | public |
-| Merged PRs | PR #1 and PRs #5 through #15 |
+| Merged PRs | PR #1, PRs #5 through #15, and PR #21 |
 | Open PRs | Dependabot #2, #4, and #16 through #20 |
-| Exact-head public CI | run `32935194091` green on `cccf99a`; all six required jobs passed |
-| Local audit branch | `docs/structural-audit-20260827@0cd12e3`; registered remediation ledger, not pushed or merged |
-| Local repair branch | `fix/gtool-001-search-containment`; GTOOL-001 locally qualified on the audit commit, not pushed or merged |
+| Exact-head public CI | run `33120850903` green on `ba68c38`; all six required jobs passed |
+| Structural audit | remediation ledger merged through PR #21 |
+| GTOOL-001 | search containment merged through PR #21; exact PR and merge-head CI passed |
 | GitHub security automation | secret scanning/push protection enabled; dependency security updates disabled; no code-scanning analysis |
 | Public transport proof | 200 provider-free tests, Ruff, build, clean wheel install, real `ghost --help`, and protected PR/main CI passed; 8 live tests deselected |
 
 This is a status snapshot, not authorization to delete or combine local files.
 
-## Landed capability at `main@cccf99a`
+## Landed capability at `main@ba68c38`
 
 - DeepAgents root agent with provider routing through LangChain.
 - OpenAI reasoning-model use through the Responses API.
@@ -38,6 +38,8 @@ This is a status snapshot, not authorization to delete or combine local files.
 - Persistent SQLite LangGraph checkpoints separate from SEAM memory.
 - Always-on memory recall tool.
 - Operator-scoped file read and repository search.
+- Repository search rejects absolute/traversal globs and verifies every opened
+  descriptor remains inside its originating configured root.
 - Opt-in unsandboxed shell with approval and timeout controls.
 - Tool decisions and SEAM verifications supporting accepted outcomes.
 - CLI one-shot and interactive surfaces.
@@ -105,10 +107,11 @@ runtime repositories have already been relicensed.
 
 The earlier audit-only tree passed 270 provider-free tests with eight live
 tests deselected; that evidence remains in HISTORY#051 and the structural
-ledger. The current GTOOL-001 repair evidence is recorded in HISTORY#052: Ruff
-passed; 281 provider-free tests passed with eight live tests deselected; build
-and diff hygiene passed; and the final CodeRabbit delta review returned no
-findings. Paid/provider-live work was not run.
+ledger. GTOOL-001 repair evidence is recorded in HISTORY#052: Ruff passed; 281
+provider-free tests passed with eight live tests deselected; build and diff
+hygiene passed; and the final CodeRabbit delta review returned no findings.
+Exact PR source run `33120765857` and merge-head run `33120850903` each passed
+all six protected jobs. Paid/provider-live work was not run.
 
 The earlier recorded `184 passed` predated the continuity, licensing, and
 Temporal Chain slices that added tests; see HISTORY#031.
@@ -118,8 +121,7 @@ closeout is recorded in the latest history entry after completion.
 
 ## Known defects and blockers
 
-1. Protected main retains seven P0 defects. The local repair candidate closes
-   the search-root escape only; six other P0 defects still block unattended
+1. GTOOL-001 is closed on protected main; six P0 defects still block unattended
    shell use or artifact publication.
 2. Resource ownership, SQLite cleanup, checkpoint permissions/defaults,
    transport/request bounds, and controlled CLI failure surfaces remain open.
@@ -141,7 +143,7 @@ closeout is recorded in the latest history entry after completion.
 
 ## Next issue
 
-Review and publish the exact GTOOL-001 candidate through protected CI when the
-operator authorizes push/merge. Then begin GTOOL-002 as a separate focused
-slice. Keep the avatar checkout untouched and keep shell use off until the P0
+Begin GTOOL-002 as a separate focused slice: preserve real shell exit status
+from execution through result parsing, action evidence, and accepted outcomes.
+Keep the avatar checkout untouched and keep shell use off until the P0
 tool/config lane closes.

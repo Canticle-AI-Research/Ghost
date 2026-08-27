@@ -3,12 +3,13 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `22b7fa41532eb125f992fe6b5347de21f6663c8b58f3419df62f22286eb80f8d`
-- Entries: `52`
-- Latest: `HISTORY#052`
+- Source SHA-256: `cfead7f56deeda9e0e3e309a6c678bd22896613dcb592f71317bc629c071c16a`
+- Entries: `53`
+- Latest: `HISTORY#053`
 
 | ID | Date | Status | Commit | Topics | Supersedes | Event |
 |---:|---|---|---|---|---|---|
+| 053 | 2026-08-27 | done | `ba68c3852a17` | architecture, ci, continuity, docs, gates, handoff, history, security, status, tests, tools, trust, verification | #052 | Publish repository-search containment |
 | 052 | 2026-08-27 | done | `working-tree` | architecture, continuity, docs, gates, handoff, history, security, status, tests, tools, trust, verification | #051 | Close the repository-search containment escape |
 | 051 | 2026-08-27 | done | `working-tree` | architecture, build, ci, continuity, docs, evaluation, gates, handoff, history, operations, packaging, roadmap, security, status, tests, tools, verification, wiki | #050 | Establish the structural remediation ledger |
 | 050 | 2026-08-26 | done | `c9d8a83cbf55` | agent, architecture, ci, commands, continuity, deployment, docs, gates, handoff, history, operations, provenance, roadmap, security, status, tests, verification, wiki | #049 | Publish bounded specialist and operations foundations |
