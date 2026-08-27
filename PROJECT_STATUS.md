@@ -6,11 +6,12 @@
 
 ## Current headline
 
-**2026-08-27 — protected `main@ba68c38` includes the structural-remediation
-ledger and the GTOOL-001 search-containment repair through PR #21. Exact
-merge-head Public CI run `33120850903` passed all six required provider-free
-jobs.** No package or service is released or deployed, and the BIL-0 evaluation
-remains explicitly non-claimable.
+**2026-08-27 — protected `main` includes the structural-remediation ledger and
+the GTOOL-001 search-containment repair through implementation merge
+`ba68c38`/PR #21, plus its publication record through PR #22. Exact closeout
+merge run `33121213010` passed all six required provider-free jobs.** No package
+or service is released or deployed, and the BIL-0 evaluation remains explicitly
+non-claimable.
 
 The registered
 `docs/audits/2026-08-27-structural-remediation-ledger.md` remains the canonical
@@ -24,9 +25,9 @@ older branch.
 
 Current GitHub reconciliation established:
 
-- repository visibility is public and `main@ba68c38` is the default branch;
-- PRs #1, #5 through #15, and #21 are merged; Dependabot PRs #2, #4, and #16 through
-  #20 are open;
+- repository visibility is public and `main` is the default branch;
+- implementation PR #21 and publication-record PR #22 are merged; Dependabot
+  PRs #2, #4, and #16 through #20 are open;
 - protected `main` requires the six strict hosted checks, enforces
   administrators and conversation resolution, and blocks force pushes/deletes;
 - secret scanning and push protection are enabled with no open secret alert;

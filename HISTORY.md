@@ -1311,3 +1311,25 @@ normal shell use and artifact publication remain blocked. There is no package
 release, deployment, live provider or SEAM qualification, Q3 quality claim, or
 avatar publication. Advance the handoff to the protected-main publication
 record and begin GTOOL-002 only in a separate focused slice.
+
+## HISTORY#054 — Make protected-main status non-self-referential
+- Date: `2026-08-27T17:09:36-05:00`
+- Agent: `codex`
+- Status: `done`
+- Topics: `ci, continuity, correction, docs, history, status, verification`
+- Commits: `5113177cb0094ca0d9b5712fcc39f2b9a15bca56`
+- Refs: `PROJECT_STATUS.md, docs/status/CURRENT_STATE.md, https://github.com/Canticle-AI-Research/Ghost/pull/22, https://github.com/Canticle-AI-Research/Ghost/actions/runs/33121135333, https://github.com/Canticle-AI-Research/Ghost/actions/runs/33121213010`
+- Supersedes: `HISTORY#053`
+- Verification: `exact closeout PR source a8094ccf63344a44a6c390e4fb10a2671b1f160a passed all six protected jobs in run 33121135333; PR #22 merged as 5113177cb0094ca0d9b5712fcc39f2b9a15bca56; exact merge-head run 33121213010 passed the same six jobs; local closeout, Ruff, 281 provider-free tests with 8 live tests deselected, build, diff hygiene, recorded-fact audit, and Gitleaks workspace scan passed; no provider/live/paid/package-publication/release/deployment lane ran`
+
+The publication closeout used a two-parent merge commit, so its merge advanced
+the moving default-branch head beyond the immutable GTOOL-001 implementation
+SHA named while the closeout candidate was authored. Current status authorities
+now name `ba68c38` as the implementation provenance and `5113177` as the exact
+verified closeout merge, while routing readers to live Git reconciliation for
+the moving protected-main head. This prevents a successful future closeout from
+making a self-referential default-branch field stale immediately.
+
+The GTOOL-001 publication boundary and GTOOL-002 resume route are unchanged, so
+the current handoff remains valid. No runtime, release, deployment, provider,
+SEAM, or avatar state changed.

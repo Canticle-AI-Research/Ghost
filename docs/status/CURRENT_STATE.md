@@ -7,16 +7,18 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 
 | Plane | Observed state |
 |---|---|
-| Default branch | `main@ba68c3852a1787efd568d3e221c2935f5a9af4b7` |
+| Default branch | protected `main`; use live Git reconciliation for its moving head |
+| GTOOL-001 implementation merge | `ba68c3852a1787efd568d3e221c2935f5a9af4b7` through PR #21 |
+| Publication record | merged through PR #22; closeout merge `5113177cb0094ca0d9b5712fcc39f2b9a15bca56` |
 | Stage 1 evaluation substrate | merged through PR #10: 20 frozen cases, real-lifecycle BIL-0 smoke/verifier/gate, step ceiling, final clean baseline |
 | Public transport | merged through PR #8; public install and opaque transport source published |
 | Primary working branch | `agent/avatar-u1-temporal-integration`, preserving avatar-only WIP on its earlier reviewed base |
 | Canonical foundation | merged through PRs #6 and #7 |
 | Preserved local work | avatar source/tests/assets/tools plus CLI/package/lock changes in the primary checkout |
 | Remote visibility | public |
-| Merged PRs | PR #1, PRs #5 through #15, and PR #21 |
+| Relevant current merges | implementation PR #21 and publication-record PR #22 |
 | Open PRs | Dependabot #2, #4, and #16 through #20 |
-| Exact-head public CI | run `33120850903` green on `ba68c38`; all six required jobs passed |
+| Exact closeout CI | run `33121213010` green on `5113177`; all six required jobs passed |
 | Structural audit | remediation ledger merged through PR #21 |
 | GTOOL-001 | search containment merged through PR #21; exact PR and merge-head CI passed |
 | GitHub security automation | secret scanning/push protection enabled; dependency security updates disabled; no code-scanning analysis |
@@ -24,7 +26,7 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 
 This is a status snapshot, not authorization to delete or combine local files.
 
-## Landed capability at `main@ba68c38`
+## Landed capability through implementation merge `ba68c38`
 
 - DeepAgents root agent with provider routing through LangChain.
 - OpenAI reasoning-model use through the Responses API.
