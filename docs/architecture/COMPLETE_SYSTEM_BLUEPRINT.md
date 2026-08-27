@@ -99,6 +99,7 @@ Ghost/
 ├── uv.lock                    exact resolved dependency graph
 ├── src/ghost/
 │   ├── application.py         framework/model/checkpoint adapter
+│   ├── command_result.py      framework-free shell-result truth
 │   ├── lifecycle.py           framework-free turn contract
 │   ├── memory_policy.py       deterministic admission classifier
 │   ├── seam_memory.py         opaque public HTTP boundary
@@ -127,8 +128,11 @@ Ghost/
 5  SeamMemory receives bounded public evidence through HTTP
 6  middleware adds escaped JSONL evidence to the system message transiently
 7  DeepAgent invokes the model and executes permitted tools
-8  adapter translates provider ToolMessages into plain ToolAttempt records
-9  SeamMemory sends one bounded attempt per tool for server-side verification
+8  adapter translates provider ToolMessages into plain ToolAttempt records;
+   run_command truth comes from a validated versioned artifact, never text or
+   framework transport status
+9  SeamMemory sends one bounded attempt per tool for server-side verification;
+   nonzero or invalid command artifacts cannot return passed support
 10 memory_policy classifies the completed exchange as admit/reject/review
 11 SeamMemory submits the pair and admission decision through the public API
 12 SEAM records the decision; only admit compiles durable memory

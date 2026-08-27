@@ -71,6 +71,13 @@ class FakeSeamHTTP:
                 verification_id
                 for verification_id, attempt in zip(ids, attempts, strict=True)
                 if isinstance(attempt, dict) and attempt.get("ok") is True
+                and (
+                    attempt.get("name") != "run_command"
+                    or (
+                        type(attempt.get("exit_code")) is int
+                        and attempt["exit_code"] == 0
+                    )
+                )
             ]
             return httpx.Response(
                 200,

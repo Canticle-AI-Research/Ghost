@@ -21,8 +21,10 @@ import os
 from pathlib import Path
 
 import pytest
+from langchain_core.messages import ToolMessage
 
 from ghost.application import _build_tools
+from ghost.command_result import COMMAND_RESULT_SCHEMA, CommandResult
 from ghost.config import GhostSettings
 from ghost.tools import (
     WRITE_TOOLS,
@@ -67,6 +69,21 @@ class _StubMemory:
         return {"nodes": []}
 
 
+def command_message(built, args: dict, *, call_id: str = "command-1") -> ToolMessage:
+    """Invoke a command through the same ToolCall shape the graph uses."""
+
+    result = built.invoke(
+        {
+            "type": "tool_call",
+            "name": "run_command",
+            "id": call_id,
+            "args": args,
+        }
+    )
+    assert isinstance(result, ToolMessage), f"expected ToolMessage, got {result!r}"
+    return result
+
+
 # --- the opt-in ------------------------------------------------------------
 
 
@@ -103,15 +120,29 @@ def test_run_command_is_declared_a_write_tool() -> None:
 
 
 def test_it_runs_a_command_and_reports_the_exit_code(shell_on, tmp_path: Path) -> None:
-    out = make_run_command(workdir=tmp_path).invoke({"command": "echo hello"})
-    assert "exit=0" in out and "hello" in out
+    message = command_message(
+        make_run_command(workdir=tmp_path), {"command": "echo hello"}
+    )
+    assert "exit=0" in message.content and "hello" in message.content
+    assert message.status == "success"
+    assert message.artifact["schema"] == COMMAND_RESULT_SCHEMA
+    assert message.artifact["ok"] is True
+    assert message.artifact["exit_code"] == 0
+    assert CommandResult.from_artifact(message.artifact).ok
 
 
 def test_a_failing_command_reports_its_real_exit_code(shell_on, tmp_path: Path) -> None:
     """The exit code is what SEAM turns into a verdict, so it must be real
     rather than flattened to success."""
-    out = make_run_command(workdir=tmp_path).invoke({"command": "exit 3"})
-    assert "exit=3" in out
+    message = command_message(
+        make_run_command(workdir=tmp_path), {"command": "exit 3"}
+    )
+    assert "exit=3" in message.content
+    assert message.status == "success", "LangChain status is only transport status"
+    assert message.artifact["status"] == "failed"
+    assert message.artifact["ok"] is False
+    assert message.artifact["exit_code"] == 3
+    assert not CommandResult.from_artifact(message.artifact).ok
 
 
 def test_stderr_is_returned_not_swallowed(shell_on, tmp_path: Path) -> None:
@@ -149,10 +180,12 @@ def test_the_operator_timeout_caps_the_model_request(shell_on, tmp_path: Path) -
 
 
 def test_output_is_capped_before_it_reaches_the_model(shell_on, tmp_path: Path) -> None:
-    out = make_run_command(workdir=tmp_path).invoke(
-        {"command": "head -c 400000 /dev/zero | tr '\\0' 'x'"}
+    message = command_message(
+        make_run_command(workdir=tmp_path),
+        {"command": "head -c 400000 /dev/zero | tr '\\0' 'x'"},
     )
-    assert "truncated" in out and len(out) < 30_000
+    assert "truncated" in message.content and len(message.content) < 30_000
+    assert message.artifact["truncated"] is True
 
 
 # --- the approval hook -----------------------------------------------------

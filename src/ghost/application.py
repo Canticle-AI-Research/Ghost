@@ -10,12 +10,14 @@ from __future__ import annotations
 import json
 import sqlite3
 from collections.abc import Callable
+from dataclasses import dataclass
 from typing import Any
 
 from deepagents import create_deep_agent
 from langchain.chat_models import init_chat_model
 from langgraph.checkpoint.sqlite import SqliteSaver
 
+from .command_result import CommandResult, InvalidCommandResult
 from .config import GhostSettings
 from .context import GhostTurnContext
 from .lifecycle import AgentGraph, MemoryLayer, ToolAttempt, message_text, run_turn
@@ -86,6 +88,20 @@ nowhere else.
 """
 
 
+@dataclass(slots=True)
+class _ToolExchange:
+    """One ordered request/result pair while adapting framework messages."""
+
+    name: str
+    request: str
+    output: str = ""
+    status: str = "error"
+    artifact: object = None
+    result_name: str | None = None
+    result_seen: bool = False
+    valid: bool = True
+
+
 def _build_tools(
     settings: GhostSettings,
     memory: MemoryLayer,
@@ -140,33 +156,94 @@ def extract_tool_attempts(result: dict[str, Any]) -> tuple[ToolAttempt, ...]:
     dropped.
     """
 
-    requests: dict[str, tuple[str, str]] = {}
-    results: dict[str, tuple[str, bool]] = {}
+    exchanges: list[_ToolExchange] = []
+    request_indices: dict[str, list[int]] = {}
+    invalid_ids: set[str] = set()
+
+    def invalidate(call_id: str) -> None:
+        invalid_ids.add(call_id)
+        for index in request_indices.get(call_id, []):
+            exchanges[index].valid = False
 
     for message in result.get("messages") or []:
         for call in getattr(message, "tool_calls", None) or []:
             call_id = str(call.get("id") or "")
-            if call_id:
-                requests[call_id] = (
-                    str(call.get("name") or "tool"),
-                    json.dumps(call.get("args") or {}, sort_keys=True, default=str)[:300],
-                )
+            exchange = _ToolExchange(
+                name=str(call.get("name") or "tool"),
+                request=json.dumps(
+                    call.get("args") or {}, sort_keys=True, default=str
+                )[:300],
+            )
+            if not call_id:
+                # A framework can execute a ToolCall whose ID is blank. Keep
+                # the write visible as failed evidence instead of silently
+                # dropping it from the lifecycle because it cannot be paired.
+                exchange.valid = False
+                exchanges.append(exchange)
+                continue
+            prior = request_indices.setdefault(call_id, [])
+            if prior or call_id in invalid_ids:
+                invalidate(call_id)
+                exchange.valid = False
+            prior.append(len(exchanges))
+            exchanges.append(exchange)
         call_id = getattr(message, "tool_call_id", None)
         if call_id:
-            # LangChain marks a raised tool as status="error".
-            ok = getattr(message, "status", "success") != "error"
-            results[str(call_id)] = (message_text(message), ok)
+            resolved_id = str(call_id)
+            indices = request_indices.get(resolved_id, [])
+            if len(indices) != 1 or resolved_id in invalid_ids:
+                invalidate(resolved_id)
+                continue
+            exchange = exchanges[indices[0]]
+            if exchange.result_seen:
+                invalidate(resolved_id)
+                continue
+            exchange.output = message_text(message)
+            exchange.status = str(getattr(message, "status", "error"))
+            exchange.artifact = getattr(message, "artifact", None)
+            result_name = getattr(message, "name", None)
+            exchange.result_name = None if result_name is None else str(result_name)
+            exchange.result_seen = True
 
     attempts: list[ToolAttempt] = []
-    for call_id, (name, request) in requests.items():
-        output, ok = results.get(call_id, ("", False))
+    for exchange in exchanges:
+        duration_ms: float | None = None
+        identity_matches = (
+            exchange.result_name == exchange.name
+            if exchange.name == "run_command"
+            else exchange.result_name in (None, exchange.name)
+        )
+        transport_ok = (
+            exchange.valid
+            and exchange.result_seen
+            and exchange.status == "success"
+            and identity_matches
+        )
+        if exchange.name == "run_command" and transport_ok:
+            try:
+                command_result = CommandResult.from_artifact(exchange.artifact)
+            except InvalidCommandResult:
+                ok = False
+                exit_code = None
+            else:
+                ok = command_result.ok
+                exit_code = command_result.exit_code
+                duration_ms = command_result.duration_ms
+        elif exchange.name == "run_command":
+            ok = False
+            exit_code = None
+        else:
+            # LangChain marks a handled ToolException as status="error".
+            ok = transport_ok
+            exit_code = 0 if ok else 1
         attempts.append(
             ToolAttempt(
-                name=name,
-                request=request,
-                output=output,
+                name=exchange.name,
+                request=exchange.request,
+                output=exchange.output,
                 ok=ok,
-                exit_code=0 if ok else 1,
+                exit_code=exit_code,
+                duration_ms=duration_ms,
             )
         )
     return tuple(attempts)

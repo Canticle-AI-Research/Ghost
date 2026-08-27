@@ -65,7 +65,12 @@ Invariants:
 - the DeepAgent graph.
 
 `extract_tool_attempts` is intentionally here because provider/framework
-message shapes are adapter details.
+message shapes are adapter details. `run_command` returns bounded model-facing
+text plus a `ghost.command_result/v1` artifact. LangChain's `ToolMessage.status`
+only describes tool transport and may remain `success` for a process that exits
+nonzero; the adapter therefore validates the artifact and carries its real
+`ok`, `exit_code`, and `duration_ms` into the framework-free `ToolAttempt`.
+Absent, malformed, contradictory, or nonzero command artifacts fail closed.
 
 ## Layer 4: interfaces
 
