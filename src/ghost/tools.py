@@ -39,6 +39,13 @@ from typing import Any
 
 from langchain_core.tools import BaseTool, ToolException, tool
 
+from .path_policy import (
+    PathPolicyError,
+    read_search_candidate,
+    resolve_within,
+    validate_search_glob,
+)
+
 # One record's rendered text, and one tool result overall. A tool result is
 # pasted into the model's context verbatim, so an unbounded read is an
 # unbounded context cost and an easy way to crowd out the conversation.
@@ -50,7 +57,6 @@ MAX_MATCHES = 50
 # ceiling, one `tail -f` ends the session.
 DEFAULT_COMMAND_TIMEOUT = 120
 MAX_COMMAND_TIMEOUT = 3_600
-
 #: Tools that can change the machine. Kept as data so `tests/test_tools.py`
 #: can assert the set has not grown without the trust-boundary review that
 #: TRUST_BOUNDARIES.md requires for consequential tools.
@@ -102,25 +108,11 @@ def _truncate(text: str, limit: int) -> str:
     return f"{text[:limit]}\n... [truncated at {limit} characters]"
 
 
-def _resolve_within(candidate: str, roots: Sequence[Path]) -> Path:
-    """Resolve `candidate` and refuse anything outside `roots`.
-
-    `Path.resolve()` follows symlinks, so the containment check runs on the
-    real target -- a symlink inside a root that points at /etc/shadow resolves
-    outside it and is refused here rather than read.
-    """
-
-    if not roots:
-        raise ToolError("no readable roots are configured")
+def _apply_path_policy(function: Callable[..., Any], /, *args: Any, **kwargs: Any) -> Any:
     try:
-        resolved = Path(candidate).expanduser().resolve()
-    except (OSError, RuntimeError) as exc:  # RuntimeError: symlink loop
-        raise ToolError(f"cannot resolve path: {exc}") from exc
-    for root in roots:
-        if resolved == root or resolved.is_relative_to(root):
-            return resolved
-    allowed = ", ".join(str(r) for r in roots)
-    raise ToolError(f"path is outside the readable roots ({allowed})")
+        return function(*args, **kwargs)
+    except PathPolicyError as exc:
+        raise ToolError(str(exc)) from exc
 
 
 def make_seam_recall(memory: Any, *, namespace: str, scope: str) -> BaseTool:
@@ -183,7 +175,7 @@ def make_read_file(roots: Sequence[Path]) -> BaseTool:
         Args:
             path: the file to read. Must resolve inside a configured root.
         """
-        target = _resolve_within(path, resolved_roots)
+        target = _apply_path_policy(resolve_within, path, resolved_roots)
         if not target.exists():
             raise ToolError(f"no such file: {path}")
         if not target.is_file():
@@ -221,22 +213,30 @@ def make_search_repo(roots: Sequence[Path]) -> BaseTool:
         needle = pattern.strip()
         if not needle:
             raise ToolError("pattern is required")
+        search_glob = _apply_path_policy(validate_search_glob, glob)
 
         matches: list[str] = []
         for root in resolved_roots:
-            for path in sorted(root.glob(glob)):
-                if not path.is_file() or any(p in skip for p in path.parts):
+            try:
+                candidates = sorted(root.glob(search_glob))
+            except (NotImplementedError, OSError, RuntimeError, ValueError) as exc:
+                raise ToolError("cannot evaluate the repository search glob") from exc
+            for path in candidates:
+                relative = path.relative_to(root)
+                if any(part in skip for part in relative.parts):
                     continue
-                try:
-                    if path.stat().st_size > MAX_FILE_BYTES:
-                        continue
-                    text = path.read_text(encoding="utf-8")
-                except (OSError, UnicodeDecodeError):
+                target = _apply_path_policy(resolve_within, str(path), [root])
+                text = _apply_path_policy(
+                    read_search_candidate,
+                    target,
+                    root,
+                    max_bytes=MAX_FILE_BYTES,
+                )
+                if text is None:
                     continue
                 for number, line in enumerate(text.splitlines(), start=1):
                     if needle in line:
-                        rel = path.relative_to(root)
-                        matches.append(f"{rel}:{number}: {line.strip()[:200]}")
+                        matches.append(f"{relative}:{number}: {line.strip()[:200]}")
                         if len(matches) >= MAX_MATCHES:
                             joined = "\n".join(matches)
                             return _truncate(

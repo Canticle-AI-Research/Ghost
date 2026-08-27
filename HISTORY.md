@@ -1255,3 +1255,36 @@ dependency merge, avatar modification, paid/live provider or SEAM run, push,
 merge, package publication, release, deployment, destructive cleanup, or
 company/legal action occurred. Advance the handoff to the structural ledger
 and begin GTOOL-001 from a new focused worktree based on current protected main.
+
+## HISTORY#052 — Close the repository-search containment escape
+- Date: `2026-08-27T16:24:40-05:00`
+- Agent: `codex`
+- Status: `done`
+- Topics: `architecture, continuity, docs, gates, handoff, history, security, status, tests, tools, trust, verification`
+- Commits: `working-tree`
+- Refs: `src/ghost/path_policy.py, src/ghost/tools.py, tests/test_tools.py, tests/test_layering.py, docs/security/TRUST_BOUNDARIES.md, docs/handoffs/2026-08-27-gtool-001-search-containment-qualified.md`
+- Supersedes: `HISTORY#051`
+- Verification: `uv run pytest tests/test_tools.py tests/test_layering.py -q passed; uv run ruff check src/ghost/tools.py src/ghost/path_policy.py tests/test_tools.py tests/test_layering.py passed; uv run pytest --durations=10 passed 281 provider-free tests with 8 live tests deselected; uv run ruff check . passed; uv build and git diff --check passed; CodeRabbit CLI 0.7.5 found one major descriptor-verification fallback gap, the gap was repaired, and the complete second review returned zero findings; no provider/live/paid/release/deployment/push/merge lane ran`
+
+GTOOL-001 is locally closed in a focused candidate based on the registered
+structural ledger. `search_repo` now rejects absolute, drive-qualified, empty,
+and parent-traversal globs. It resolves each enumerated path inside the root
+that produced it before candidate access, opens the resolved target once with
+non-following/nonblocking flags, and verifies the opened descriptor remains in
+that root before metadata or content is read. If descriptor identity cannot be
+verified, the search fails closed.
+
+The path, glob, descriptor, and bounded-read mechanics now live in the new
+framework-free `src/ghost/path_policy.py`; `src/ghost/tools.py` remains the
+LangChain-facing adapter and stays at the recorded 360-line split threshold.
+Regression coverage proves both configured-root positions, allowed in-root and
+refused out-of-root symlinks, POSIX/Windows absolute globs, traversal, loops,
+post-enumeration swaps, and the descriptor-inspection-unavailable race. The
+complete provider-free suite and final automated review are green.
+
+This is a local source qualification, not protected-main publication. The
+audit commit and repair are not pushed or merged, protected main still carries
+the defect, the avatar checkout remains untouched, and shell/release/live gates
+remain closed. Advance the handoff to the GTOOL-001 qualification record and
+begin GTOOL-002 only as a separate focused slice after this repair's publication
+boundary is resolved.

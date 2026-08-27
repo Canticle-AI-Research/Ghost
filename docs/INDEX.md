@@ -87,7 +87,8 @@ learning surface is [the Ghost engineering wiki](README.md).
 
 | Document | Covers |
 |---|---|
-| [handoffs/2026-08-27-structural-remediation-ledger.md](handoffs/2026-08-27-structural-remediation-ledger.md) | current unified remediation boundary and first safe implementation route |
+| [handoffs/2026-08-27-gtool-001-search-containment-qualified.md](handoffs/2026-08-27-gtool-001-search-containment-qualified.md) | current locally qualified search-containment repair and next safe route |
+| [handoffs/2026-08-27-structural-remediation-ledger.md](handoffs/2026-08-27-structural-remediation-ledger.md) | superseded unified remediation boundary and first implementation route |
 | [handoffs/2026-08-26-specialist-ops-foundation-published.md](handoffs/2026-08-26-specialist-ops-foundation-published.md) | superseded protected-main specialist/operations publication evidence |
 | [handoffs/2026-08-26-specialist-ops-foundation-qualified.md](handoffs/2026-08-26-specialist-ops-foundation-qualified.md) | superseded local qualification record for the issue-7 foundation |
 | [history/REPOSITORY_CONTINUITY.md](history/REPOSITORY_CONTINUITY.md) | Temporal Chain history/index/snapshot/handoff model and commands |

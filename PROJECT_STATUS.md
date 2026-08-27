@@ -12,12 +12,19 @@ run `32935194091` passed all six required provider-free jobs.** No package or
 service is released or deployed, and the BIL-0 evaluation remains explicitly
 non-claimable.
 
-A local isolated audit branch adds the registered
+A local isolated audit commit `0cd12e3` adds the registered
 `docs/audits/2026-08-27-structural-remediation-ledger.md`. It records seven P0
 tool/config/artifact defects, immediate resource and security work, the Q3
 benchmark program, later product gates, and a dependency-ordered course of
 action. The report itself is not pushed or merged. The dirty avatar checkout
 remains untouched on its older branch.
+
+The local `fix/gtool-001-search-containment` candidate is based on that audit
+commit and closes GTOOL-001 in source: search globs must be relative and
+traversal-free, every candidate resolves inside its originating root, and the
+opened descriptor is checked before metadata or content is read. This repair
+is locally qualified but not pushed or merged, so protected main must still be
+treated as vulnerable to the recorded search-root escape.
 
 Current GitHub reconciliation established:
 
@@ -32,7 +39,7 @@ Current GitHub reconciliation established:
 - Ghost has no repository secret and no assigned runner; and
 - paid live provider/service validation remains manual and was not run.
 
-The provider-free current-tree baseline passes Ruff, 270 tests with eight live
+The provider-free current repair tree passes Ruff, 281 tests with eight live
 tests deselected, build, and the Stage 1 BIL-0 validate/smoke/verify/gate path.
 That green baseline does not negate the reproduced defects or qualify a
 release, live provider, hosted service, G1/G2 exit, or production claim.
@@ -76,8 +83,9 @@ qualification, release, and deployment remain incomplete.
 
 ## Active order
 
-1. Repair the P0 search, shell truth/process/output, authority-config, and sdist
-   boundaries one issue at a time.
+1. Publish the locally qualified P0 search-containment repair, then repair
+   shell truth/process/output, authority-config, and sdist boundaries one issue
+   at a time.
 2. Repair resource ownership, checkpoint permissions/defaults, transport
    bounds, and controlled CLI failures.
 3. Reconcile roadmap/blueprint truth and extend recorded-fact gates to catch

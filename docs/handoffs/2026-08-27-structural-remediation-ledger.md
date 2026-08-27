@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-structural-remediation-ledger-20260827`
 supersedes: `ghost-specialist-ops-foundation-published-20260826`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#051`
 created_at: `2026-08-27T11:36:21-05:00`
 
