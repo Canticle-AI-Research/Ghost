@@ -6,25 +6,22 @@
 
 ## Current headline
 
-**2026-08-27 — protected `main` includes the structural-remediation ledger and
-the GTOOL-001 search-containment repair through implementation merge
-`ba68c38`/PR #21, plus its publication record through PR #22. Exact closeout
-merge run `33121213010` passed all six required provider-free jobs.** No package
-or service is released or deployed, and the BIL-0 evaluation remains explicitly
-non-claimable.
+**2026-08-27 — protected `main` includes GTOOL-001 search containment and
+GTOOL-002 shell-result truth. PR #24 merged exact source `88a4cac` as
+implementation merge `7839646`; exact-source run `33125003964` and exact
+merge-head run `33125085772` passed all six required provider-free jobs.** No
+package or service is released or deployed, and the BIL-0 evaluation remains
+explicitly non-claimable.
 
-The focused local GTOOL-002 candidate closes the shell-result truth gap: a
-versioned command artifact carries the real exit code and duration through
-LangChain transport, Ghost validates message pairing and artifact consistency
-without coercion, and failed commands cannot produce passed SEAM support. Its
-focused regressions and complete local provider-free suite pass, but it is not
-yet protected-main source at this qualification boundary.
+A versioned command artifact now carries the real exit code and duration
+through LangChain transport. Ghost validates message pairing and artifact
+consistency without coercion, and failed commands cannot produce passed SEAM
+support.
 
 The registered
 `docs/audits/2026-08-27-structural-remediation-ledger.md` remains the canonical
-queue. Protected main still has six open P0 tool/config/artifact defects; this
-local candidate closes GTOOL-002 only after publication. The ledger also covers immediate resource and
-security work, the Q3 benchmark program, later product gates, and the
+queue. Five open P0 tool/config/artifact defects remain. The ledger also covers
+immediate resource and security work, the Q3 benchmark program, later product gates, and the
 dependency-ordered course of action. GTOOL-001 is now protected-main source:
 search globs must be relative and traversal-free, every candidate resolves
 inside its originating root, and the opened descriptor is checked before
@@ -34,7 +31,7 @@ older branch.
 Current GitHub reconciliation established:
 
 - repository visibility is public and `main` is the default branch;
-- implementation PR #21 and publication-record PR #22 are merged; Dependabot
+- implementation PRs #21 and #24 are merged; Dependabot
   PRs #2, #4, and #16 through #20 are open;
 - protected `main` requires the six strict hosted checks, enforces
   administrators and conversation resolution, and blocks force pushes/deletes;
@@ -88,8 +85,8 @@ qualification, release, and deployment remain incomplete.
 
 ## Active order
 
-1. Publish the locally qualified GTOOL-002 shell-truth repair, then close
-   process/output, authority-config, and sdist boundaries one issue at a time.
+1. Close GTOOL-003 process-tree timeout behavior, then GTOOL-004 output bounds,
+   authority-config, and sdist boundaries one issue at a time.
 2. Repair resource ownership, checkpoint permissions/defaults, transport
    bounds, and controlled CLI failures.
 3. Reconcile roadmap/blueprint truth and extend recorded-fact gates to catch
