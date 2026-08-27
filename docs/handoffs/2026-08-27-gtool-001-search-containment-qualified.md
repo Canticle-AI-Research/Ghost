@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-gtool-001-search-containment-qualified-20260827`
 supersedes: `ghost-structural-remediation-ledger-20260827`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#052`
 created_at: `2026-08-27T16:24:40-05:00`
 

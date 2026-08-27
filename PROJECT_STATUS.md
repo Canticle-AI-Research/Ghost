@@ -6,30 +6,26 @@
 
 ## Current headline
 
-**2026-08-27 — protected `main@cccf99a` publishes the bounded specialist and
-operations foundation plus its canonical PR #15 closeout. Exact-head Public CI
-run `32935194091` passed all six required provider-free jobs.** No package or
-service is released or deployed, and the BIL-0 evaluation remains explicitly
-non-claimable.
+**2026-08-27 — protected `main@ba68c38` includes the structural-remediation
+ledger and the GTOOL-001 search-containment repair through PR #21. Exact
+merge-head Public CI run `33120850903` passed all six required provider-free
+jobs.** No package or service is released or deployed, and the BIL-0 evaluation
+remains explicitly non-claimable.
 
-A local isolated audit commit `0cd12e3` adds the registered
-`docs/audits/2026-08-27-structural-remediation-ledger.md`. It records seven P0
-tool/config/artifact defects, immediate resource and security work, the Q3
-benchmark program, later product gates, and a dependency-ordered course of
-action. The report itself is not pushed or merged. The dirty avatar checkout
-remains untouched on its older branch.
-
-The local `fix/gtool-001-search-containment` candidate is based on that audit
-commit and closes GTOOL-001 in source: search globs must be relative and
-traversal-free, every candidate resolves inside its originating root, and the
-opened descriptor is checked before metadata or content is read. This repair
-is locally qualified but not pushed or merged, so protected main must still be
-treated as vulnerable to the recorded search-root escape.
+The registered
+`docs/audits/2026-08-27-structural-remediation-ledger.md` remains the canonical
+queue for six open P0 tool/config/artifact defects, immediate resource and
+security work, the Q3 benchmark program, later product gates, and the
+dependency-ordered course of action. GTOOL-001 is now protected-main source:
+search globs must be relative and traversal-free, every candidate resolves
+inside its originating root, and the opened descriptor is checked before
+metadata or content is read. The dirty avatar checkout remains untouched on its
+older branch.
 
 Current GitHub reconciliation established:
 
-- repository visibility is public and `main@cccf99a` is the default branch;
-- PRs #1, #5 through #15 are merged; Dependabot PRs #2, #4, and #16 through
+- repository visibility is public and `main@ba68c38` is the default branch;
+- PRs #1, #5 through #15, and #21 are merged; Dependabot PRs #2, #4, and #16 through
   #20 are open;
 - protected `main` requires the six strict hosted checks, enforces
   administrators and conversation resolution, and blocks force pushes/deletes;
@@ -83,9 +79,8 @@ qualification, release, and deployment remain incomplete.
 
 ## Active order
 
-1. Publish the locally qualified P0 search-containment repair, then repair
-   shell truth/process/output, authority-config, and sdist boundaries one issue
-   at a time.
+1. Repair GTOOL-002 shell truth first, then process/output, authority-config,
+   and sdist boundaries one issue at a time.
 2. Repair resource ownership, checkpoint permissions/defaults, transport
    bounds, and controlled CLI failures.
 3. Reconcile roadmap/blueprint truth and extend recorded-fact gates to catch
