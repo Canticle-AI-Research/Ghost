@@ -48,6 +48,9 @@ chronology, transient branch state, or duplicated implementation narratives.
 - `read_file` and `search_repo` exist only when the operator defines
   `GHOST_TOOL_ROOTS`; resolved-path containment prevents traversal and symlink
   escape.
+- `search_repo` accepts only relative, traversal-free globs and proves every
+  matched candidate remains inside its originating root before metadata,
+  content, or display-path use. A changed or escaping candidate fails closed.
 - `run_command` is absent unless `GHOST_ENABLE_SHELL=1`.
 - The shell is not sandboxed. It has the authority of the operating-system
   account running Ghost.

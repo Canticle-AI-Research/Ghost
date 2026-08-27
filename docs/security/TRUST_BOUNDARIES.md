@@ -18,6 +18,7 @@ authorization grant, or verified fact.
 | Secret handling | ignored env files; no key copied into repository | deployment secret manager and log redaction tests |
 | SEAM service boundary | public HTTP adapter, opaque handles, no private source dependency | compatible release/deployment and recovery proof |
 | SEAM response to Ghost | streamed 8 MiB cap before JSON parsing | deployment latency/body telemetry without content logging |
+| Repository search to filesystem | operator roots, relative traversal-free globs, per-candidate resolution and open-descriptor containment | aggregate visit/byte/deadline budgets |
 
 ## Memory injection
 
@@ -78,6 +79,14 @@ Before Ghost receives consequential tools, every tool needs:
 - idempotency or retry behavior;
 - human approval for destructive or externally visible actions; and
 - an auditable result that excludes hidden reasoning and raw credentials.
+
+`search_repo` applies those rules before candidate access: the glob must be
+relative and contain no parent traversal, every candidate must resolve inside
+the root that enumerated it, and the opened descriptor must still name an
+object inside that root. If the runtime cannot inspect the opened descriptor,
+the search refuses rather than weakening containment. Absolute globs,
+cross-root symlinks, loops, and candidates changed during enumeration are
+refused rather than read.
 
 Subagents must not gain permissions merely because the root agent delegates to
 them.

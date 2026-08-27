@@ -1220,3 +1220,71 @@ hosted API, SEAM disaster recovery, package release, or deployment. CI also
 surfaced a non-blocking Node 20 action-runtime deprecation warning for a focused
 workflow maintenance follow-up. Advance the handoff to the protected-main
 publication record and preserve the separate avatar worktree.
+
+## HISTORY#051 — Establish the structural remediation ledger
+- Date: `2026-08-27T11:36:21-05:00`
+- Agent: `codex`
+- Status: `done`
+- Topics: `architecture, build, ci, continuity, docs, evaluation, gates, handoff, history, operations, packaging, roadmap, security, status, tests, tools, verification, wiki`
+- Commits: `working-tree`
+- Refs: `docs/audits/2026-08-27-structural-remediation-ledger.md, docs/audits/INDEX.md, docs/handoffs/2026-08-27-structural-remediation-ledger.md, docs/handoffs/INDEX.md, docs/status/CURRENT_STATE.md, PROJECT_STATUS.md`
+- Supersedes: `HISTORY#050`
+- Verification: `origin/main and local base reconciled at cccf99ae53dc144c68594ef3cfb67f4aa1471fd0; exact-head Public CI run 32935194091 passed all six required jobs; uv run python -m tools.history.closeout --agent codex passed through HISTORY#051; uv run ruff check . passed; uv run pytest --durations=10 passed 270 provider-free tests with 8 live tests deselected; uv build and git diff --check passed; Stage 1 validate-fixtures/smoke/verify/gate passed at BIL-0; pip-audit OSV reported no known vulnerabilities for the frozen runtime export; CodeRabbit CLI 0.7.5 reviewed all 12 src/ghost modules and returned 7 routed findings; documentation-delta review returned 2 findings and both were repaired; final automated rerun was rate-limited, manual final diff review passed; focused sentinel probes reproduced five P0 boundaries; no paid/live/release/deployment lane ran`
+
+Ghost now has one registered ledger for current defects, benchmark gaps,
+structural improvements, delivery work, and later product/legal gates. The
+ledger separates seven P0 stop-ship findings from P1 immediate integrity work,
+the Q3 benchmark program, P2 maintainability work, and P3 external/product
+milestones. Every row names an owner surface, exit evidence, and dependencies,
+and the course of action orders focused issue branches without mixing the
+preserved avatar checkout.
+
+Provider-free baseline verification remained green, but the audit reproduced
+important gaps outside the previous suite: search could follow an in-root
+symlink outside the readable root; a shell command exiting nonzero was recorded
+as successful with exit code zero; timeout killed only the immediate shell and
+left a descendant alive; an invalid approval boolean disabled the default gate;
+and a working-directory dotenv could widen shell authority and redirect the
+SEAM endpoint. Artifact inspection also showed that the source distribution
+contains the tracked checkpoint database and other unqualified repository
+surfaces. These observations block unattended shell use and release
+publication until their ledger exits pass.
+
+The report is documentation and routing only. No defect implementation,
+dependency merge, avatar modification, paid/live provider or SEAM run, push,
+merge, package publication, release, deployment, destructive cleanup, or
+company/legal action occurred. Advance the handoff to the structural ledger
+and begin GTOOL-001 from a new focused worktree based on current protected main.
+
+## HISTORY#052 — Close the repository-search containment escape
+- Date: `2026-08-27T16:24:40-05:00`
+- Agent: `codex`
+- Status: `done`
+- Topics: `architecture, continuity, docs, gates, handoff, history, security, status, tests, tools, trust, verification`
+- Commits: `working-tree`
+- Refs: `src/ghost/path_policy.py, src/ghost/tools.py, tests/test_tools.py, tests/test_layering.py, docs/security/TRUST_BOUNDARIES.md, docs/handoffs/2026-08-27-gtool-001-search-containment-qualified.md`
+- Supersedes: `HISTORY#051`
+- Verification: `uv run pytest tests/test_tools.py tests/test_layering.py -q passed; uv run ruff check src/ghost/tools.py src/ghost/path_policy.py tests/test_tools.py tests/test_layering.py passed; uv run pytest --durations=10 passed 281 provider-free tests with 8 live tests deselected; uv run ruff check . passed; uv build and git diff --check passed; CodeRabbit CLI 0.7.5 found one major descriptor-verification fallback gap, the gap was repaired, and the complete second review returned zero findings; no provider/live/paid/release/deployment/push/merge lane ran`
+
+GTOOL-001 is locally closed in a focused candidate based on the registered
+structural ledger. `search_repo` now rejects absolute, drive-qualified, empty,
+and parent-traversal globs. It resolves each enumerated path inside the root
+that produced it before candidate access, opens the resolved target once with
+non-following/nonblocking flags, and verifies the opened descriptor remains in
+that root before metadata or content is read. If descriptor identity cannot be
+verified, the search fails closed.
+
+The path, glob, descriptor, and bounded-read mechanics now live in the new
+framework-free `src/ghost/path_policy.py`; `src/ghost/tools.py` remains the
+LangChain-facing adapter and stays at the recorded 360-line split threshold.
+Regression coverage proves both configured-root positions, allowed in-root and
+refused out-of-root symlinks, POSIX/Windows absolute globs, traversal, loops,
+post-enumeration swaps, and the descriptor-inspection-unavailable race. The
+complete provider-free suite and final automated review are green.
+
+This is a local source qualification, not protected-main publication. The
+audit commit and repair are not pushed or merged, protected main still carries
+the defect, the avatar checkout remains untouched, and shell/release/live gates
+remain closed. Advance the handoff to the GTOOL-001 qualification record and
+begin GTOOL-002 only as a separate focused slice after this repair's publication
+boundary is resolved.

@@ -169,6 +169,10 @@ uv run ghost "Find the roadmap's current Stage 1 exit condition and cite the fil
 ```
 
 Ghost cannot read outside the resolved roots through these tools.
+Repository-search globs must be relative and traversal-free, such as
+`**/*.py`. Absolute globs and patterns containing `..` are refused. Each match
+is resolved and checked against the root that enumerated it before Ghost opens
+or reports the file.
 
 ## Enable shell access with approval
 

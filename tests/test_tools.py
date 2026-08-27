@@ -15,6 +15,7 @@ import pytest
 
 from ghost.application import _build_tools
 from ghost.config import GhostSettings
+from ghost.path_policy import PathPolicyError, read_search_candidate
 from ghost.seam_memory import SeamMemory
 from ghost.tools import (
     make_read_file,
@@ -150,6 +151,143 @@ def test_search_repo_caps_its_output(tree: Path) -> None:
     out = make_search_repo([tree]).invoke({"pattern": "needle"})
     assert "stopped at" in out
     assert len(out.splitlines()) <= 60
+
+
+@pytest.mark.parametrize("escaping_root", [0, 1])
+def test_search_repo_refuses_an_outside_symlink_from_every_root(
+    tmp_path: Path, escaping_root: int
+) -> None:
+    roots = (tmp_path / "one", tmp_path / "two")
+    for root in roots:
+        root.mkdir()
+        (root / "safe.txt").write_text("ordinary repository text\n")
+    outside = tmp_path / "outside.txt"
+    outside.write_text("outside-search-sentinel\n")
+    link = roots[escaping_root] / "linked.txt"
+    try:
+        link.symlink_to(outside)
+    except OSError:  # pragma: no cover - platform without symlink support
+        pytest.fail("symlinks unavailable; this boundary cannot be verified here")
+
+    out = refusal(make_search_repo(roots), {"pattern": "outside-search-sentinel"})
+
+    assert "outside the readable roots" in out
+    assert "outside-search-sentinel" not in out
+
+
+def test_search_repo_allows_a_symlink_that_resolves_inside_its_root(tree: Path) -> None:
+    target = tree / "inside.txt"
+    target.write_text("contained-search-sentinel\n")
+    link = tree / "inside-link.txt"
+    try:
+        link.symlink_to(target)
+    except OSError:  # pragma: no cover - platform without symlink support
+        pytest.fail("symlinks unavailable; this boundary cannot be verified here")
+
+    out = make_search_repo([tree]).invoke(
+        {"pattern": "contained-search-sentinel", "glob": "inside-link.txt"}
+    )
+
+    assert "inside-link.txt:1:" in out
+
+
+@pytest.mark.parametrize(
+    "unsafe_glob",
+    ["../*.txt", "**/../../*.txt", "/tmp/*.txt", r"C:\\Windows\\*.ini"],
+)
+def test_search_repo_refuses_absolute_and_traversal_globs(
+    tree: Path, unsafe_glob: str
+) -> None:
+    out = refusal(
+        make_search_repo([tree]),
+        {"pattern": "anything", "glob": unsafe_glob},
+    )
+
+    assert "glob must be relative and traversal-free" in out
+
+
+def test_search_repo_refuses_a_symlink_loop(
+    tree: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    loop = tree / "loop.txt"
+    try:
+        loop.symlink_to(loop)
+    except OSError:  # pragma: no cover - platform without symlink support
+        pytest.fail("symlinks unavailable; this boundary cannot be verified here")
+
+    # Some pathlib versions omit a broken loop before yielding candidates.
+    # Inject it at the glob boundary so Ghost's resolver is what gets tested.
+    monkeypatch.setattr(Path, "glob", lambda self, pattern: iter([loop]))
+
+    out = refusal(
+        make_search_repo([tree]),
+        {"pattern": "anything", "glob": "loop.txt"},
+    )
+
+    assert "cannot resolve path" in out
+
+
+def test_search_repo_rechecks_containment_after_glob_enumeration(
+    tree: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A path can change between directory enumeration and candidate access."""
+    inside = tree / "inside.txt"
+    inside.write_text("inside text\n")
+    outside = tmp_path.parent / "outside-race.txt"
+    outside.write_text("race-search-sentinel\n")
+    link = tree / "changing.txt"
+    try:
+        link.symlink_to(inside)
+    except OSError:  # pragma: no cover - platform without symlink support
+        pytest.fail("symlinks unavailable; this boundary cannot be verified here")
+
+    original_glob = Path.glob
+
+    def swap_after_enumeration(self: Path, pattern: str):
+        candidates = list(original_glob(self, pattern))
+        link.unlink()
+        link.symlink_to(outside)
+        return iter(candidates)
+
+    monkeypatch.setattr(Path, "glob", swap_after_enumeration)
+    out = refusal(
+        make_search_repo([tree]),
+        {"pattern": "race-search-sentinel", "glob": "changing.txt"},
+    )
+
+    assert "outside the readable roots" in out
+    assert "race-search-sentinel" not in out
+
+
+def test_search_candidate_fails_closed_when_descriptor_inspection_is_unavailable(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = tmp_path / "root"
+    inside_directory = root / "directory"
+    inside_directory.mkdir(parents=True)
+    inside = inside_directory / "file.txt"
+    inside.write_text("inside text\n")
+    resolved_before_swap = inside.resolve()
+
+    outside_directory = tmp_path / "outside"
+    outside_directory.mkdir()
+    (outside_directory / "file.txt").write_text("race-search-sentinel\n")
+    inside_directory.rename(root / "original-directory")
+    try:
+        inside_directory.symlink_to(outside_directory, target_is_directory=True)
+    except OSError:  # pragma: no cover - platform without symlink support
+        pytest.fail("symlinks unavailable; this boundary cannot be verified here")
+
+    original_is_dir = Path.is_dir
+
+    def hide_descriptor_directory(self: Path) -> bool:
+        if self == Path("/proc/self/fd"):
+            return False
+        return original_is_dir(self)
+
+    monkeypatch.setattr(Path, "is_dir", hide_descriptor_directory)
+    with pytest.raises(PathPolicyError, match="cannot verify the opened path"):
+        read_search_candidate(resolved_before_swap, root.resolve(), max_bytes=200_000)
 
 
 # --- seam_recall -----------------------------------------------------------

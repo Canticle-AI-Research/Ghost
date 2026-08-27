@@ -104,6 +104,7 @@ Ghost/
 │   ├── seam_memory.py         opaque public HTTP boundary
 │   ├── middleware.py          transient recall injection
 │   ├── tools.py               memory/filesystem/shell tools
+│   ├── path_policy.py         framework-free path/glob containment
 │   ├── config.py              environment parsing and bounds
 │   ├── context.py             per-invocation transient context
 │   ├── cli.py                 console operator interface
@@ -225,6 +226,8 @@ GHOST_TOOL_ROOTS set
   ├─ seam_recall
   ├─ read_file                      bounded UTF-8 file read
   └─ search_repo                    bounded literal search
+       ├─ relative traversal-free glob
+       └─ resolved/opened candidate contained in its originating root
 
 GHOST_ENABLE_SHELL=1
   ├─ all above

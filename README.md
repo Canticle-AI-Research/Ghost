@@ -154,7 +154,9 @@ export GHOST_TOOL_ROOTS="/path/to/repo:/path/to/notes"
 ```
 
 Every path is resolved before the containment check, so a symlink inside a root
-that points outside it is refused rather than followed.
+that points outside it is refused rather than followed. `search_repo` accepts
+only relative, traversal-free globs. It resolves every matched candidate
+against the root that produced it before opening or formatting the result.
 
 ### Shell access
 
