@@ -186,6 +186,12 @@ uv run ghost "Run the CLI test file and explain any failure."
 The CLI asks on `/dev/tty` before each command. Declining returns a normal tool
 result to the model.
 
+Treat the displayed `exit=N` line as operator information, not the stored
+verdict. Ghost separately validates the command's versioned result artifact
+and sends the real exit code to SEAM. A nonzero exit, missing artifact, or
+contradictory artifact is recorded as failed and returns no passed verification
+support. If output claims success while `exit` is nonzero, the exit code wins.
+
 ## Run unattended only inside a deliberate boundary
 
 ```bash

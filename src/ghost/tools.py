@@ -39,6 +39,7 @@ from typing import Any
 
 from langchain_core.tools import BaseTool, ToolException, tool
 
+from .command_result import CommandResult
 from .path_policy import (
     PathPolicyError,
     read_search_candidate,
@@ -293,8 +294,14 @@ def make_run_command(
     resolved_workdir = Path(workdir).expanduser().resolve() if workdir else Path.cwd()
     bounded_timeout = max(1, min(int(timeout), MAX_COMMAND_TIMEOUT))
 
-    @tool("run_command", parse_docstring=False)
-    def run_command(command: str, timeout_seconds: int | None = None) -> str:
+    @tool(
+        "run_command",
+        parse_docstring=False,
+        response_format="content_and_artifact",
+    )
+    def run_command(
+        command: str, timeout_seconds: int | None = None
+    ) -> tuple[str, dict[str, object]]:
         """Run a shell command on the operator's machine and return its output.
 
         This CHANGES THE MACHINE. Prefer `read_file` or `search_repo` when you
@@ -352,9 +359,12 @@ def make_run_command(
 
         elapsed_ms = (time.monotonic() - started) * 1000
         body = (completed.stdout or "") + (completed.stderr or "")
-        return _truncate(
-            f"exit={completed.returncode} duration_ms={elapsed_ms:.0f}\n{body}",
-            MAX_RESULT_CHARS,
+        rendered = f"exit={completed.returncode} duration_ms={elapsed_ms:.0f}\n{body}"
+        result = CommandResult(
+            exit_code=completed.returncode,
+            duration_ms=elapsed_ms,
+            truncated=len(rendered) > MAX_RESULT_CHARS,
         )
+        return _truncate(rendered, MAX_RESULT_CHARS), result.to_artifact()
 
     return _recoverable(run_command)

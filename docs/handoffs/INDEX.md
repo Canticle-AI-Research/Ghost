@@ -1,13 +1,14 @@
 # Ghost handoff registry
 
-latest: `docs/handoffs/2026-08-27-gtool-001-search-containment-published.md`
+latest: `docs/handoffs/2026-08-27-gtool-002-shell-result-truth-qualified.md`
 
 Exactly one document is current. Rows are newest first and form one linear
 supersession chain.
 
 | path | handoff_id | status | history | supersedes |
 |---|---|---|---|---|
-| `docs/handoffs/2026-08-27-gtool-001-search-containment-published.md` | ghost-gtool-001-search-containment-published-20260827 | current | HISTORY#053 | ghost-gtool-001-search-containment-qualified-20260827 |
+| `docs/handoffs/2026-08-27-gtool-002-shell-result-truth-qualified.md` | ghost-gtool-002-shell-result-truth-qualified-20260827 | current | HISTORY#055 | ghost-gtool-001-search-containment-published-20260827 |
+| `docs/handoffs/2026-08-27-gtool-001-search-containment-published.md` | ghost-gtool-001-search-containment-published-20260827 | superseded | HISTORY#053 | ghost-gtool-001-search-containment-qualified-20260827 |
 | `docs/handoffs/2026-08-27-gtool-001-search-containment-qualified.md` | ghost-gtool-001-search-containment-qualified-20260827 | superseded | HISTORY#052 | ghost-structural-remediation-ledger-20260827 |
 | `docs/handoffs/2026-08-27-structural-remediation-ledger.md` | ghost-structural-remediation-ledger-20260827 | superseded | HISTORY#051 | ghost-specialist-ops-foundation-published-20260826 |
 | `docs/handoffs/2026-08-26-specialist-ops-foundation-published.md` | ghost-specialist-ops-foundation-published-20260826 | superseded | HISTORY#050 | ghost-specialist-ops-foundation-qualified-20260826 |

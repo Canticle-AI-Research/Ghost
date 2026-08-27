@@ -1333,3 +1333,37 @@ making a self-referential default-branch field stale immediately.
 The GTOOL-001 publication boundary and GTOOL-002 resume route are unchanged, so
 the current handoff remains valid. No runtime, release, deployment, provider,
 SEAM, or avatar state changed.
+
+## HISTORY#055 — Close the shell-result truth gap
+- Date: `2026-08-27T17:56:55-05:00`
+- Agent: `codex`
+- Status: `done`
+- Topics: `architecture, continuity, docs, gates, handoff, history, provenance, security, status, tests, tools, trust, verification`
+- Commits: `working-tree`
+- Refs: `src/ghost/command_result.py, src/ghost/tools.py, src/ghost/application.py, tests/test_command_result.py, tests/test_shell_tool.py, tests/test_reasoning_graph.py, docs/audits/2026-08-27-gtool-002-shell-result-truth.md, docs/handoffs/2026-08-27-gtool-002-shell-result-truth-qualified.md`
+- Supersedes: `HISTORY#054`
+- Verification: `focused Ruff and command/lifecycle/layering tests passed; uv run python -m tools.history.closeout --agent codex passed through HISTORY#055; uv run ruff check . passed; uv run pytest --durations=10 passed 306 provider-free tests with 8 live tests deselected; uv build and git diff --check passed; changed-path secret-shaped scan passed; independent framework-transport review returned no findings; adversarial review found one blank-call-ID evidence-drop path, which was repaired and the second review returned no findings; CodeRabbit CLI 0.7.5 was rate-limited before analysis; push, merge, and exact-head hosted checks remain publication gates; no provider/live/paid/package-publication/release/deployment lane ran`
+
+GTOOL-002 is locally closed in a focused candidate based on protected
+`main@2e7cd54`. Completed shell processes now emit a strict, versioned,
+framework-free `ghost.command_result/v1` artifact alongside model-facing text.
+The artifact preserves the real exit code, duration, derived success, and
+truncation state; LangChain message status remains transport status and cannot
+override process truth.
+
+The adapter now requires an ordered, unique request/result identity, exact
+`run_command` name, exact successful transport, and a valid internally
+consistent artifact. Missing, stale, duplicated, mismatched, malformed,
+refused, or timed-out evidence fails closed without inventing success or an
+exit code. A real nonzero result reaches SEAM `/actions` as failed with its real
+exit code and cannot return a passed verification ID or support the accepted
+outcome. Focused regressions cover ToolCall transport, nonzero execution,
+truncation, schema/type/consistency failures, message pairing, and full
+lifecycle support propagation.
+
+This is local source qualification, not protected-main publication. GTOOL-003
+process-tree termination, GTOOL-004 runtime output bounding, authority-config,
+request-redaction, packaging, provider/live, release, deployment, and avatar
+work remain outside this slice. Advance the handoff to the GTOOL-002
+qualification record and publish only after the complete review and protected
+checks pass.

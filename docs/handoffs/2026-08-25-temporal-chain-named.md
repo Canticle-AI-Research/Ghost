@@ -46,8 +46,9 @@ created_at: `2026-08-25T16:10:00-05:00`
 - Many behaviors are still unverified. Track Q1 is the standard: a test exists
   to verify a behavior, never to reach a count. Name the uncovered behaviors
   rather than reporting a passing total.
-- The 450-line module ceiling is a starting ratchet. `tools/branding/assets.py`
-  (402 lines) and `src/ghost/tools.py` (360 lines) are the next splits.
+- The 450-line module ceiling was the starting ratchet. At this handoff,
+  `tools/branding/assets.py` had 402 lines and `src/ghost/tools.py` had 360;
+  both were identified as the next responsibility splits.
 - Everything here remains a working-tree candidate. Nothing is committed,
   pushed, merged, or released, and R1 runner safety still blocks opening a PR.
 

@@ -62,6 +62,10 @@ Two consequences matter for future write tools:
 
 - a failed tool is recorded with its verdict but is never offered as outcome
   support, so an unverified action cannot commit; and
+- a shell command's text and LangChain transport status are not its verdict.
+  The adapter accepts only a valid `ghost.command_result/v1` artifact, preserves
+  the operating-system exit code, and fails closed if the artifact is absent,
+  malformed, contradictory, or nonzero; and
 - the tool's raw output is passed as a check `result`, which SEAM reduces to
   `result_length` and `result_sha256`. The result stays provable while its
   contents — environment, tokens, paths — never enter the record. This is the

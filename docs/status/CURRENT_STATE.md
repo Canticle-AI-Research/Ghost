@@ -21,6 +21,7 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 | Exact closeout CI | run `33121213010` green on `5113177`; all six required jobs passed |
 | Structural audit | remediation ledger merged through PR #21 |
 | GTOOL-001 | search containment merged through PR #21; exact PR and merge-head CI passed |
+| GTOOL-002 | typed shell-result truth locally qualified on focused branch; not yet protected-main source |
 | GitHub security automation | secret scanning/push protection enabled; dependency security updates disabled; no code-scanning analysis |
 | Public transport proof | 200 provider-free tests, Ruff, build, clean wheel install, real `ghost --help`, and protected PR/main CI passed; 8 live tests deselected |
 
@@ -118,13 +119,19 @@ all six protected jobs. Paid/provider-live work was not run.
 The earlier recorded `184 passed` predated the continuity, licensing, and
 Temporal Chain slices that added tests; see HISTORY#031.
 
+The local GTOOL-002 candidate passed 306 provider-free tests with eight live
+tests deselected and focused command/lifecycle/layering checks. It preserves a
+real nonzero exit through SEAM action evidence and withholds failed support.
+This is local qualification, not protected-main publication.
+
 The provider-live lane was not run. The full current documentation/continuity
 closeout is recorded in the latest history entry after completion.
 
 ## Known defects and blockers
 
-1. GTOOL-001 is closed on protected main; six P0 defects still block unattended
-   shell use or artifact publication.
+1. GTOOL-001 is closed on protected main. GTOOL-002 is locally qualified but
+   not yet published; protected main still has six P0 defects blocking
+   unattended shell use or artifact publication.
 2. Resource ownership, SQLite cleanup, checkpoint permissions/defaults,
    transport/request bounds, and controlled CLI failure surfaces remain open.
 3. A tracked repository-root `checkpoints.db` is generated execution state and
@@ -145,7 +152,8 @@ closeout is recorded in the latest history entry after completion.
 
 ## Next issue
 
-Begin GTOOL-002 as a separate focused slice: preserve real shell exit status
-from execution through result parsing, action evidence, and accepted outcomes.
-Keep the avatar checkout untouched and keep shell use off until the P0
-tool/config lane closes.
+Publish the locally qualified GTOOL-002 slice through protected review and
+exact-head CI. Then begin GTOOL-003 separately, proving timeout terminates and
+reaps the full process group without delayed descendant side effects. Keep the
+avatar checkout untouched and keep shell use off until the P0 tool/config lane
+closes.

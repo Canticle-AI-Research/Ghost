@@ -5,6 +5,7 @@ the stable ledger, or append-only history.
 
 | Date | Report | Governing history | Scope |
 |---|---|---|---|
+| 2026-08-27 | [GTOOL-002 shell-result truth closure](2026-08-27-gtool-002-shell-result-truth.md) | HISTORY#055 | typed command result, transport/lifecycle validation, real SEAM exit evidence, and fail-closed accepted-outcome support |
 | 2026-08-27 | [Structural remediation ledger](2026-08-27-structural-remediation-ledger.md) | HISTORY#051 | unified defects, benchmarks, structural improvements, delivery gates, and dependency-ordered action plan |
 | 2026-08-25 | [Public repository and runner safety closure](2026-08-25-public-runner-safety-closure.md) | HISTORY#033 | public CI, protected main, Actions, runner fail-closed boundary |
 | 2026-08-25 | [Company licensing architecture](2026-08-25-company-licensing-architecture.md) | HISTORY#027 | Ghost, SEAM surfaces, Canticle Core, SEAM-U, company/IP boundary |

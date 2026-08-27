@@ -3,12 +3,13 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `d4794b254ba4ada4954f65467e5930df0040d3abca887bed6d47b14c2606bd84`
-- Entries: `54`
-- Latest: `HISTORY#054`
+- Source SHA-256: `d3f3cce2fb51178531692e161637dc13de062f6750474b840bfdd97d3a1828c8`
+- Entries: `55`
+- Latest: `HISTORY#055`
 
 | ID | Date | Status | Commit | Topics | Supersedes | Event |
 |---:|---|---|---|---|---|---|
+| 055 | 2026-08-27 | done | `working-tree` | architecture, continuity, docs, gates, handoff, history, provenance, security, status, tests, tools, trust, verification | #054 | Close the shell-result truth gap |
 | 054 | 2026-08-27 | done | `5113177cb009` | ci, continuity, correction, docs, history, status, verification | #053 | Make protected-main status non-self-referential |
 | 053 | 2026-08-27 | done | `ba68c3852a17` | architecture, ci, continuity, docs, gates, handoff, history, security, status, tests, tools, trust, verification | #052 | Publish repository-search containment |
 | 052 | 2026-08-27 | done | `working-tree` | architecture, continuity, docs, gates, handoff, history, security, status, tests, tools, trust, verification | #051 | Close the repository-search containment escape |

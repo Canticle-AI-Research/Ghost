@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-gtool-001-search-containment-published-20260827`
 supersedes: `ghost-gtool-001-search-containment-qualified-20260827`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#053`
 created_at: `2026-08-27T17:04:08-05:00`
 

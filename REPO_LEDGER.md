@@ -40,6 +40,10 @@ chronology, transient branch state, or duplicated implementation narratives.
 - Failed turns are rejected and never ingested as completed memory.
 - Retrieved memory is escaped, bounded, transient, and labeled untrusted.
 - Tool results may support an outcome only through passed SEAM verifications.
+- Shell text is never an execution verdict. `run_command` transports a
+  versioned `ghost.command_result/v1` artifact, and the framework adapter must
+  preserve its real exit code and duration. Missing, malformed, contradictory,
+  or nonzero command results fail closed and cannot become passed support.
 - Raw command output is fingerprinted by SEAM rather than stored as memory.
 
 ## Tool and authority policy

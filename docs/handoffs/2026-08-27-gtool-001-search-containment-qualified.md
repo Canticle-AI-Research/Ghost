@@ -31,8 +31,9 @@ avatar/package WIP untouched.
   than weakening containment.
 - Bounded reads use the descriptor and cap bytes even if a file grows after
   opening.
-- Framework-free path policy now lives in `src/ghost/path_policy.py`; the
-  LangChain-facing tool adapter remains in `src/ghost/tools.py` at 360 lines.
+- Framework-free path policy now lives in `src/ghost/path_policy.py`; at this
+  qualification boundary the LangChain-facing `src/ghost/tools.py` adapter had
+  360 lines.
 
 Regression coverage includes both configured-root positions, outside and
 inside symlinks, POSIX and Windows absolute globs, parent traversal, symlink

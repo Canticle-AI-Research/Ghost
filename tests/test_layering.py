@@ -52,7 +52,15 @@ def _imported_frameworks(path: Path) -> list[str]:
 
 
 @pytest.mark.parametrize(
-    "module", ["lifecycle.py", "seam_memory.py", "config.py", "context.py", "path_policy.py"]
+    "module",
+    [
+        "lifecycle.py",
+        "seam_memory.py",
+        "config.py",
+        "context.py",
+        "path_policy.py",
+        "command_result.py",
+    ],
 )
 def test_lower_layers_import_no_agent_framework(module: str) -> None:
     """Layers 1 and 2 must stay framework-free."""

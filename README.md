@@ -182,6 +182,12 @@ not exist. The real controls are:
   carrying its real exit code, and SEAM refuses to accept the turn's outcome
   against a check that failed.
 
+The command's model-facing text is not its verdict. `run_command` carries a
+separate versioned result artifact with the real exit code, duration, success
+state, and truncation state. Ghost validates that artifact before recording the
+attempt; a missing, malformed, or internally inconsistent command artifact is
+recorded as failed and cannot supply outcome support.
+
 A refused command is returned to Ghost as a tool result, not an exception, so
 declining one command does not end the conversation.
 
