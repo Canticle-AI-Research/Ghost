@@ -1220,3 +1220,38 @@ hosted API, SEAM disaster recovery, package release, or deployment. CI also
 surfaced a non-blocking Node 20 action-runtime deprecation warning for a focused
 workflow maintenance follow-up. Advance the handoff to the protected-main
 publication record and preserve the separate avatar worktree.
+
+## HISTORY#051 — Establish the structural remediation ledger
+- Date: `2026-08-27T11:36:21-05:00`
+- Agent: `codex`
+- Status: `done`
+- Topics: `architecture, build, ci, continuity, docs, evaluation, gates, handoff, history, operations, packaging, roadmap, security, status, tests, tools, verification, wiki`
+- Commits: `working-tree`
+- Refs: `docs/audits/2026-08-27-structural-remediation-ledger.md, docs/audits/INDEX.md, docs/handoffs/2026-08-27-structural-remediation-ledger.md, docs/handoffs/INDEX.md, docs/status/CURRENT_STATE.md, PROJECT_STATUS.md`
+- Supersedes: `HISTORY#050`
+- Verification: `origin/main and local base reconciled at cccf99ae53dc144c68594ef3cfb67f4aa1471fd0; exact-head Public CI run 32935194091 passed all six required jobs; uv run python -m tools.history.closeout --agent codex passed through HISTORY#051; uv run ruff check . passed; uv run pytest --durations=10 passed 270 provider-free tests with 8 live tests deselected; uv build and git diff --check passed; Stage 1 validate-fixtures/smoke/verify/gate passed at BIL-0; pip-audit OSV reported no known vulnerabilities for the frozen runtime export; CodeRabbit CLI 0.7.5 reviewed all 12 src/ghost modules and returned 7 routed findings; documentation-delta review returned 2 findings and both were repaired; final automated rerun was rate-limited, manual final diff review passed; focused sentinel probes reproduced five P0 boundaries; no paid/live/release/deployment lane ran`
+
+Ghost now has one registered ledger for current defects, benchmark gaps,
+structural improvements, delivery work, and later product/legal gates. The
+ledger separates seven P0 stop-ship findings from P1 immediate integrity work,
+the Q3 benchmark program, P2 maintainability work, and P3 external/product
+milestones. Every row names an owner surface, exit evidence, and dependencies,
+and the course of action orders focused issue branches without mixing the
+preserved avatar checkout.
+
+Provider-free baseline verification remained green, but the audit reproduced
+important gaps outside the previous suite: search could follow an in-root
+symlink outside the readable root; a shell command exiting nonzero was recorded
+as successful with exit code zero; timeout killed only the immediate shell and
+left a descendant alive; an invalid approval boolean disabled the default gate;
+and a working-directory dotenv could widen shell authority and redirect the
+SEAM endpoint. Artifact inspection also showed that the source distribution
+contains the tracked checkpoint database and other unqualified repository
+surfaces. These observations block unattended shell use and release
+publication until their ledger exits pass.
+
+The report is documentation and routing only. No defect implementation,
+dependency merge, avatar modification, paid/live provider or SEAM run, push,
+merge, package publication, release, deployment, destructive cleanup, or
+company/legal action occurred. Advance the handoff to the structural ledger
+and begin GTOOL-001 from a new focused worktree based on current protected main.

@@ -6,64 +6,36 @@
 
 ## Current headline
 
-**2026-08-26 — `main@c9d8a83` publishes the bounded specialist and operations
-foundation through PR #14.** Ghost now has deterministic admit/reject/review policy, explicit remember,
-additive correction/supersession, scoped forgetting, current/history views,
-opaque lifecycle status/references, and concrete
-principal/workspace/project/thread transport isolation. Exact source `3c21112`
-passed all six protected jobs in run `32933045239`; the 257-test provider-free
-suite and merge-head run `32933109326` passed the same matrix. The 10-case Stage
-2 fixture proves mechanisms only. Exact closeout-head run `32933523547` passed
-all six required jobs. PR #14 adds provider-free specialist
-envelope/provenance/failure contracts, checkpoint backup/verify/non-overwriting
-restore, redacted health types, tests, and full operator/architecture
-documentation. Exact PR run `32934880135` and merge-head run `32934944801`
-passed all six required jobs. It does not activate specialists, expose a hosted
-endpoint, or qualify G3/G4. The avatar worktree is untouched.
+**2026-08-27 — protected `main@cccf99a` publishes the bounded specialist and
+operations foundation plus its canonical PR #15 closeout. Exact-head Public CI
+run `32935194091` passed all six required provider-free jobs.** No package or
+service is released or deployed, and the BIL-0 evaluation remains explicitly
+non-claimable.
 
-**2026-08-25 — `main@e1d1b9a` publishes Ghost's public-only install boundary,
-opaque SEAM lifecycle, and frozen Stage 1 evaluation substrate. PR #10 merged
-20 immutable cases, real-lifecycle two-arm BIL-0 execution, sealed
-verification/gating, a hard turn-step ceiling, and complete rebuild/operator
-documentation. Exact main run `32927357539` passed all six protected jobs,
-including the newly required `stage1-evals`. The deterministic baseline remains
-non-claimable; provider-live and release-candidate qualification are still open.
-The isolated avatar remains separate WIP. No package or service is released or
-deployed, and nothing is assigned to a company or counsel-approved.**
+A local isolated audit branch adds the registered
+`docs/audits/2026-08-27-structural-remediation-ledger.md`. It records seven P0
+tool/config/artifact defects, immediate resource and security work, the Q3
+benchmark program, later product gates, and a dependency-ordered course of
+action. The report itself is not pushed or merged. The dirty avatar checkout
+remains untouched on its older branch.
 
-PRs #6 through #14 and their exact merge-head Public CI are green. SEAM PR #233
-is protected-main deliberate-memory server source at `main@0b07244`; Ghost PR
-#8 is protected-main base client source and PR #12 publishes its deliberate
-memory policy extension.
-This proves public installability and contract parity, not a compatible hosted
-endpoint, package release, or deployment. See `docs/status/CURRENT_STATE.md`,
-HISTORY#022, HISTORY#038, and the current handoff.
+Current GitHub reconciliation established:
 
-Live GitHub reconciliation on 2026-08-25 established:
-
-- repository visibility is public;
-- PR #5 merged the hosted automatic/manual-private workflow boundary;
-- PR #6 merged the canonical wiki/history/licensing/launcher foundation;
-- PR #7 merged the canonical follow-up through `main@10a2b45`;
-- PR #10 merged the frozen Stage 1 evaluation substrate;
-- exact `main@e1d1b9a` passed all six hosted required checks in run
-  `32927357539`;
-- exact `main@2a23fdc` passed the same six checks in run `32933109326` after PR
-  #12 published deliberate-memory mechanisms;
-- exact `main@4cebdd8` passed the same six checks in run `32933523547` after PR
-  #13 published the canonical closeout;
-- exact `main@c9d8a83` passed the same six checks in run `32934944801` after PR
-  #14 published the specialist/operations foundation;
-- all external-contributor workflows require approval;
-- secret scanning and push protection are enabled;
+- repository visibility is public and `main@cccf99a` is the default branch;
+- PRs #1, #5 through #15 are merged; Dependabot PRs #2, #4, and #16 through
+  #20 are open;
+- protected `main` requires the six strict hosted checks, enforces
+  administrators and conversation resolution, and blocks force pushes/deletes;
+- secret scanning and push protection are enabled with no open secret alert;
+- Dependabot security updates are disabled and no code-scanning analysis is
+  registered;
 - Ghost has no repository secret and no assigned runner; and
-- protected `main` requires PRs and the six strict hosted checks, enforces
-  administrators and conversation resolution, and blocks force pushes/deletes.
+- paid live provider/service validation remains manual and was not run.
 
-Organization runner-group inventory was unavailable without organization-admin
-authority. The zero-assigned-runner state remains fail-closed. The candidate
-moves the full provider-free suite to hosted CI; only paid live provider/service
-validation stays manual.
+The provider-free current-tree baseline passes Ruff, 270 tests with eight live
+tests deselected, build, and the Stage 1 BIL-0 validate/smoke/verify/gate path.
+That green baseline does not negate the reproduced defects or qualify a
+release, live provider, hosted service, G1/G2 exit, or production claim.
 
 ## Product boundary
 
@@ -104,16 +76,20 @@ qualification, release, and deployment remain incomplete.
 
 ## Active order
 
-1. Obtain counsel review and execute founder-to-company IP assignment after
-   the legal entity is formed.
-2. Create the sealed Q3 deliberate-memory quality comparison against a named
-   baseline.
-3. Complete provider-live and exact release-candidate Stage 1 qualification
-   only with explicit spend/release authorization.
-4. Resume the isolated desktop-avatar workstream after its asset and
-   consequential-action boundaries are approved.
+1. Repair the P0 search, shell truth/process/output, authority-config, and sdist
+   boundaries one issue at a time.
+2. Repair resource ownership, checkpoint permissions/defaults, transport
+   bounds, and controlled CLI failures.
+3. Reconcile roadmap/blueprint truth and extend recorded-fact gates to catch
+   the drift identified by the structural ledger.
+4. Build the provider-free Q3 Stage 2 comparison and stop before paid execution
+   for explicit model/cost approval.
+5. Process dependency PRs against the new regressions, then complete legal and
+   release-candidate gates.
+6. Resume the isolated avatar only through its separate reviewed workstream.
 
 ## Resume route
 
-Read `docs/handoffs/INDEX.md`, then its `latest` document. Use
-`HISTORY_INDEX.md` or a bounded context pack instead of loading all history.
+Read `docs/handoffs/INDEX.md`, then its `latest` document and the registered
+structural remediation ledger. Use `HISTORY_INDEX.md` or a bounded context pack
+instead of loading all history.

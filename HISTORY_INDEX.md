@@ -3,12 +3,13 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `b42bbae99a43bf9919be7e8f0f96cbbb33e7e1bac7c4ab48549d969c5f49cf99`
-- Entries: `50`
-- Latest: `HISTORY#050`
+- Source SHA-256: `4b257e3c2e87732d0f28a610b49f34784fca4d934e864815b37bc698782a1d32`
+- Entries: `51`
+- Latest: `HISTORY#051`
 
 | ID | Date | Status | Commit | Topics | Supersedes | Event |
 |---:|---|---|---|---|---|---|
+| 051 | 2026-08-27 | done | `working-tree` | architecture, build, ci, continuity, docs, evaluation, gates, handoff, history, operations, packaging, roadmap, security, status, tests, tools, verification, wiki | #050 | Establish the structural remediation ledger |
 | 050 | 2026-08-26 | done | `c9d8a83cbf55` | agent, architecture, ci, commands, continuity, deployment, docs, gates, handoff, history, operations, provenance, roadmap, security, status, tests, verification, wiki | #049 | Publish bounded specialist and operations foundations |
 | 049 | 2026-08-26 | in-progress | `working-tree` | agent, architecture, cli, commands, continuity, deployment, docs, handoff, history, operations, provenance, roadmap, security, status, tests, verification, wiki | #048 | Qualify bounded specialist and operations foundations |
 | 048 | 2026-08-26 | done | `2a23fdcd730c` | agent, ci, continuity, docs, evaluation, gates, handoff, history, memory, roadmap, security, status, tests, verification | #047 | Publish deliberate-memory governance |

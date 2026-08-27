@@ -1,4 +1,4 @@
-# Current state: 2026-08-26
+# Current state: 2026-08-27
 
 This report separates landed source, local work, remote state, verification,
 and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
@@ -7,21 +7,23 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 
 | Plane | Observed state |
 |---|---|
-| Default branch | `main@c9d8a83cbf5585338f9bf5db8b978e70fd2dd398` |
+| Default branch | `main@cccf99ae53dc144c68594ef3cfb67f4aa1471fd0` |
 | Stage 1 evaluation substrate | merged through PR #10: 20 frozen cases, real-lifecycle BIL-0 smoke/verifier/gate, step ceiling, final clean baseline |
 | Public transport | merged through PR #8; public install and opaque transport source published |
 | Primary working branch | `agent/avatar-u1-temporal-integration`, preserving avatar-only WIP on its earlier reviewed base |
 | Canonical foundation | merged through PRs #6 and #7 |
 | Preserved local work | avatar source/tests/assets/tools plus CLI/package/lock changes in the primary checkout |
 | Remote visibility | public |
-| Merged PRs | PR #1 and PRs #5 through #14 |
-| Open PRs | Dependabot #2 and #4 |
-| Exact-head public CI | run `32934944801` green on `c9d8a83`; all six required jobs passed |
+| Merged PRs | PR #1 and PRs #5 through #15 |
+| Open PRs | Dependabot #2, #4, and #16 through #20 |
+| Exact-head public CI | run `32935194091` green on `cccf99a`; all six required jobs passed |
+| Local audit branch | `docs/structural-audit-20260827`; registered remediation ledger, not pushed or merged |
+| GitHub security automation | secret scanning/push protection enabled; dependency security updates disabled; no code-scanning analysis |
 | Public transport proof | 200 provider-free tests, Ruff, build, clean wheel install, real `ghost --help`, and protected PR/main CI passed; 8 live tests deselected |
 
 This is a status snapshot, not authorization to delete or combine local files.
 
-## Landed capability at `main@c9d8a83`
+## Landed capability at `main@cccf99a`
 
 - DeepAgents root agent with provider routing through LangChain.
 - OpenAI reasoning-model use through the Responses API.
@@ -100,12 +102,11 @@ runtime repositories have already been relicensed.
 
 ## Verification boundary
 
-Current-tree evidence, each claim naming the command that produced it:
-
-```text
-See the latest history entry and handoff for commands and exact results for the
-current publication slice. Paid/provider-live work was not run.
-```
+Current audit-tree evidence is recorded in HISTORY#051 and
+`docs/audits/2026-08-27-structural-remediation-ledger.md`: Ruff passed; 270
+provider-free tests passed with eight live tests deselected; build passed; and
+the 20-case BIL-0 fixture validated, sealed, verified, and gated. Paid/provider-
+live work was not run.
 
 The earlier recorded `184 passed` predated the continuity, licensing, and
 Temporal Chain slices that added tests; see HISTORY#031.
@@ -115,20 +116,30 @@ closeout is recorded in the latest history entry after completion.
 
 ## Known defects and blockers
 
-1. Private integration CI remains unavailable without a deliberately assigned,
-   reviewed runner; public exact-head CI is green.
-2. Desktop-avatar work remains local and must stay isolated from the
-   documentation/history foundation.
+1. Seven P0 defects block unattended shell use or artifact publication. They
+   cover CWD configuration authority, fail-open approval parsing, search-root
+   escape, false shell-success accounting, descendant timeout survival,
+   unbounded captured output, and sdist membership.
+2. Resource ownership, SQLite cleanup, checkpoint permissions/defaults,
+   transport/request bounds, and controlled CLI failure surfaces remain open.
 3. A tracked repository-root `checkpoints.db` is generated execution state and
-   should be removed in a dedicated reviewed cleanup.
-4. Stage 1 provider-live and exact release-candidate qualification remain open;
-   the frozen deterministic artifact is explicitly non-claimable.
-5. Both repository halves of deliberate-memory governance are protected-main,
-   but a sealed Q3 memory-quality comparison remains absent.
-6. The license structure needs counsel review and a written founder IP
+   enters the sdist; remove it in a dedicated reviewed cleanup with history.
+4. Status/roadmap/blueprint facts drifted without failing the current
+   recorded-fact gate; the structural ledger is authoritative for remediation.
+5. Private integration CI remains unavailable without a deliberately assigned,
+   reviewed runner; public exact-head CI is green.
+6. Stage 1 provider-live and exact release-candidate qualification remain open;
+   the deterministic artifact is explicitly non-claimable.
+7. Deliberate-memory mechanisms are protected-main, but the sealed Q3
+   equal-budget memory-quality comparison is absent.
+8. Dependabot security updates are disabled, no code-scanning analysis exists,
+   and seven dependency update PRs require deliberate review.
+9. Desktop-avatar work remains local and isolated on its older branch.
+10. The license structure needs counsel review and a written founder IP
     assignment after the company is legally formed.
 
 ## Next issue
 
-Build the sealed Q3 memory-quality comparison against a named baseline without
-touching the isolated avatar branch.
+Fix GTOOL-001 from the structural remediation ledger in a new focused
+branch/worktree from current protected main. Keep the avatar checkout untouched
+and keep shell use off until the P0 tool/config lane closes.

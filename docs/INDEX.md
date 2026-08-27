@@ -87,13 +87,14 @@ learning surface is [the Ghost engineering wiki](README.md).
 
 | Document | Covers |
 |---|---|
-| [handoffs/2026-08-26-specialist-ops-foundation-published.md](handoffs/2026-08-26-specialist-ops-foundation-published.md) | current protected-main publication and exact-head evidence |
+| [handoffs/2026-08-27-structural-remediation-ledger.md](handoffs/2026-08-27-structural-remediation-ledger.md) | current unified remediation boundary and first safe implementation route |
+| [handoffs/2026-08-26-specialist-ops-foundation-published.md](handoffs/2026-08-26-specialist-ops-foundation-published.md) | superseded protected-main specialist/operations publication evidence |
 | [handoffs/2026-08-26-specialist-ops-foundation-qualified.md](handoffs/2026-08-26-specialist-ops-foundation-qualified.md) | superseded local qualification record for the issue-7 foundation |
 | [history/REPOSITORY_CONTINUITY.md](history/REPOSITORY_CONTINUITY.md) | Temporal Chain history/index/snapshot/handoff model and commands |
 | [history/PATH_MOVES.md](history/PATH_MOVES.md) | ledger that keeps immutable history refs resolvable after a rename |
 | [Temporal Chain template](../templates/temporal-chain/README.md) | reusable standard-library history + git protocol starter for other repositories |
 | [handoffs/INDEX.md](handoffs/INDEX.md) | canonical single-head handoff registry |
-| [handoffs/2026-08-26-deliberate-memory-published.md](handoffs/2026-08-26-deliberate-memory-published.md) | current protected-main deliberate-memory mechanism boundary |
+| [handoffs/2026-08-26-deliberate-memory-published.md](handoffs/2026-08-26-deliberate-memory-published.md) | superseded protected-main deliberate-memory mechanism boundary |
 | [handoffs/2026-08-26-deliberate-memory-qualified.md](handoffs/2026-08-26-deliberate-memory-qualified.md) | superseded deliberate-memory mechanism publication candidate |
 | [handoffs/2026-08-25-stage1-frozen-published.md](handoffs/2026-08-25-stage1-frozen-published.md) | superseded protected-main Stage 1 evaluation boundary |
 | [handoffs/2026-08-25-stage1-candidate-ready.md](handoffs/2026-08-25-stage1-candidate-ready.md) | superseded exact-head CI publication boundary for Stage 1 evaluation |
@@ -116,6 +117,7 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [handoffs/2026-08-25-documentation-foundation.md](handoffs/2026-08-25-documentation-foundation.md) | locally qualified documentation predecessor |
 | [handoffs/2026-08-21-desktop-pet.md](handoffs/2026-08-21-desktop-pet.md) | registered predecessor avatar boundary |
 | [audits/INDEX.md](audits/INDEX.md) | dated audit registry |
+| [audits/2026-08-27-structural-remediation-ledger.md](audits/2026-08-27-structural-remediation-ledger.md) | unified structural defects, benchmark gaps, improvements, TODOs, and dependency-ordered course of action |
 | [audits/2026-08-25-public-runner-safety-closure.md](audits/2026-08-25-public-runner-safety-closure.md) | exact merge, hosted-run, settings, and runner-boundary evidence |
 | [audits/2026-08-25-company-licensing-architecture.md](audits/2026-08-25-company-licensing-architecture.md) | placement, ownership, and adjacent-product licensing evidence |
 | [audits/2026-08-25-repository-documentation-reconciliation.md](audits/2026-08-25-repository-documentation-reconciliation.md) | current repository/documentation evidence |
