@@ -16,9 +16,9 @@ non-claimable.
 The focused local GTOOL-002 candidate closes the shell-result truth gap: a
 versioned command artifact carries the real exit code and duration through
 LangChain transport, Ghost validates message pairing and artifact consistency
-without coercion, and failed commands cannot produce passed SEAM support. It
-passed 306 provider-free tests with eight live tests deselected, but is not yet
-protected-main source at this qualification boundary.
+without coercion, and failed commands cannot produce passed SEAM support. Its
+focused regressions and complete local provider-free suite pass, but it is not
+yet protected-main source at this qualification boundary.
 
 The registered
 `docs/audits/2026-08-27-structural-remediation-ledger.md` remains the canonical

@@ -47,6 +47,10 @@ avatar/package WIP untouched.
   no findings.
 - Continuity closeout through HISTORY#055, full Ruff, build, diff hygiene,
   recorded-fact audit, and changed-path secret-shaped scan passed.
+- Initial exact-source PR run `33124878342` passed five jobs but failed
+  `repo-hygiene`: the status router's volatile exact suite count disagreed with
+  collection under that job's narrow dependency set. The count was removed as
+  the recorded-fact gate recommends; corrected exact-head CI remains required.
 - No provider/model, live SEAM, paid judge, package publication, release,
   deployment, avatar change, or destructive cleanup ran.
 

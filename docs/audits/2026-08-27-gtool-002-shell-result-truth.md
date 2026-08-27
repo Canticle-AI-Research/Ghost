@@ -122,6 +122,13 @@ recorded-fact audit, and the changed-path secret-shaped scan passed. Protected
 exact-head CI remains a publication gate recorded by the successor publication
 entry.
 
+The first PR run `33124878342` passed five jobs and failed `repo-hygiene`
+because the current-state router asserted a volatile local suite count while
+that narrow job intentionally collected only its documentation dependency
+subset. The count was removed from the router, as the recorded-fact gate itself
+recommends; the full 306-test evidence remains an explicit historical
+qualification fact here and in HISTORY#055.
+
 No paid model, live provider, live SEAM service, package publication, release,
 deployment, or avatar lane was run. The preserved avatar checkout was not
 modified.

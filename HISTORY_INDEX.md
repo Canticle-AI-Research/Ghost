@@ -3,7 +3,7 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `d3f3cce2fb51178531692e161637dc13de062f6750474b840bfdd97d3a1828c8`
+- Source SHA-256: `21663e1868364c8440a24460b2a50cb7af0598676bd3c00478d04b65c92c351b`
 - Entries: `55`
 - Latest: `HISTORY#055`
 
