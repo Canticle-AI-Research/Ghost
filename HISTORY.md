@@ -1367,3 +1367,33 @@ request-redaction, packaging, provider/live, release, deployment, and avatar
 work remain outside this slice. Advance the handoff to the GTOOL-002
 qualification record and publish only after the complete review and protected
 checks pass.
+
+## HISTORY#056 — Publish truthful shell-result evidence
+- Date: `2026-08-27T18:07:51-05:00`
+- Agent: `codex`
+- Status: `done`
+- Topics: `architecture, ci, continuity, docs, gates, handoff, history, provenance, security, status, tests, tools, trust, verification`
+- Commits: `783964699d93c12725c7f91bdccf2bb1ecfcd008`
+- Refs: `https://github.com/Canticle-AI-Research/Ghost/pull/24, https://github.com/Canticle-AI-Research/Ghost/actions/runs/33124878342, https://github.com/Canticle-AI-Research/Ghost/actions/runs/33125003964, https://github.com/Canticle-AI-Research/Ghost/actions/runs/33125085772, docs/audits/2026-08-27-gtool-002-shell-result-truth.md, docs/handoffs/2026-08-27-gtool-002-shell-result-truth-published.md`
+- Supersedes: `HISTORY#055`
+- Verification: `initial exact-source run 33124878342 passed five jobs and exposed a volatile status-count failure in repo-hygiene; the count was removed and the exact hosted hygiene command passed locally; corrected exact PR source 88a4cace14352ed69d858e9d96f913108ed5751a passed all six protected jobs in run 33125003964; PR #24 merged as 783964699d93c12725c7f91bdccf2bb1ecfcd008; exact merge-head run 33125085772 passed the same six jobs including hosted secret scanning; local closeout, Ruff, 306 provider-free tests with 8 live tests deselected, build, diff hygiene, changed-path secret-shaped scan, and two independent review waves passed; no provider/live/paid/package-publication/release/deployment lane ran`
+
+GTOOL-002 is protected-main source. `ghost.command_result/v1` carries completed
+shell truth separately from LangChain transport state, strict validation
+refuses malformed or contradictory evidence, and the lifecycle preserves real
+exit code and duration into SEAM action evidence. Nonzero, refused, timed-out,
+missing, stale, duplicated, mismatched, or blank-ID command evidence cannot
+produce passed support for an accepted outcome.
+
+The first hosted run correctly blocked publication when a current status router
+asserted a local exact test count that did not match the hygiene job's narrow
+dependency collection. The volatile router count was removed, the exact hosted
+command was reproduced locally, and both the corrected source and immutable
+merge head passed the full protected matrix.
+
+This closes GTOOL-002 only. Five audited P0 boundaries remain, beginning with
+GTOOL-003 whole-process-tree timeout termination and GTOOL-004 runtime output
+bounds. Shell use remains off for normal operation; no package release,
+deployment, live provider/SEAM qualification, Q3 quality claim, or avatar
+publication occurred. Advance the handoff to the protected-main publication
+record and resume with GTOOL-003 in a separate focused slice.

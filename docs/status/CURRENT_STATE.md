@@ -9,6 +9,7 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 |---|---|
 | Default branch | protected `main`; use live Git reconciliation for its moving head |
 | GTOOL-001 implementation merge | `ba68c3852a1787efd568d3e221c2935f5a9af4b7` through PR #21 |
+| GTOOL-002 implementation merge | `783964699d93c12725c7f91bdccf2bb1ecfcd008` through PR #24 |
 | Publication record | merged through PR #22; closeout merge `5113177cb0094ca0d9b5712fcc39f2b9a15bca56` |
 | Stage 1 evaluation substrate | merged through PR #10: 20 frozen cases, real-lifecycle BIL-0 smoke/verifier/gate, step ceiling, final clean baseline |
 | Public transport | merged through PR #8; public install and opaque transport source published |
@@ -16,18 +17,18 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 | Canonical foundation | merged through PRs #6 and #7 |
 | Preserved local work | avatar source/tests/assets/tools plus CLI/package/lock changes in the primary checkout |
 | Remote visibility | public |
-| Relevant current merges | implementation PR #21 and publication-record PR #22 |
+| Relevant current merges | GTOOL-001 PR #21 and GTOOL-002 PR #24 |
 | Open PRs | Dependabot #2, #4, and #16 through #20 |
-| Exact closeout CI | run `33121213010` green on `5113177`; all six required jobs passed |
+| Exact GTOOL-002 CI | source run `33125003964` and merge-head run `33125085772` green; all six required jobs passed |
 | Structural audit | remediation ledger merged through PR #21 |
 | GTOOL-001 | search containment merged through PR #21; exact PR and merge-head CI passed |
-| GTOOL-002 | typed shell-result truth locally qualified on focused branch; not yet protected-main source |
+| GTOOL-002 | typed shell-result truth merged through PR #24; exact PR and merge-head CI passed |
 | GitHub security automation | secret scanning/push protection enabled; dependency security updates disabled; no code-scanning analysis |
 | Public transport proof | 200 provider-free tests, Ruff, build, clean wheel install, real `ghost --help`, and protected PR/main CI passed; 8 live tests deselected |
 
 This is a status snapshot, not authorization to delete or combine local files.
 
-## Landed capability through implementation merge `ba68c38`
+## Landed capability through implementation merge `7839646`
 
 - DeepAgents root agent with provider routing through LangChain.
 - OpenAI reasoning-model use through the Responses API.
@@ -44,6 +45,9 @@ This is a status snapshot, not authorization to delete or combine local files.
 - Repository search rejects absolute/traversal globs and verifies every opened
   descriptor remains inside its originating configured root.
 - Opt-in unsandboxed shell with approval and timeout controls.
+- Versioned, framework-free command result with real exit/duration/truncation
+  truth; failed, invalid, mismatched, or unpairable command evidence cannot
+  become passed SEAM support.
 - Tool decisions and SEAM verifications supporting accepted outcomes.
 - CLI one-shot and interactive surfaces.
 - Reproducible brand toolkit and expression assets.
@@ -119,19 +123,19 @@ all six protected jobs. Paid/provider-live work was not run.
 The earlier recorded `184 passed` predated the continuity, licensing, and
 Temporal Chain slices that added tests; see HISTORY#031.
 
-The local GTOOL-002 candidate passed 306 provider-free tests with eight live
-tests deselected and focused command/lifecycle/layering checks. It preserves a
-real nonzero exit through SEAM action evidence and withholds failed support.
-This is local qualification, not protected-main publication.
+GTOOL-002 qualification passed 306 provider-free tests with eight live tests
+deselected and focused command/lifecycle/layering checks. Exact source run
+`33125003964` and merge-head run `33125085772` passed all six protected jobs.
+The repair preserves a real nonzero exit through SEAM action evidence and
+withholds failed support.
 
 The provider-live lane was not run. The full current documentation/continuity
 closeout is recorded in the latest history entry after completion.
 
 ## Known defects and blockers
 
-1. GTOOL-001 is closed on protected main. GTOOL-002 is locally qualified but
-   not yet published; protected main still has six P0 defects blocking
-   unattended shell use or artifact publication.
+1. GTOOL-001 and GTOOL-002 are closed on protected main. Five P0 defects still
+   block unattended shell use or artifact publication.
 2. Resource ownership, SQLite cleanup, checkpoint permissions/defaults,
    transport/request bounds, and controlled CLI failure surfaces remain open.
 3. A tracked repository-root `checkpoints.db` is generated execution state and
@@ -152,8 +156,6 @@ closeout is recorded in the latest history entry after completion.
 
 ## Next issue
 
-Publish the locally qualified GTOOL-002 slice through protected review and
-exact-head CI. Then begin GTOOL-003 separately, proving timeout terminates and
-reaps the full process group without delayed descendant side effects. Keep the
-avatar checkout untouched and keep shell use off until the P0 tool/config lane
-closes.
+Begin GTOOL-003 separately, proving timeout terminates and reaps the full
+process group without delayed descendant side effects. Keep the avatar checkout
+untouched and keep shell use off until the P0 tool/config lane closes.

@@ -87,7 +87,8 @@ learning surface is [the Ghost engineering wiki](README.md).
 
 | Document | Covers |
 |---|---|
-| [handoffs/2026-08-27-gtool-002-shell-result-truth-qualified.md](handoffs/2026-08-27-gtool-002-shell-result-truth-qualified.md) | current locally qualified shell-result truth and publication route |
+| [handoffs/2026-08-27-gtool-002-shell-result-truth-published.md](handoffs/2026-08-27-gtool-002-shell-result-truth-published.md) | current protected-main shell-result truth and GTOOL-003 route |
+| [handoffs/2026-08-27-gtool-002-shell-result-truth-qualified.md](handoffs/2026-08-27-gtool-002-shell-result-truth-qualified.md) | superseded locally qualified shell-result truth |
 | [handoffs/2026-08-27-gtool-001-search-containment-published.md](handoffs/2026-08-27-gtool-001-search-containment-published.md) | superseded protected-main search-containment result |
 | [handoffs/2026-08-27-gtool-001-search-containment-qualified.md](handoffs/2026-08-27-gtool-001-search-containment-qualified.md) | superseded locally qualified search-containment repair |
 | [handoffs/2026-08-27-structural-remediation-ledger.md](handoffs/2026-08-27-structural-remediation-ledger.md) | superseded unified remediation boundary and first implementation route |

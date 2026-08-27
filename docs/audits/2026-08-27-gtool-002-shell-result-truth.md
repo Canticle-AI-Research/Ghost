@@ -1,14 +1,14 @@
 # GTOOL-002 shell-result truth closure
 
 - Date: 2026-08-27
-- Governing history: HISTORY#055
+- Governing history: HISTORY#055 qualification; HISTORY#056 publication
 - Scope: command execution result, LangChain transport, Ghost lifecycle adapter,
   SEAM action evidence, accepted-outcome support
-- Qualification: provider-free source candidate
+- Qualification: protected-main provider-free source
 
 ## Outcome
 
-GTOOL-002 is closed in the qualified source candidate. A shell process that
+GTOOL-002 is closed on protected main. A shell process that
 exits nonzero can no longer become a successful Ghost tool attempt merely
 because LangChain transported the tool message successfully. Ghost now carries
 one versioned, framework-free result from process completion through
@@ -118,9 +118,10 @@ Provider-free focused regressions passed, including full LangChain ToolCall
 messages, ToolNode transport, SQLite checkpoint persistence, handled errors,
 malformed artifacts, and the SEAM lifecycle. The complete suite passed 306
 tests with eight live tests deselected. Ruff, build, continuity, diff hygiene,
-recorded-fact audit, and the changed-path secret-shaped scan passed. Protected
-exact-head CI remains a publication gate recorded by the successor publication
-entry.
+recorded-fact audit, and the changed-path secret-shaped scan passed. PR #24's
+corrected exact source `88a4cac` passed all six protected jobs in run
+`33125003964`, merged as `7839646`, and exact merge-head run `33125085772`
+passed the same six jobs, including hosted secret scanning.
 
 The first PR run `33124878342` passed five jobs and failed `repo-hygiene`
 because the current-state router asserted a volatile local suite count while
@@ -135,15 +136,13 @@ modified.
 
 ## Course of action
 
-1. Publish this focused repair through protected review and all six exact-head
-   provider-free checks.
-2. Close GTOOL-003 by terminating and reaping the whole process group on
+1. Close GTOOL-003 by terminating and reaping the whole process group on
    timeout, with a delayed-side-effect regression.
-3. Close GTOOL-004 by bounding combined stdout/stderr while the process runs,
+2. Close GTOOL-004 by bounding combined stdout/stderr while the process runs,
    rather than after unbounded buffering.
-4. Close GST-001/GST-002 so malformed booleans and working-directory dotenv
+3. Close GST-001/GST-002 so malformed booleans and working-directory dotenv
    files cannot weaken shell approval or redirect authority.
-5. Close GTOOL-005 typed/redacted request evidence, resource ownership,
+4. Close GTOOL-005 typed/redacted request evidence, resource ownership,
    checkpoint, transport, CLI, and source-distribution boundaries.
-6. Only then advance provider-free Q3 G1/G2 mechanics; stop before paid model
+5. Only then advance provider-free Q3 G1/G2 mechanics; stop before paid model
    execution for explicit operator approval.
