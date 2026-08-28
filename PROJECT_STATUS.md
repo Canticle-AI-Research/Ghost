@@ -6,13 +6,13 @@
 
 ## Current headline
 
-**2026-08-27 — protected source includes the current-turn action-provenance
-repair. PR #26 merged exact source `21782f5` as implementation merge `2a85aab`;
-exact-source run `33133873076` and exact merge-head run `33133921906` passed all
-six required provider-free jobs.** The repair closes checkpoint-history replay,
-message-role confusion, malformed SEAM egress, and non-UTF-8 shell decoding.
-No package or service is released or deployed, and the BIL-0 evaluation remains
-explicitly non-claimable.
+**2026-08-28 — the operator-approved GPROV-001 heartbeat action-journal design
+is protected-main documentation, not runtime implementation. PR #28 merged
+exact source `4a35491` as `1654211`; exact-source run `33143820536` and exact
+merge-head run `33143873137` passed all six required provider-free jobs.** The
+specification preserves journal/idempotency as safety and heartbeat as
+liveness. No package or service is released or deployed, and the BIL-0
+evaluation remains explicitly non-claimable.
 
 A versioned command artifact now carries the real exit code and duration
 through LangChain transport. Ghost validates message pairing and artifact
@@ -22,13 +22,14 @@ support.
 The registered
 `docs/audits/2026-08-27-structural-remediation-ledger.md` remains the canonical
 queue. Six open P0 tool/config/artifact/provenance defects remain, including
-GPROV-001 durable post-tool action journaling. The ledger also covers
-immediate resource and security work, the Q3 benchmark program, later product gates, and the
-dependency-ordered course of action. GTOOL-001 is now protected-main source:
-search globs must be relative and traversal-free, every candidate resolves
-inside its originating root, and the opened descriptor is checked before
-metadata or content is read. The dirty avatar checkout remains untouched on its
-older branch.
+GPROV-001 durable post-tool action journaling. The implementation boundary is
+explicit operator review of the committed design before an implementation plan
+or runtime work begins. The ledger also covers immediate resource and security
+work, the Q3 benchmark program, later product gates, and the dependency-ordered
+course of action. GTOOL-001 is now protected-main source: search globs must be
+relative and traversal-free, every candidate resolves inside its originating
+root, and the opened descriptor is checked before metadata or content is read.
+The dirty avatar checkout remains untouched on its older branch.
 
 Current GitHub reconciliation established:
 
