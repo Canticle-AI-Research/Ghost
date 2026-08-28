@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-action-provenance-boundaries-published-20260827`
 supersedes: `ghost-action-provenance-boundaries-qualified-20260827`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#058`
 created_at: `2026-08-27T20:48:43-05:00`
 
