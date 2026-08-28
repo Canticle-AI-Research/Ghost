@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 
 from ghost.application import extract_tool_attempts
 from ghost.command_result import CommandResult
@@ -83,9 +84,44 @@ def test_no_tools_avoids_an_empty_network_write(seam_http) -> None:
     assert len(seam_http.calls) == before
 
 
-class _Msg:
-    def __init__(self, **kw):
-        self.__dict__.update(kw)
+@pytest.mark.parametrize(
+    "attempt",
+    [
+        ToolAttempt(name="read_file", request="{}", output="ok", ok="false"),  # type: ignore[arg-type]
+        ToolAttempt(name="run_command", request="{}", output="ok", ok=True, exit_code=False),  # type: ignore[arg-type]
+        ToolAttempt(name="run_command", request="{}", output="bad", ok=True, exit_code=3),
+        ToolAttempt(name="read_file", request="{}", output="ok", ok=True, duration_ms=float("nan")),
+        ToolAttempt(name="read_file", request="{}", output="ok", ok=True, duration_ms=10**1000),
+    ],
+)
+def test_malformed_adapter_evidence_fails_closed_at_seam_egress(
+    seam_http, attempt: ToolAttempt
+) -> None:
+    with SeamMemory(_settings(), client=seam_http) as memory:
+        turn = memory.begin_turn("malformed evidence", thread_id="thread-a")
+        assert memory.record_actions(turn, [attempt]) == ()
+
+    sent = seam_http.calls[-1][1]["attempts"][0]
+    assert sent["ok"] is False
+
+
+_MISSING = object()
+
+
+def _Msg(**kw):
+    """Build real framework messages so role exclusivity is exercised."""
+
+    if "tool_call_id" not in kw:
+        return AIMessage(content=kw.pop("content", ""), **kw)
+    status = kw.pop("status", _MISSING)
+    message = ToolMessage(**kw)
+    if status is _MISSING:
+        object.__setattr__(message, "status", None)
+    elif status not in ("success", "error"):
+        object.__setattr__(message, "status", status)
+    else:
+        object.__setattr__(message, "status", status)
+    return message
 
 
 def test_extract_pairs_requests_to_results_by_id() -> None:
@@ -317,7 +353,13 @@ def test_nonzero_command_cannot_support_the_completed_outcome(seam_http) -> None
 
     class Graph:
         def invoke(self, input, *, context, config):
-            return {"messages": messages}
+            prompt = input["messages"][0]
+            return {
+                "messages": [
+                    HumanMessage(content=prompt["content"], id=prompt["id"]),
+                    *messages,
+                ]
+            }
 
     class RecordingMemory:
         def __init__(self, wrapped: SeamMemory) -> None:

@@ -72,6 +72,19 @@ nonzero; the adapter therefore validates the artifact and carries its real
 `ok`, `exit_code`, and `duration_ms` into the framework-free `ToolAttempt`.
 Absent, malformed, contradictory, or nonzero command artifacts fail closed.
 
+Every lifecycle invocation assigns the current human message the client turn
+ID. The adapter requires exactly one matching `HumanMessage`, scans only the
+messages after it, and uses mutually exclusive concrete `AIMessage` and
+`ToolMessage` roles. This prevents a persistent checkpoint from replaying an
+older tool result and prevents an assistant message with result-shaped extra
+fields from forging success. The framework-free SEAM adapter performs a second
+exact-type, fail-closed validation before transport.
+
+This boundary does not make completed actions crash-atomic. If a tool changes
+the machine and a later graph/model/checkpoint step raises before `invoke`
+returns, the lifecycle still lacks a returned attempt to submit. GPROV-001
+tracks the required durable idempotent journal and reconciliation protocol.
+
 ## Layer 4: interfaces
 
 The landed interface is `ghost.cli`. It owns argument parsing, interactive

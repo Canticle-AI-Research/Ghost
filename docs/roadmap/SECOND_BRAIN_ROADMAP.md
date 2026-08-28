@@ -193,7 +193,7 @@ Measured on the current working tree:
 | Live-provider tests (approval-gated) | 8 |
 | Python source under `src/` and `tools/` | 4,145 lines |
 | Python test code | 4,318 lines |
-| Largest module | `src/ghost/seam_memory.py` (435 lines) |
+| Largest module | `src/ghost/seam_memory.py` (425 lines) |
 
 Measured with `uv run pytest --collect-only`, Python-file `wc -l` totals under
 `src/`, `tools/`, and `tests/`, and a descending per-file line count on this
@@ -256,7 +256,7 @@ raise the ceiling.
 Deliverables:
 
 1. tighten the ceiling toward 300 lines as modules split;
-2. split the current largest surfaces — `src/ghost/seam_memory.py` (435
+2. split the current largest surfaces — `src/ghost/seam_memory.py` (425
    lines), `tools/branding/assets.py` (402 lines), and `src/ghost/tools.py`
    (360 lines) — along their real seams;
 3. keep one clear responsibility per module, with the layer rules in

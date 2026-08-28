@@ -44,6 +44,16 @@ chronology, transient branch state, or duplicated implementation narratives.
   versioned `ghost.command_result/v1` artifact, and the framework adapter must
   preserve its real exit code and duration. Missing, malformed, contradictory,
   or nonzero command results fail closed and cannot become passed support.
+- Action extraction is scoped to the unique current-turn human-message ID.
+  Only actual framework `AIMessage` requests and `ToolMessage` results may form
+  an exchange; prior checkpoint history, role-confused messages, duplicate or
+  whitespace IDs, and type-coerced fields cannot become current support.
+- The opaque SEAM egress revalidates every framework-free `ToolAttempt` with
+  exact types. Malformed booleans, boolean exit codes, non-finite durations,
+  and command success/exit contradictions are sent as failed evidence.
+- Current-turn scoping closes checkpoint replay, not the post-tool crash
+  window. A durable, idempotent action journal is still required before Ghost
+  may claim exactly-once provenance when graph execution fails after a tool.
 - Raw command output is fingerprinted by SEAM rather than stored as memory.
 
 ## Tool and authority policy

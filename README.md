@@ -188,6 +188,14 @@ state, and truncation state. Ghost validates that artifact before recording the
 attempt; a missing, malformed, or internally inconsistent command artifact is
 recorded as failed and cannot supply outcome support.
 
+Persistent checkpoints contain earlier turns, so Ghost anchors action
+extraction to the current user message ID and ignores all older exchanges.
+Only an actual assistant tool request followed by an actual tool result with
+one exact nonblank ID can support a turn. The SEAM boundary validates the plain
+attempt again without boolean or integer coercion. This prevents replay and
+message-role confusion; durable post-tool crash recovery remains an explicit
+open architecture item in the structural ledger.
+
 A refused command is returned to Ghost as a tool result, not an exception, so
 declining one command does not end the conversation.
 

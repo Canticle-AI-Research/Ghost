@@ -10,7 +10,7 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 | Default branch | protected `main`; use live Git reconciliation for its moving head |
 | GTOOL-001 implementation merge | `ba68c3852a1787efd568d3e221c2935f5a9af4b7` through PR #21 |
 | GTOOL-002 implementation merge | `783964699d93c12725c7f91bdccf2bb1ecfcd008` through PR #24 |
-| Publication record | merged through PR #22; closeout merge `5113177cb0094ca0d9b5712fcc39f2b9a15bca56` |
+| Publication record | GTOOL-002 closeout merged through PR #25; protected `main@9abbff12e722f88b42347791e8dc8c261c35f28f` |
 | Stage 1 evaluation substrate | merged through PR #10: 20 frozen cases, real-lifecycle BIL-0 smoke/verifier/gate, step ceiling, final clean baseline |
 | Public transport | merged through PR #8; public install and opaque transport source published |
 | Primary working branch | `agent/avatar-u1-temporal-integration`, preserving avatar-only WIP on its earlier reviewed base |
@@ -20,6 +20,8 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 | Relevant current merges | GTOOL-001 PR #21 and GTOOL-002 PR #24 |
 | Open PRs | Dependabot #2, #4, and #16 through #20 |
 | Exact GTOOL-002 CI | source run `33125003964` and merge-head run `33125085772` green; all six required jobs passed |
+| Final publication CI | exact `main@9abbff1` run `33125372170` green; all six required jobs passed |
+| Local provenance repair | focused `fix/action-provenance-boundaries` candidate; not merged, released, or deployed |
 | Structural audit | remediation ledger merged through PR #21 |
 | GTOOL-001 | search containment merged through PR #21; exact PR and merge-head CI passed |
 | GTOOL-002 | typed shell-result truth merged through PR #24; exact PR and merge-head CI passed |
@@ -134,8 +136,9 @@ closeout is recorded in the latest history entry after completion.
 
 ## Known defects and blockers
 
-1. GTOOL-001 and GTOOL-002 are closed on protected main. Five P0 defects still
-   block unattended shell use or artifact publication.
+1. GTOOL-001 and GTOOL-002 are closed on protected main. Six P0 defects still
+   block unattended shell use or artifact publication; GPROV-001 requires
+   durable action journaling after the local replay/role repair publishes.
 2. Resource ownership, SQLite cleanup, checkpoint permissions/defaults,
    transport/request bounds, and controlled CLI failure surfaces remain open.
 3. A tracked repository-root `checkpoints.db` is generated execution state and
@@ -156,6 +159,7 @@ closeout is recorded in the latest history entry after completion.
 
 ## Next issue
 
-Begin GTOOL-003 separately, proving timeout terminates and reaps the full
-process group without delayed descendant side effects. Keep the avatar checkout
-untouched and keep shell use off until the P0 tool/config lane closes.
+Publish the focused current-turn provenance boundary, then specify and close
+GPROV-001 with coordinated SEAM idempotency and crash-reconciliation tests.
+GTOOL-003 follows. Keep the avatar checkout untouched and keep shell use off
+until the P0 tool/config/provenance lane closes.

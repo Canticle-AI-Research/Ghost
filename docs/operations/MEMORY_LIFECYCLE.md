@@ -132,3 +132,16 @@ traceback, provider payload, partial assistant output, and hidden reasoning do
 not cross the boundary. SEAM records a rejected outcome and does not compile or
 ingest the failed exchange; Ghost then re-raises the original failure to its
 operator or supervisor.
+
+Checkpoint message history is cumulative. Ghost marks each new human message
+with its client turn ID and extracts actions only after that unique marker, so
+an older successful tool result cannot be recorded again for a later turn.
+Concrete assistant-request and tool-result roles and exact, nonblank call IDs
+are mandatory; SEAM egress revalidates the resulting plain attempt without
+type coercion.
+
+One failure window remains: a tool may finish and then the graph may raise
+before returning its messages. The failed SEAM turn is closed, but the current
+lifecycle cannot recover the completed action from the raised invocation.
+GPROV-001 requires a durable idempotent action journal/outbox and restart
+reconciliation before exactly-once action provenance can be claimed.

@@ -6,12 +6,13 @@
 
 ## Current headline
 
-**2026-08-27 — protected `main` includes GTOOL-001 search containment and
-GTOOL-002 shell-result truth. PR #24 merged exact source `88a4cac` as
-implementation merge `7839646`; exact-source run `33125003964` and exact
-merge-head run `33125085772` passed all six required provider-free jobs.** No
-package or service is released or deployed, and the BIL-0 evaluation remains
-explicitly non-claimable.
+**2026-08-27 — protected `main@9abbff1` includes GTOOL-001 search containment,
+GTOOL-002 shell-result truth, and its PR #25 publication closeout; final
+exact-main run `33125372170` passed all six required provider-free jobs.** A
+focused action-provenance candidate now closes checkpoint-history replay,
+message-role confusion, malformed SEAM egress, and non-UTF-8 shell decoding;
+it is local source until its own PR merges. No package or service is released
+or deployed, and the BIL-0 evaluation remains explicitly non-claimable.
 
 A versioned command artifact now carries the real exit code and duration
 through LangChain transport. Ghost validates message pairing and artifact
@@ -20,7 +21,8 @@ support.
 
 The registered
 `docs/audits/2026-08-27-structural-remediation-ledger.md` remains the canonical
-queue. Five open P0 tool/config/artifact defects remain. The ledger also covers
+queue. Six open P0 tool/config/artifact/provenance defects remain, including
+GPROV-001 durable post-tool action journaling. The ledger also covers
 immediate resource and security work, the Q3 benchmark program, later product gates, and the
 dependency-ordered course of action. GTOOL-001 is now protected-main source:
 search globs must be relative and traversal-free, every candidate resolves
@@ -41,8 +43,8 @@ Current GitHub reconciliation established:
 - Ghost has no repository secret and no assigned runner; and
 - paid live provider/service validation remains manual and was not run.
 
-The provider-free current repair tree passes Ruff, 281 tests with eight live
-tests deselected, build, and the Stage 1 BIL-0 validate/smoke/verify/gate path.
+The provider-free current repair tree passes the complete local suite, Ruff,
+build, and the Stage 1 BIL-0 validate/smoke/verify/gate path.
 That green baseline does not negate the reproduced defects or qualify a
 release, live provider, hosted service, G1/G2 exit, or production claim.
 
@@ -85,17 +87,19 @@ qualification, release, and deployment remain incomplete.
 
 ## Active order
 
-1. Close GTOOL-003 process-tree timeout behavior, then GTOOL-004 output bounds,
-   authority-config, and sdist boundaries one issue at a time.
-2. Repair resource ownership, checkpoint permissions/defaults, transport
+1. Design and close GPROV-001 durable idempotent action journaling with the
+   exact SEAM contract, then close GTOOL-003 process-tree timeout behavior.
+2. Close GTOOL-004 output bounds, authority-config, and sdist boundaries one
+   issue at a time.
+3. Repair resource ownership, checkpoint permissions/defaults, transport
    bounds, and controlled CLI failures.
-3. Reconcile roadmap/blueprint truth and extend recorded-fact gates to catch
+4. Reconcile roadmap/blueprint truth and extend recorded-fact gates to catch
    the drift identified by the structural ledger.
-4. Build the provider-free Q3 Stage 2 comparison and stop before paid execution
+5. Build the provider-free Q3 Stage 2 comparison and stop before paid execution
    for explicit model/cost approval.
-5. Process dependency PRs against the new regressions, then complete legal and
+6. Process dependency PRs against the new regressions, then complete legal and
    release-candidate gates.
-6. Resume the isolated avatar only through its separate reviewed workstream.
+7. Resume the isolated avatar only through its separate reviewed workstream.
 
 ## Resume route
 

@@ -1397,3 +1397,43 @@ bounds. Shell use remains off for normal operation; no package release,
 deployment, live provider/SEAM qualification, Q3 quality claim, or avatar
 publication occurred. Advance the handoff to the protected-main publication
 record and resume with GTOOL-003 in a separate focused slice.
+
+## HISTORY#057 — Qualify current-turn action-provenance boundaries
+- Date: `2026-08-27T20:38:40-05:00`
+- Agent: `codex`
+- Status: `done`
+- Topics: `architecture, continuity, docs, gates, handoff, history, memory, provenance, security, status, tests, tools, trust, verification`
+- Commits: `working-tree`
+- Refs: `src/ghost/application.py, src/ghost/lifecycle.py, src/ghost/seam_memory.py, src/ghost/tools.py, tests/test_tool_transport.py, tests/test_reasoning_graph.py, docs/audits/2026-08-27-action-provenance-boundaries.md, docs/handoffs/2026-08-27-action-provenance-boundaries-qualified.md`
+- Supersedes: `HISTORY#056`
+- Verification: `focused application/lifecycle/reasoning/tool/failure and real LangGraph ToolNode plus SQLite tests passed; uv run python -m tools.history.closeout --agent codex passed through HISTORY#057; uv run ruff check . passed; uv run pytest --durations=10 passed 317 provider-free tests with 8 live tests deselected; uv build and git diff --check passed; CodeRabbit CLI 0.7.5 returned zero findings on the initial code delta and one minor closed-row documentation finding on the complete candidate, which was repaired; the automated rerun was rate-limited; manual final review found and repaired an oversized-integer duration overflow path; no provider/live/paid/package-publication/release/deployment lane ran`
+
+A post-publication review reproduced two action-provenance gaps beyond
+GTOOL-002. Because LangGraph returns cumulative checkpoint history, the adapter
+could resubmit a prior turn's successful tool exchange as current evidence.
+Because it scanned attributes without concrete role exclusivity, an assistant
+message carrying result-shaped fields could also satisfy both sides of an
+exchange. `SeamMemory.record_actions` then used Python coercion, including the
+unsafe `bool("false")` behavior.
+
+Each lifecycle invocation now marks the new human message with its client turn
+ID. The framework adapter requires exactly one matching concrete
+`HumanMessage`, scans only later messages, and pairs concrete `AIMessage`
+requests with concrete `ToolMessage` results using exact nonblank string IDs,
+names, and status. The framework-free attempt is validated a second time at
+SEAM egress: malformed booleans, boolean exit codes, non-finite durations, and
+command success/exit contradictions fail closed. Shell decoding replaces
+non-UTF-8 bytes rather than losing terminal evidence to `UnicodeDecodeError`.
+
+Tracked real-transport regressions now use `StateGraph`, `ToolNode`,
+`SqliteSaver`, persisted command artifacts, and two turns on one thread. This
+corrects the earlier documentation claim that ToolNode/SQLite coverage already
+existed.
+
+The review also reproduced a deeper crash window and registers GPROV-001 as a
+new P0. When a tool completes and a later model, recursion, or checkpoint step
+raises, the graph returns no message state and Ghost can close `/fail` without
+submitting the completed action. This slice does not claim crash atomicity or
+exactly-once action provenance; the next work requires a coordinated durable,
+idempotent Ghost/SEAM action journal and reconciliation protocol. Six P0 issues
+remain open. The avatar and other pre-existing dirty worktrees were preserved.

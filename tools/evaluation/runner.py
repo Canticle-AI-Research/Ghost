@@ -199,7 +199,7 @@ def _evaluate_case(case: dict[str, Any], *, arm: str) -> dict[str, Any]:
             user_input=case["prompt"],
             thread_id=f"eval-{case['id']}",
             max_steps=case["budgets"]["max_steps"],
-            extract_attempts=lambda result: result["_attempts"],
+            extract_attempts=lambda result, _turn_message_id: result["_attempts"],
         )
     except _ScriptedRejection:
         answer = ""
