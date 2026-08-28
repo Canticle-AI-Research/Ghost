@@ -87,7 +87,8 @@ learning surface is [the Ghost engineering wiki](README.md).
 
 | Document | Covers |
 |---|---|
-| [handoffs/2026-08-27-action-provenance-boundaries-qualified.md](handoffs/2026-08-27-action-provenance-boundaries-qualified.md) | current local action-provenance qualification and GPROV-001 route |
+| [handoffs/2026-08-27-action-provenance-boundaries-published.md](handoffs/2026-08-27-action-provenance-boundaries-published.md) | current protected-main action-provenance result and GPROV-001 route |
+| [handoffs/2026-08-27-action-provenance-boundaries-qualified.md](handoffs/2026-08-27-action-provenance-boundaries-qualified.md) | superseded local action-provenance qualification |
 | [handoffs/2026-08-27-gtool-002-shell-result-truth-published.md](handoffs/2026-08-27-gtool-002-shell-result-truth-published.md) | superseded protected-main shell-result truth publication |
 | [handoffs/2026-08-27-gtool-002-shell-result-truth-qualified.md](handoffs/2026-08-27-gtool-002-shell-result-truth-qualified.md) | superseded locally qualified shell-result truth |
 | [handoffs/2026-08-27-gtool-001-search-containment-published.md](handoffs/2026-08-27-gtool-001-search-containment-published.md) | superseded protected-main search-containment result |

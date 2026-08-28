@@ -1,12 +1,12 @@
 # Action-provenance boundary review and repair
 
 - Date: 2026-08-27
-- Governing history: HISTORY#057 qualification
+- Governing history: HISTORY#057 qualification; HISTORY#058 publication
 - Base: protected `main@9abbff12e722f88b42347791e8dc8c261c35f28f`
 - Scope: checkpointed message transport, tool request/result identity, SEAM
   action egress, shell decoding, and the remaining post-tool crash window
-- Boundary: provider-free local source candidate; not yet merged, released, or
-  deployed; no paid provider or live SEAM service was used
+- Boundary: protected-main provider-free source; not released or deployed; no
+  paid provider or live SEAM service was used
 
 ## Outcome
 
@@ -85,3 +85,13 @@ one action record without converting failure into accepted support.
   publication gates recorded in the successor handoff/history;
 - no live-provider, paid-service, package publication, release, deployment, or
   avatar lane ran.
+
+## Protected publication evidence
+
+PR #26 merged exact source
+`21782f5024897e89dfb4d8f25369a2cc59999ea8` as implementation merge
+`2a85aab6e0696ef64844e80ade70fe75628e9634`. Exact-source Public CI run
+`33133873076` and exact merge-head run `33133921906` each passed repository
+hygiene, brand assets, Python 3.11, Python 3.13, package smoke, and Stage 1
+evaluations. The Node 20 action-runtime deprecation warning remains a separate
+non-blocking GCI-001 maintenance item.

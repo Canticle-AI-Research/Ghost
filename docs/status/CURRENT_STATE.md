@@ -21,7 +21,8 @@ and roadmap maturity. `PROJECT_STATUS.md` is the compact router to this page.
 | Open PRs | Dependabot #2, #4, and #16 through #20 |
 | Exact GTOOL-002 CI | source run `33125003964` and merge-head run `33125085772` green; all six required jobs passed |
 | Final publication CI | exact `main@9abbff1` run `33125372170` green; all six required jobs passed |
-| Local provenance repair | focused `fix/action-provenance-boundaries` candidate; not merged, released, or deployed |
+| Action-provenance implementation | PR #26 exact source `21782f5024897e89dfb4d8f25369a2cc59999ea8`; implementation merge `2a85aab6e0696ef64844e80ade70fe75628e9634` |
+| Exact action-provenance CI | source run `33133873076` and merge-head run `33133921906` green; all six required jobs passed |
 | Structural audit | remediation ledger merged through PR #21 |
 | GTOOL-001 | search containment merged through PR #21; exact PR and merge-head CI passed |
 | GTOOL-002 | typed shell-result truth merged through PR #24; exact PR and merge-head CI passed |
@@ -50,6 +51,9 @@ This is a status snapshot, not authorization to delete or combine local files.
 - Versioned, framework-free command result with real exit/duration/truncation
   truth; failed, invalid, mismatched, or unpairable command evidence cannot
   become passed SEAM support.
+- Unique current-turn message markers, concrete request/result roles, and
+  strict SEAM egress prevent prior checkpoint actions or coerced fields from
+  becoming current support.
 - Tool decisions and SEAM verifications supporting accepted outcomes.
 - CLI one-shot and interactive surfaces.
 - Reproducible brand toolkit and expression assets.
@@ -159,7 +163,7 @@ closeout is recorded in the latest history entry after completion.
 
 ## Next issue
 
-Publish the focused current-turn provenance boundary, then specify and close
-GPROV-001 with coordinated SEAM idempotency and crash-reconciliation tests.
-GTOOL-003 follows. Keep the avatar checkout untouched and keep shell use off
-until the P0 tool/config/provenance lane closes.
+Specify and close GPROV-001 with coordinated SEAM idempotency and
+crash-reconciliation tests. GTOOL-003 follows. Keep the avatar checkout
+untouched and keep shell use off until the P0 tool/config/provenance lane
+closes.

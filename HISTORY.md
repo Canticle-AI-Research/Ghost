@@ -1437,3 +1437,28 @@ submitting the completed action. This slice does not claim crash atomicity or
 exactly-once action provenance; the next work requires a coordinated durable,
 idempotent Ghost/SEAM action journal and reconciliation protocol. Six P0 issues
 remain open. The avatar and other pre-existing dirty worktrees were preserved.
+
+## HISTORY#058 — Publish current-turn action-provenance boundaries
+- Date: `2026-08-27T20:48:43-05:00`
+- Agent: `codex`
+- Status: `done`
+- Topics: `architecture, ci, continuity, docs, gates, handoff, history, memory, provenance, security, status, tests, tools, trust, verification`
+- Commits: `2a85aab6e0696ef64844e80ade70fe75628e9634`
+- Refs: `https://github.com/Canticle-AI-Research/Ghost/pull/26, https://github.com/Canticle-AI-Research/Ghost/actions/runs/33133873076, https://github.com/Canticle-AI-Research/Ghost/actions/runs/33133921906, docs/audits/2026-08-27-action-provenance-boundaries.md, docs/handoffs/2026-08-27-action-provenance-boundaries-published.md`
+- Supersedes: `HISTORY#057`
+- Verification: `exact PR source 21782f5024897e89dfb4d8f25369a2cc59999ea8 passed all six protected jobs in run 33133873076; PR #26 merged as 2a85aab6e0696ef64844e80ade70fe75628e9634; exact merge-head run 33133921906 passed the same six jobs including hosted secret scanning; local qualification passed continuity closeout, Ruff, 317 provider-free tests with 8 live tests deselected, build, diff hygiene, pre-commit gates, and review; no provider/live/paid/package-publication/release/deployment lane ran`
+
+The current-turn action-provenance repair is protected-main source. One unique
+human-message marker scopes action extraction after cumulative SQLite
+checkpoint replay; concrete assistant-request and tool-result roles prevent
+role-confused evidence; exact call identity and strict framework-free egress
+prevent type coercion from creating passed support. Real ToolNode/SQLite
+regressions and hosted provider-free CI carry those boundaries forward.
+
+This publication does not close GPROV-001. Ghost still needs a coordinated
+durable, idempotent Ghost/SEAM action journal to reconcile a completed tool
+when a later graph, model, recursion, checkpoint, delivery, or restart failure
+prevents normal result return. Six P0 issues remain; normal shell use and
+artifact publication remain blocked. No release, deployment, provider-live,
+Q3 quality, exactly-once, or avatar publication claim is made. Advance the
+handoff to the protected publication record and resume with GPROV-001.

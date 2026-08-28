@@ -1,13 +1,14 @@
 # Ghost handoff registry
 
-latest: `docs/handoffs/2026-08-27-action-provenance-boundaries-qualified.md`
+latest: `docs/handoffs/2026-08-27-action-provenance-boundaries-published.md`
 
 Exactly one document is current. Rows are newest first and form one linear
 supersession chain.
 
 | path | handoff_id | status | history | supersedes |
 |---|---|---|---|---|
-| `docs/handoffs/2026-08-27-action-provenance-boundaries-qualified.md` | ghost-action-provenance-boundaries-qualified-20260827 | current | HISTORY#057 | ghost-gtool-002-shell-result-truth-published-20260827 |
+| `docs/handoffs/2026-08-27-action-provenance-boundaries-published.md` | ghost-action-provenance-boundaries-published-20260827 | current | HISTORY#058 | ghost-action-provenance-boundaries-qualified-20260827 |
+| `docs/handoffs/2026-08-27-action-provenance-boundaries-qualified.md` | ghost-action-provenance-boundaries-qualified-20260827 | superseded | HISTORY#057 | ghost-gtool-002-shell-result-truth-published-20260827 |
 | `docs/handoffs/2026-08-27-gtool-002-shell-result-truth-published.md` | ghost-gtool-002-shell-result-truth-published-20260827 | superseded | HISTORY#056 | ghost-gtool-002-shell-result-truth-qualified-20260827 |
 | `docs/handoffs/2026-08-27-gtool-002-shell-result-truth-qualified.md` | ghost-gtool-002-shell-result-truth-qualified-20260827 | superseded | HISTORY#055 | ghost-gtool-001-search-containment-published-20260827 |
 | `docs/handoffs/2026-08-27-gtool-001-search-containment-published.md` | ghost-gtool-001-search-containment-published-20260827 | superseded | HISTORY#053 | ghost-gtool-001-search-containment-qualified-20260827 |

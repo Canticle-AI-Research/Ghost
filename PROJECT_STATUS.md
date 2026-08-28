@@ -6,13 +6,13 @@
 
 ## Current headline
 
-**2026-08-27 — protected `main@9abbff1` includes GTOOL-001 search containment,
-GTOOL-002 shell-result truth, and its PR #25 publication closeout; final
-exact-main run `33125372170` passed all six required provider-free jobs.** A
-focused action-provenance candidate now closes checkpoint-history replay,
-message-role confusion, malformed SEAM egress, and non-UTF-8 shell decoding;
-it is local source until its own PR merges. No package or service is released
-or deployed, and the BIL-0 evaluation remains explicitly non-claimable.
+**2026-08-27 — protected source includes the current-turn action-provenance
+repair. PR #26 merged exact source `21782f5` as implementation merge `2a85aab`;
+exact-source run `33133873076` and exact merge-head run `33133921906` passed all
+six required provider-free jobs.** The repair closes checkpoint-history replay,
+message-role confusion, malformed SEAM egress, and non-UTF-8 shell decoding.
+No package or service is released or deployed, and the BIL-0 evaluation remains
+explicitly non-claimable.
 
 A versioned command artifact now carries the real exit code and duration
 through LangChain transport. Ghost validates message pairing and artifact
