@@ -3,12 +3,13 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `c302c2b920b89714a9f0d04f1ee1b64671673f19427bc00c20f1060796b971f8`
-- Entries: `57`
-- Latest: `HISTORY#057`
+- Source SHA-256: `a376e285cabf5a5474b32bf65aaa32fb4928eb306c3fb1e0da17ada56c97c8f1`
+- Entries: `58`
+- Latest: `HISTORY#058`
 
 | ID | Date | Status | Commit | Topics | Supersedes | Event |
 |---:|---|---|---|---|---|---|
+| 058 | 2026-08-27 | done | `2a85aab6e069` | architecture, ci, continuity, docs, gates, handoff, history, memory, provenance, security, status, tests, tools, trust, verification | #057 | Publish current-turn action-provenance boundaries |
 | 057 | 2026-08-27 | done | `working-tree` | architecture, continuity, docs, gates, handoff, history, memory, provenance, security, status, tests, tools, trust, verification | #056 | Qualify current-turn action-provenance boundaries |
 | 056 | 2026-08-27 | done | `783964699d93` | architecture, ci, continuity, docs, gates, handoff, history, provenance, security, status, tests, tools, trust, verification | #055 | Publish truthful shell-result evidence |
 | 055 | 2026-08-27 | done | `working-tree` | architecture, continuity, docs, gates, handoff, history, provenance, security, status, tests, tools, trust, verification | #054 | Close the shell-result truth gap |

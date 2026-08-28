@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-action-provenance-boundaries-qualified-20260827`
 supersedes: `ghost-gtool-002-shell-result-truth-published-20260827`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#057`
 created_at: `2026-08-27T20:38:40-05:00`
 
