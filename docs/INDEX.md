@@ -87,6 +87,7 @@ learning surface is [the Ghost engineering wiki](README.md).
 
 | Document | Covers |
 |---|---|
+| [handoffs/2026-08-27-gprov-001-heartbeat-design.md](handoffs/2026-08-27-gprov-001-heartbeat-design.md) | current approved GPROV-001 design and implementation-planning boundary |
 | [handoffs/2026-08-27-action-provenance-boundaries-published.md](handoffs/2026-08-27-action-provenance-boundaries-published.md) | current protected-main action-provenance result and GPROV-001 route |
 | [handoffs/2026-08-27-action-provenance-boundaries-qualified.md](handoffs/2026-08-27-action-provenance-boundaries-qualified.md) | superseded local action-provenance qualification |
 | [handoffs/2026-08-27-gtool-002-shell-result-truth-published.md](handoffs/2026-08-27-gtool-002-shell-result-truth-published.md) | superseded protected-main shell-result truth publication |
@@ -138,10 +139,11 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [updates/2026-08-25-public-runner-safety.md](updates/2026-08-25-public-runner-safety.md) | merged public/private CI safety change |
 | [updates/2026-08-25-stage1-status-correction.md](updates/2026-08-25-stage1-status-correction.md) | append-only correction of Stage 1 completion claim |
 
-## Local avatar specification
+## Design specifications
 
 | Document | Covers | State |
 |---|---|---|
+| [superpowers/specs/2026-08-27-gprov-001-heartbeat-journal-design.md](superpowers/specs/2026-08-27-gprov-001-heartbeat-journal-design.md) | durable Ghost action journal, heartbeat reconciliation, and additive SEAM contract | operator-approved design; not implemented |
 | [superpowers/specs/2026-08-21-desktop-avatar.md](superpowers/specs/2026-08-21-desktop-avatar.md) | v1 face/motion/IPC behavior | local design, not merged |
 
 ## Maintenance rule

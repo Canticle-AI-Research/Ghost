@@ -87,8 +87,9 @@ qualification, release, and deployment remain incomplete.
 
 ## Active order
 
-1. Design and close GPROV-001 durable idempotent action journaling with the
-   exact SEAM contract, then close GTOOL-003 process-tree timeout behavior.
+1. Implement and close GPROV-001 from the approved heartbeat action-journal
+   design with the exact SEAM contract, then close GTOOL-003 process-tree
+   timeout behavior.
 2. Close GTOOL-004 output bounds, authority-config, and sdist boundaries one
    issue at a time.
 3. Repair resource ownership, checkpoint permissions/defaults, transport

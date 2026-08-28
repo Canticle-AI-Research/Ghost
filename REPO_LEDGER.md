@@ -54,6 +54,11 @@ chronology, transient branch state, or duplicated implementation narratives.
 - Current-turn scoping closes checkpoint replay, not the post-tool crash
   window. A durable, idempotent action journal is still required before Ghost
   may claim exactly-once provenance when graph execution fails after a tool.
+- The operator-approved GPROV-001 design uses a separate Ghost SQLite action
+  journal plus an in-process reconciliation heartbeat and SEAM-owned
+  idempotency. The journal is safety state; the heartbeat supplies liveness.
+  This remains planned until implementation and coordinated contract evidence
+  pass, and it never implies universally exactly-once external effects.
 - Raw command output is fingerprinted by SEAM rather than stored as memory.
 
 ## Tool and authority policy

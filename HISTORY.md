@@ -1462,3 +1462,33 @@ prevents normal result return. Six P0 issues remain; normal shell use and
 artifact publication remain blocked. No release, deployment, provider-live,
 Q3 quality, exactly-once, or avatar publication claim is made. Advance the
 handoff to the protected publication record and resume with GPROV-001.
+
+## HISTORY#059 — Specify heartbeat action reconciliation
+- Date: `2026-08-27T23:11:59-05:00`
+- Agent: `codex`
+- Status: `in-progress`
+- Topics: `architecture, continuity, docs, handoff, history, memory, operations, provenance, security, tools, trust, verification`
+- Commits: `working-tree`
+- Refs: `docs/superpowers/specs/2026-08-27-gprov-001-heartbeat-journal-design.md, docs/handoffs/2026-08-27-gprov-001-heartbeat-design.md, docs/audits/2026-08-27-action-provenance-boundaries.md`
+- Supersedes: `HISTORY#058`
+- Verification: `uv run python -m tools.history.closeout --agent codex rebuilt HISTORY_INDEX.md, verified the one-head handoff chain and 59 entries, audited recorded facts, and passed its 43 documentation/history tests; uv run ruff check . passed; uv run pytest passed 317 provider-free tests with 8 live tests deselected; uv build built the source distribution and wheel; git diff --check passed; changed-path and staged secret-shaped scans passed; CodeRabbit CLI 0.7.5 reviewed the initial tracked documentation delta against origin/main with zero findings, then its complete staged-delta rerun was rate-limited on the unconnected repository after the free allowance was exhausted; manual final review covered the specification and handoff; no runtime, provider, live SEAM, package publication, release, deployment, or avatar lane ran`
+
+The operator approved a hybrid crash-recovery architecture for GPROV-001.
+Ghost will commit `STARTED` before the real framework tool call, persist one
+typed terminal state afterward, and reconcile pending records through an
+in-process heartbeat. A separate operator-private SQLite journal supplies
+safety across graph, checkpoint, delivery, and process failure; the heartbeat
+supplies liveness through immediate, periodic, startup, and bounded shutdown
+synchronization.
+
+SEAM remains the canonical provenance and support authority. The additive
+public contract uses stable `(SEAM turn_id, tool_call_id)` identity,
+idempotent begin and terminal delivery, and a metadata-only action-sync route.
+Recovered digest-only records never receive passed verification support, and a
+rejected turn remains rejected even when its action is reconciled later.
+
+This is an approved design candidate, not implementation evidence. It does not
+close GPROV-001, alter frozen Stage 1 artifacts, enable shell use, modify
+private SEAM/MIRL code, or establish a release, deployment, live-provider,
+quality, production, or universally exactly-once claim. The isolated avatar,
+repository-guidelines, and runner-safety worktrees remain untouched.
