@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-gprov-001-heartbeat-design-20260827`
 supersedes: `ghost-action-provenance-boundaries-published-20260827`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#059`
 created_at: `2026-08-27T23:11:59-05:00`
 

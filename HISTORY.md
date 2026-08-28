@@ -1492,3 +1492,25 @@ close GPROV-001, alter frozen Stage 1 artifacts, enable shell use, modify
 private SEAM/MIRL code, or establish a release, deployment, live-provider,
 quality, production, or universally exactly-once claim. The isolated avatar,
 repository-guidelines, and runner-safety worktrees remain untouched.
+
+## HISTORY#060 — Publish heartbeat action-journal design evidence
+- Date: `2026-08-28T00:10:12-05:00`
+- Agent: `codex`
+- Status: `done`
+- Topics: `architecture, ci, continuity, docs, gates, handoff, history, memory, operations, provenance, security, status, tools, trust, verification`
+- Commits: `working-tree`
+- Refs: `https://github.com/Canticle-AI-Research/Ghost/pull/28, https://github.com/Canticle-AI-Research/Ghost/actions/runs/33143820536, https://github.com/Canticle-AI-Research/Ghost/actions/runs/33143873137, docs/superpowers/specs/2026-08-27-gprov-001-heartbeat-journal-design.md, docs/handoffs/2026-08-28-gprov-001-heartbeat-design-published.md`
+- Supersedes: `HISTORY#059`
+- Verification: `protected source 4a354918c784b82ffb788f7dc26bff469a6b70de passed all six required jobs in run 33143820536; PR #28 merged it as 16542118476edb1f4f68263f88b23276562e372b; exact merge-head run 33143873137 passed the same six jobs including hosted secret scanning; uv run python -m tools.history.closeout --agent codex rebuilt HISTORY_INDEX.md, verified the one-head handoff chain and 60 entries, audited recorded facts, and passed its 43 documentation/history tests; uv run ruff check . passed; uv run pytest passed 317 provider-free tests with 8 live tests deselected; uv build built the source distribution and wheel; git diff --check passed; CodeRabbit CLI's complete candidate review was unavailable because the unconnected repository's free allowance was exhausted; no runtime, provider, live SEAM, package publication, release, deployment, or avatar lane ran`
+
+PR #28 merged the design candidate exact source
+`4a354918c784b82ffb788f7dc26bff469a6b70de` as protected-main
+`16542118476edb1f4f68263f88b23276562e372b`. Exact-source Public CI run
+`33143820536` and exact merge-head Public CI run `33143873137` each passed
+`repo-hygiene`, `brand-assets`, `tests (3.11)`, `tests (3.13)`,
+`package-smoke`, and `stage1-evals`.
+
+This successor makes the published design, its evidence, and its explicit
+operator-review-before-planning boundary the single current handoff. The
+publication does not implement GPROV-001 or make a release, deployment,
+provider-live, quality, production, or universally exactly-once claim.

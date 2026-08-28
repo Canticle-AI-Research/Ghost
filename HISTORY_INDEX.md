@@ -3,12 +3,13 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `48e543b498cab6f43e4f8e4b524c64ff6cecd0574c0a7b0054362bbea3edd6b1`
-- Entries: `59`
-- Latest: `HISTORY#059`
+- Source SHA-256: `29178197a3defb9b86f14096792fe3c1a9e6a7973cdaae46c0fa48b2480f993c`
+- Entries: `60`
+- Latest: `HISTORY#060`
 
 | ID | Date | Status | Commit | Topics | Supersedes | Event |
 |---:|---|---|---|---|---|---|
+| 060 | 2026-08-28 | done | `working-tree` | architecture, ci, continuity, docs, gates, handoff, history, memory, operations, provenance, security, status, tools, trust, verification | #059 | Publish heartbeat action-journal design evidence |
 | 059 | 2026-08-27 | in-progress | `working-tree` | architecture, continuity, docs, handoff, history, memory, operations, provenance, security, tools, trust, verification | #058 | Specify heartbeat action reconciliation |
 | 058 | 2026-08-27 | done | `2a85aab6e069` | architecture, ci, continuity, docs, gates, handoff, history, memory, provenance, security, status, tests, tools, trust, verification | #057 | Publish current-turn action-provenance boundaries |
 | 057 | 2026-08-27 | done | `working-tree` | architecture, continuity, docs, gates, handoff, history, memory, provenance, security, status, tests, tools, trust, verification | #056 | Qualify current-turn action-provenance boundaries |
