@@ -19,6 +19,7 @@ from ghost.path_policy import PathPolicyError, read_search_candidate
 from ghost.seam_memory import SeamMemory
 from ghost.tools import (
     make_read_file,
+    make_run_command,
     make_seam_recall,
     make_search_repo,
 )
@@ -396,3 +397,15 @@ def test_every_tool_is_read_only_by_name_and_description(tmp_path: Path) -> None
             f"unreviewed tool in Ghost's tool set: {built.name}"
         )
         assert built.description, f"{built.name} has no description for the model"
+
+
+def test_run_command_replaces_non_utf8_output_instead_of_crashing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("GHOST_ENABLE_SHELL", "1")
+    built = make_run_command(workdir=tmp_path, timeout=5)
+
+    content, artifact = built.func("printf '\\377'")
+
+    assert "\ufffd" in content
+    assert artifact["exit_code"] == 0

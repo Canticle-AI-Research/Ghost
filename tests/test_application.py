@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from langchain_core.messages import HumanMessage
+
 from ghost import application
 from ghost.application import GhostAgent
 from ghost.config import GhostSettings
@@ -25,7 +27,13 @@ class FakeGraph:
         self.context = context
         self.config = config
         assert input["messages"][-1]["content"] == "What do you remember?"
-        return {"messages": [FakeMessage("A grounded answer.")]}
+        prompt = input["messages"][-1]
+        return {
+            "messages": [
+                HumanMessage(content=prompt["content"], id=prompt["id"]),
+                FakeMessage("A grounded answer."),
+            ]
+        }
 
 
 class FakeMemory:

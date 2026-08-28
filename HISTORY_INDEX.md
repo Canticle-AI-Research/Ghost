@@ -3,12 +3,13 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `1f36c9dabcc9e030b707cc5ba55f46c518c5f15eed81a67ff11da15d9c0d1a3d`
-- Entries: `56`
-- Latest: `HISTORY#056`
+- Source SHA-256: `c302c2b920b89714a9f0d04f1ee1b64671673f19427bc00c20f1060796b971f8`
+- Entries: `57`
+- Latest: `HISTORY#057`
 
 | ID | Date | Status | Commit | Topics | Supersedes | Event |
 |---:|---|---|---|---|---|---|
+| 057 | 2026-08-27 | done | `working-tree` | architecture, continuity, docs, gates, handoff, history, memory, provenance, security, status, tests, tools, trust, verification | #056 | Qualify current-turn action-provenance boundaries |
 | 056 | 2026-08-27 | done | `783964699d93` | architecture, ci, continuity, docs, gates, handoff, history, provenance, security, status, tests, tools, trust, verification | #055 | Publish truthful shell-result evidence |
 | 055 | 2026-08-27 | done | `working-tree` | architecture, continuity, docs, gates, handoff, history, provenance, security, status, tests, tools, trust, verification | #054 | Close the shell-result truth gap |
 | 054 | 2026-08-27 | done | `5113177cb009` | ci, continuity, correction, docs, history, status, verification | #053 | Make protected-main status non-self-referential |

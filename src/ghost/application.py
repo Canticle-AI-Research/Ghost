@@ -15,6 +15,7 @@ from typing import Any
 
 from deepagents import create_deep_agent
 from langchain.chat_models import init_chat_model
+from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langgraph.checkpoint.sqlite import SqliteSaver
 
 from .command_result import CommandResult, InvalidCommandResult
@@ -102,6 +103,10 @@ class _ToolExchange:
     valid: bool = True
 
 
+class ToolEvidenceError(RuntimeError):
+    """The framework result cannot prove which messages belong to this turn."""
+
+
 def _build_tools(
     settings: GhostSettings,
     memory: MemoryLayer,
@@ -146,7 +151,9 @@ def _init_model(settings: GhostSettings) -> Any:
     return init_chat_model(settings.model, **options)
 
 
-def extract_tool_attempts(result: dict[str, Any]) -> tuple[ToolAttempt, ...]:
+def extract_tool_attempts(
+    result: dict[str, Any], turn_message_id: str | None = None
+) -> tuple[ToolAttempt, ...]:
     """Translate LangChain messages into framework-free tool attempts.
 
     This is adapter work by definition -- `ToolMessage` and `tool_calls` are
@@ -155,6 +162,19 @@ def extract_tool_attempts(result: dict[str, Any]) -> tuple[ToolAttempt, ...]:
     before the tool returned, which is recorded as a failure rather than
     dropped.
     """
+
+    messages = result.get("messages") or []
+    if turn_message_id is not None:
+        markers = [
+            index
+            for index, message in enumerate(messages)
+            if isinstance(message, HumanMessage) and message.id == turn_message_id
+        ]
+        if len(markers) != 1:
+            raise ToolEvidenceError(
+                "framework result does not contain exactly one current-turn marker"
+            )
+        messages = messages[markers[0] + 1 :]
 
     exchanges: list[_ToolExchange] = []
     request_indices: dict[str, list[int]] = {}
@@ -165,31 +185,48 @@ def extract_tool_attempts(result: dict[str, Any]) -> tuple[ToolAttempt, ...]:
         for index in request_indices.get(call_id, []):
             exchanges[index].valid = False
 
-    for message in result.get("messages") or []:
-        for call in getattr(message, "tool_calls", None) or []:
-            call_id = str(call.get("id") or "")
-            exchange = _ToolExchange(
-                name=str(call.get("name") or "tool"),
-                request=json.dumps(
-                    call.get("args") or {}, sort_keys=True, default=str
-                )[:300],
-            )
-            if not call_id:
-                # A framework can execute a ToolCall whose ID is blank. Keep
-                # the write visible as failed evidence instead of silently
-                # dropping it from the lifecycle because it cannot be paired.
-                exchange.valid = False
+    for message in messages:
+        if isinstance(message, AIMessage):
+            for call in message.tool_calls:
+                raw_call_id = call.get("id")
+                call_id = (
+                    raw_call_id
+                    if isinstance(raw_call_id, str) and raw_call_id.strip()
+                    else ""
+                )
+                raw_name = call.get("name")
+                valid_name = isinstance(raw_name, str) and bool(raw_name.strip())
+                name = raw_name if valid_name else "tool"
+                args = call.get("args")
+                valid_args = isinstance(args, dict)
+                request = (
+                    json.dumps(args, sort_keys=True, default=str)[:300]
+                    if valid_args
+                    else "{}"
+                )
+                exchange = _ToolExchange(
+                    name=name,
+                    request=request,
+                    valid=valid_name and valid_args,
+                )
+                if not call_id:
+                    # A framework can execute a ToolCall whose ID is blank.
+                    # Keep the write visible as failed evidence instead of
+                    # silently dropping it because it cannot be paired.
+                    exchange.valid = False
+                    exchanges.append(exchange)
+                    continue
+                prior = request_indices.setdefault(call_id, [])
+                if prior or call_id in invalid_ids:
+                    invalidate(call_id)
+                    exchange.valid = False
+                prior.append(len(exchanges))
                 exchanges.append(exchange)
+        elif isinstance(message, ToolMessage):
+            raw_call_id = message.tool_call_id
+            if not isinstance(raw_call_id, str) or not raw_call_id.strip():
                 continue
-            prior = request_indices.setdefault(call_id, [])
-            if prior or call_id in invalid_ids:
-                invalidate(call_id)
-                exchange.valid = False
-            prior.append(len(exchanges))
-            exchanges.append(exchange)
-        call_id = getattr(message, "tool_call_id", None)
-        if call_id:
-            resolved_id = str(call_id)
+            resolved_id = raw_call_id
             indices = request_indices.get(resolved_id, [])
             if len(indices) != 1 or resolved_id in invalid_ids:
                 invalidate(resolved_id)
@@ -199,10 +236,12 @@ def extract_tool_attempts(result: dict[str, Any]) -> tuple[ToolAttempt, ...]:
                 invalidate(resolved_id)
                 continue
             exchange.output = message_text(message)
-            exchange.status = str(getattr(message, "status", "error"))
-            exchange.artifact = getattr(message, "artifact", None)
-            result_name = getattr(message, "name", None)
-            exchange.result_name = None if result_name is None else str(result_name)
+            exchange.status = (
+                message.status if isinstance(message.status, str) else "error"
+            )
+            exchange.artifact = message.artifact
+            result_name = message.name
+            exchange.result_name = result_name if isinstance(result_name, str) else None
             exchange.result_seen = True
 
     attempts: list[ToolAttempt] = []

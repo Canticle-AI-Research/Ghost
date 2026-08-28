@@ -349,6 +349,8 @@ def make_run_command(
                 cwd=str(resolved_workdir),
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=limit,
                 check=False,
             )

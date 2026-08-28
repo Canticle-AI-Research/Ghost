@@ -87,7 +87,8 @@ learning surface is [the Ghost engineering wiki](README.md).
 
 | Document | Covers |
 |---|---|
-| [handoffs/2026-08-27-gtool-002-shell-result-truth-published.md](handoffs/2026-08-27-gtool-002-shell-result-truth-published.md) | current protected-main shell-result truth and GTOOL-003 route |
+| [handoffs/2026-08-27-action-provenance-boundaries-qualified.md](handoffs/2026-08-27-action-provenance-boundaries-qualified.md) | current local action-provenance qualification and GPROV-001 route |
+| [handoffs/2026-08-27-gtool-002-shell-result-truth-published.md](handoffs/2026-08-27-gtool-002-shell-result-truth-published.md) | superseded protected-main shell-result truth publication |
 | [handoffs/2026-08-27-gtool-002-shell-result-truth-qualified.md](handoffs/2026-08-27-gtool-002-shell-result-truth-qualified.md) | superseded locally qualified shell-result truth |
 | [handoffs/2026-08-27-gtool-001-search-containment-published.md](handoffs/2026-08-27-gtool-001-search-containment-published.md) | superseded protected-main search-containment result |
 | [handoffs/2026-08-27-gtool-001-search-containment-qualified.md](handoffs/2026-08-27-gtool-001-search-containment-qualified.md) | superseded locally qualified search-containment repair |
@@ -121,6 +122,7 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [handoffs/2026-08-25-documentation-foundation.md](handoffs/2026-08-25-documentation-foundation.md) | locally qualified documentation predecessor |
 | [handoffs/2026-08-21-desktop-pet.md](handoffs/2026-08-21-desktop-pet.md) | registered predecessor avatar boundary |
 | [audits/INDEX.md](audits/INDEX.md) | dated audit registry |
+| [audits/2026-08-27-action-provenance-boundaries.md](audits/2026-08-27-action-provenance-boundaries.md) | current-turn extraction, strict SEAM egress, real checkpoint regressions, and GPROV-001 crash-window report |
 | [audits/2026-08-27-gtool-002-shell-result-truth.md](audits/2026-08-27-gtool-002-shell-result-truth.md) | GTOOL-002 typed command-result and fail-closed lifecycle closure report |
 | [audits/2026-08-27-structural-remediation-ledger.md](audits/2026-08-27-structural-remediation-ledger.md) | unified structural defects, benchmark gaps, improvements, TODOs, and dependency-ordered course of action |
 | [audits/2026-08-25-public-runner-safety-closure.md](audits/2026-08-25-public-runner-safety-closure.md) | exact merge, hosted-run, settings, and runner-boundary evidence |

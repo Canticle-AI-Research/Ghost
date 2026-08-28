@@ -213,17 +213,7 @@ class SeamMemory:
 
         if not attempts:
             return ()
-        serialized = [
-            {
-                "name": str(attempt.name),
-                "request": str(attempt.request),
-                "output": str(attempt.output or ""),
-                "ok": bool(attempt.ok),
-                "exit_code": attempt.exit_code,
-                "duration_ms": attempt.duration_ms,
-            }
-            for attempt in attempts
-        ]
+        serialized = [attempt.to_payload() for attempt in attempts]
         body = self._post(
             "/v1/agent/turns/actions",
             {

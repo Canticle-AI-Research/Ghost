@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from langchain_core.messages import HumanMessage
 
 from ghost.application import GhostAgent
 from ghost.config import GhostSettings
@@ -156,7 +157,13 @@ def test_a_successful_turn_does_not_finalize_as_failed() -> None:
 
     class _OkGraph:
         def invoke(self, input, *, context, config):
-            return {"messages": [_Message()]}
+            prompt = input["messages"][0]
+            return {
+                "messages": [
+                    HumanMessage(content=prompt["content"], id=prompt["id"]),
+                    _Message(),
+                ]
+            }
 
     memory = _RecordingMemory()
     ghost = GhostAgent(_settings(Path("unused.db")), memory=memory, graph=_OkGraph())

@@ -9,6 +9,23 @@
   GitHub inspection; no paid provider, live SEAM service, release, deployment,
   push, or merge was performed
 
+## 2026-08-27 action-provenance review update
+
+GTOOL-002 is protected-main source, but a post-publication review reproduced
+two additional action-provenance defects. Cumulative SQLite checkpoint history
+caused a prior successful tool exchange to be submitted again on a later turn,
+and result-shaped fields attached to an assistant message could satisfy the
+old permissive extractor. The focused GPROV boundary repair scopes extraction
+to one unique current-turn human marker, requires concrete request/result
+roles, validates IDs and fields exactly, and revalidates plain attempts at the
+SEAM egress. Real ToolNode plus SQLite regressions now cover persistence and
+two-turn non-replay.
+
+That repair does not close the deeper crash window: when a tool completes and
+the graph raises afterward, `invoke` never returns the completed message to the
+lifecycle. GPROV-001 is therefore a new open P0 and the next architecture item.
+With GTOOL-001 and GTOOL-002 closed, six P0 issues remain open.
+
 ## Executive finding
 
 Ghost has a strong continuity spine and a green provider-free baseline, but it
@@ -64,8 +81,9 @@ deleted.
 |---|---|---|---|---|---|
 | GST-001 | reproduced | `src/ghost/cli.py`, configuration | `ghost` automatically loads `.env.local` from the current working directory. A directory-controlled file can enable the account-level shell without approval and redirect `SEAM_BASE_URL`; an existing process token could then be sent to the redirected endpoint. | Authority-widening settings come only from an explicit operator-owned config source or process/CLI input; CWD files cannot enable shell, disable approval, or redirect a credentialed endpoint; negative tests cover an untrusted working directory. | none |
 | GST-002 | reproduced | `src/ghost/config.py` | `_flag` documents “unrecognized means default” but returns false for every unrecognized value. A typo such as `GHOST_SHELL_APPROVAL=treu` disables the default-on approval gate. | Boolean parsing is strict or fail-closed; invalid approval values produce a controlled startup error or preserve approval; table-driven tests cover empty, valid, invalid, and case variants. | GST-001 |
-| GTOOL-001 | reproduced, CodeRabbit major | `src/ghost/tools.py::make_search_repo` | Repository search does not resolve each candidate before reading it. An in-root symlink can expose an out-of-root file; `..` and absolute globs are also not rejected. | Reject absolute/traversal globs; resolve every candidate; prove containment before stat/read/format; add symlink, traversal, absolute-glob, loop, and race-oriented negative tests for every configured root. | none |
-| GTOOL-002 | reproduced | `src/ghost/tools.py`, `src/ghost/application.py` | `run_command` returns `exit=3` as ordinary text, while LangChain marks the tool message successful. `extract_tool_attempts` therefore records `ok=true` and `exit_code=0`, allowing SEAM to treat a failed action as passed support. | Return/transport a typed command result; preserve the real exit code and status through `ToolMessage` extraction and `/actions`; a nonzero command must never yield a passed verification ID or support an accepted outcome. | none |
+| GTOOL-001 | closed on protected main, historical reproduction | `src/ghost/tools.py::make_search_repo` | Repository search did not resolve each candidate before reading it. An in-root symlink could expose an out-of-root file; `..` and absolute globs were also not rejected. | Closed through PR #21 with symlink, traversal, absolute-glob, loop, root-position, and descriptor-race regressions; exact source and merge-head CI passed. | none |
+| GTOOL-002 | closed on protected main, historical reproduction | `src/ghost/tools.py`, `src/ghost/application.py` | `run_command` returned `exit=3` as ordinary text, while LangChain marked the tool message successful. The old extractor recorded `ok=true` and `exit_code=0`. | Closed through PR #24 with versioned command artifacts, real exit-code propagation, fail-closed pairing, and exact source/merge-head CI. The later current-turn boundary is recorded separately in the action-provenance update and GPROV-001. | none |
+| GPROV-001 | reproduced | `src/ghost/application.py`, `src/ghost/lifecycle.py`, SEAM action contract | A tool can complete and change the machine, then a later model, recursion, or checkpoint failure can make `graph.invoke` raise before messages return. Ghost closes the turn through `/fail` but submits no `/actions` batch, so the completed effect has no durable action record. | Journal tool intent and terminal result durably with stable `(SEAM turn_id, tool_call_id)` identity; use an idempotent outbox/action route; reconcile interrupted, retried, and restarted turns; prove exactly one action record for post-tool model failure, recursion failure, checkpoint-write failure, delivery loss, and restart. | coordinated SEAM contract; current-turn scoping must remain green |
 | GTOOL-003 | reproduced | `src/ghost/tools.py::make_run_command` | The timeout kills the immediate shell but not its process group. A child survived the one-second timeout and wrote a marker afterward. | Start a separate process group/session, terminate then kill the whole group on timeout, reap descendants, and prove no delayed side effect occurs after the tool returns. Define Windows behavior explicitly if supported. | GTOOL-002 |
 | GTOOL-004 | observed | `src/ghost/tools.py::make_run_command` | `capture_output=True` buffers stdout/stderr without a byte ceiling and truncates only after the process exits. A noisy command can exhaust memory before the documented output cap applies. | Stream output under a hard combined byte ceiling, continue draining or terminate safely, return a typed truncation flag, and stress-test output well above the cap without proportional memory growth. | GTOOL-002, GTOOL-003 |
 | GPKG-001 | observed | Hatch sdist configuration, tracked `checkpoints.db` | The sdist includes the tracked execution-state database, `.github`, full internal history/handoffs/audits, tests, evaluation runs, templates, and reserved branding. The wheel is narrow, but the source artifact violates the intended generated-state and release-membership boundary. | Remove the tracked database through a reviewed cleanup; define explicit sdist include/exclude rules; assert exact wheel/sdist manifests; fail on databases, env files, local paths, caches, unapproved brand/avatar assets, or private/generated state. | preserve history via a new entry and path-move/tombstone decision |
@@ -116,7 +134,7 @@ deleted.
 
 | ID | State | Work | Exit evidence |
 |---|---|---|---|
-| GARCH-001 | observed | Split `src/ghost/seam_memory.py` (435 lines), `tools/branding/assets.py` (402), and `src/ghost/tools.py` (360) on real responsibility seams; ratchet the 450-line ceiling toward 300. | layering tests, unchanged public behavior, no raised ceiling |
+| GARCH-001 | observed | Split `src/ghost/seam_memory.py` (425 lines), `tools/branding/assets.py` (402), and `src/ghost/tools.py` (360) on real responsibility seams; ratchet the 450-line ceiling toward 300. | layering tests, unchanged public behavior, no raised ceiling |
 | GARCH-002 | observed gap | Add a static type gate and ship `py.typed` if Ghost intends to expose typed APIs. Remove or justify unused public shapes such as `TurnResult`. | strict type command in CI plus package marker test |
 | GARCH-003 | observed gap | Preserve `SystemMessage` metadata/content-block semantics when injecting recall; qualify current LangChain/DeepAgents behavior before framework upgrades. | focused middleware compatibility tests across string and block content |
 | GOPS-003 | observed gap | Add bounded health-probe execution, backup schedule/retention/encryption/off-host policy, RPO/RTO, SEAM recovery, migration, and deployed restore drills. | timed probes and recorded disaster-recovery exercise |

@@ -20,6 +20,7 @@ happy driving DeepAgents, a raw provider loop, or a fake in a test.
 
 from __future__ import annotations
 
+import math
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from typing import Any, Protocol
@@ -52,6 +53,57 @@ class ToolAttempt:
     ok: bool = True
     exit_code: int | None = None
     duration_ms: float | None = None
+
+    def to_payload(self) -> dict[str, object]:
+        """Return a strict, fail-closed payload for the SEAM boundary.
+
+        Adapters are replaceable and therefore cannot be trusted to preserve
+        Python types. In particular, ``bool("false")`` is true and ``bool`` is
+        an ``int`` subclass. Never let either language quirk turn malformed
+        evidence into a passed verification.
+        """
+
+        valid_name = isinstance(self.name, str) and bool(self.name.strip())
+        valid_request = isinstance(self.request, str)
+        valid_output = isinstance(self.output, str)
+        valid_ok = type(self.ok) is bool
+        valid_exit = self.exit_code is None or type(self.exit_code) is int
+        valid_duration = self.duration_ms is None
+        if type(self.duration_ms) in (int, float):
+            try:
+                valid_duration = (
+                    math.isfinite(self.duration_ms) and self.duration_ms >= 0
+                )
+            except OverflowError:
+                valid_duration = False
+        valid = (
+            valid_name
+            and valid_request
+            and valid_output
+            and valid_ok
+            and valid_exit
+            and valid_duration
+        )
+
+        name = self.name if valid_name else "tool"
+        request = self.request if valid_request else ""
+        output = self.output if valid_output else ""
+        exit_code = self.exit_code if valid_exit else None
+        duration_ms = self.duration_ms if valid_duration else None
+        ok = self.ok if valid else False
+
+        if name == "run_command":
+            # A command succeeds only when both independent signals agree.
+            ok = ok is True and type(exit_code) is int and exit_code == 0
+
+        return {
+            "name": name,
+            "request": request,
+            "output": output,
+            "ok": ok,
+            "exit_code": exit_code,
+            "duration_ms": duration_ms,
+        }
 
 
 @dataclass(frozen=True, slots=True)
@@ -137,7 +189,10 @@ def run_turn(
     thread_id: str,
     turn_id: str | None = None,
     max_steps: int = 25,
-    extract_attempts: Callable[[dict[str, Any]], Sequence[ToolAttempt]] | None = None,
+    extract_attempts: Callable[
+        [dict[str, Any], str], Sequence[ToolAttempt]
+    ]
+    | None = None,
     admit_memory: Callable[[str, str], MemoryAdmission] | None = None,
 ) -> str:
     """Execute one turn under SEAM's contract, and return the answer.
@@ -173,7 +228,15 @@ def run_turn(
     completion_accepted = False
     try:
         result = graph.invoke(
-            {"messages": [{"role": "user", "content": resolved_input}]},
+            {
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": resolved_input,
+                        "id": resolved_turn_id,
+                    }
+                ]
+            },
             context=GhostTurnContext(seam_memory=seam_turn.rendered_memory),
             config={
                 "configurable": {"thread_id": thread_id},
@@ -184,7 +247,11 @@ def run_turn(
         if not messages:
             raise RuntimeError("Ghost returned no messages")
         answer = message_text(messages[-1])
-        attempts = tuple(extract_attempts(result)) if extract_attempts else ()
+        attempts = (
+            tuple(extract_attempts(result, resolved_turn_id))
+            if extract_attempts
+            else ()
+        )
         verification_ids = (
             memory.record_actions(seam_turn, attempts) if attempts else ()
         )

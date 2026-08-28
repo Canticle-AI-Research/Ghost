@@ -128,16 +128,24 @@ Ghost/
 5  SeamMemory receives bounded public evidence through HTTP
 6  middleware adds escaped JSONL evidence to the system message transiently
 7  DeepAgent invokes the model and executes permitted tools
-8  adapter translates provider ToolMessages into plain ToolAttempt records;
-   run_command truth comes from a validated versioned artifact, never text or
-   framework transport status
+8  adapter finds the unique current-turn HumanMessage marker, scans only later
+   messages, and translates concrete AIMessage/ToolMessage pairs into plain
+   ToolAttempt records; run_command truth comes from a validated versioned
+   artifact, never text or framework transport status
 9  SeamMemory sends one bounded attempt per tool for server-side verification;
-   nonzero or invalid command artifacts cannot return passed support
+   exact-type egress validation means nonzero, coerced, role-confused, replayed,
+   or invalid command evidence cannot return passed support
 10 memory_policy classifies the completed exchange as admit/reject/review
 11 SeamMemory submits the pair and admission decision through the public API
 12 SEAM records the decision; only admit compiles durable memory
 13 CLI prints the answer and closes HTTP/checkpoint connections on exit
 ```
+
+The current implementation records returned tool exchanges after graph
+completion. It does not yet durably journal a tool before and after execution,
+so a later graph failure can still leave a real side effect without an action
+batch. GPROV-001 is the stop-ship design/implementation gate for idempotent
+action journaling, retry/restart reconciliation, and exactly-once SEAM delivery.
 
 Detailed sequence:
 
