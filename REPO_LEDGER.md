@@ -35,6 +35,16 @@ chronology, transient branch state, or duplicated implementation narratives.
   `src/ghost/specialists.py`; role names grant no authority, and every
   delegation carries its complete budget, tool/root scope, memory dimensions,
   parent turn, terminal state, and opaque evidence references.
+- The planned Research Librarian is a Ghost specialist, not a memory owner.
+  Ghost owns bounded query planning, candidate ranking, source-selection
+  reasons, and synthesis; SEAM owns deterministic acquisition, immutable source
+  manifests, canonical RAW/MIRL, lifecycle, provenance, and retrieval. Primary
+  future harness targets are Codex, Claude, DeepSeek, and local model runtimes.
+  Workflows are CLI-first where an official CLI exists; MCP requires explicit
+  fallback utility that the CLI or official non-MCP API cannot supply. The
+  SuperML reference supplies workflow shape only, not plugin startup injection,
+  a copied knowledge store, or provider-specific authority. This remains
+  planned under G3a and is not implemented behavior.
 - Recall precedes execution; completed successful turns receive a recorded
   admit/reject/review decision, and only admitted turns are ingested afterward.
 - Failed turns are rejected and never ingested as completed memory.

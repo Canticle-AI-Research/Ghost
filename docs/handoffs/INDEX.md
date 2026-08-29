@@ -1,13 +1,14 @@
 # Ghost handoff registry
 
-latest: `docs/handoffs/2026-08-28-gprov-001-heartbeat-design-published.md`
+latest: `docs/handoffs/2026-08-29-research-acquisition-roadmap.md`
 
 Exactly one document is current. Rows are newest first and form one linear
 supersession chain.
 
 | path | handoff_id | status | history | supersedes |
 |---|---|---|---|---|
-| `docs/handoffs/2026-08-28-gprov-001-heartbeat-design-published.md` | ghost-gprov-001-heartbeat-design-published-20260828 | current | HISTORY#060 | ghost-gprov-001-heartbeat-design-20260827 |
+| `docs/handoffs/2026-08-29-research-acquisition-roadmap.md` | ghost-research-acquisition-roadmap-20260829 | current | HISTORY#061 | ghost-gprov-001-heartbeat-design-published-20260828 |
+| `docs/handoffs/2026-08-28-gprov-001-heartbeat-design-published.md` | ghost-gprov-001-heartbeat-design-published-20260828 | superseded | HISTORY#060 | ghost-gprov-001-heartbeat-design-20260827 |
 | `docs/handoffs/2026-08-27-gprov-001-heartbeat-design.md` | ghost-gprov-001-heartbeat-design-20260827 | superseded | HISTORY#059 | ghost-action-provenance-boundaries-published-20260827 |
 | `docs/handoffs/2026-08-27-action-provenance-boundaries-published.md` | ghost-action-provenance-boundaries-published-20260827 | superseded | HISTORY#058 | ghost-action-provenance-boundaries-qualified-20260827 |
 | `docs/handoffs/2026-08-27-action-provenance-boundaries-qualified.md` | ghost-action-provenance-boundaries-qualified-20260827 | superseded | HISTORY#057 | ghost-gtool-002-shell-result-truth-published-20260827 |

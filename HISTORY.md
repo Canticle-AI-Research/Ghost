@@ -1514,3 +1514,33 @@ This successor makes the published design, its evidence, and its explicit
 operator-review-before-planning boundary the single current handoff. The
 publication does not implement GPROV-001 or make a release, deployment,
 provider-live, quality, production, or universally exactly-once claim.
+
+## HISTORY#061 — Record grounded Research Librarian roadmap boundary
+- Date: `2026-08-29T14:34:17-05:00`
+- Agent: `codex`
+- Status: `planned`
+- Topics: `agent, architecture, continuity, docs, handoff, history, memory, provenance, roadmap, status, trust`
+- Commits: `working-tree`
+- Refs: `docs/roadmap/SECOND_BRAIN_ROADMAP.md, REPO_LEDGER.md, PROJECT_STATUS.md, docs/handoffs/2026-08-29-research-acquisition-roadmap.md`
+- Supersedes: `HISTORY#060`
+- Verification: `documentation and continuity gates pending; no runtime, provider, acquisition, ingestion, benchmark, package, release, deployment, or avatar lane ran`
+
+Ghost G3a records a planned, deferred Research Librarian. Ghost owns bounded
+query planning, candidate ranking, source-selection reasons, and synthesis;
+SEAM Track V owns deterministic Hugging Face/arXiv acquisition, immutable
+source manifests, canonical RAW/MIRL, lifecycle, provenance, and retrieval.
+Primary future harness targets are Codex, Claude, DeepSeek, and local model
+runtimes. Existing Grok and Antigravity launchers remain current facts and are
+not removed or deprecated by this priority.
+
+The SuperML reference contributes only the cross-client specialist, grounded
+knowledge, and evaluation-loop pattern. Its startup context injection,
+plugin/MCP knowledge store, and separate memory authority are not copied.
+Provider-neutral CLI use is preferred; MCP remains an authorized fallback only
+for required functionality unavailable through a CLI or official non-MCP API.
+
+This entry changes roadmap and continuity records only. It does not register
+an agent, add a harness, call a model or provider, acquire or ingest a source,
+run a benchmark, or change runtime behavior. G3a remains behind G1/G2, the G3
+specialist contract, SEAM Track V, and a sealed Q3 comparison. GPROV-001 stays
+the immediate runtime priority under its existing operator-review boundary.

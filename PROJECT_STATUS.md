@@ -80,11 +80,17 @@ qualification, release, and deployment remain incomplete.
   quality comparison remains incomplete.
 - Stage 3 graph-aware specialists: provider-free contract published; no
   model-backed topology or improvement evidence.
+- Grounded Research Librarian: planned/deferred under G3a. Ghost will own
+  orchestration across Codex, Claude, DeepSeek, and local runtimes; SEAM Track V
+  will own deterministic acquisition and canonical provenance. Neither side is
+  implemented or qualified by this status record.
 - Stage 4 measured product: exploratory recovery/health foundation published;
   no hosted product or deployment.
 - Desktop avatar: local/in-progress parallel UX track, not a roadmap gate.
 - Multi-harness launchers: Ghost starts from `claude`, `codex`, `grok`, and
-  `agy`; the shared charter is still untracked outside the repository.
+  `agy`; the shared charter is still untracked outside the repository. The
+  planned primary targets for G3a are Codex, Claude, DeepSeek, and local model
+  runtimes; that priority does not erase the existing launchers.
 
 ## Active order
 
