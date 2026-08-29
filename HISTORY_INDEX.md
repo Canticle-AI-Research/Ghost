@@ -3,12 +3,13 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `29178197a3defb9b86f14096792fe3c1a9e6a7973cdaae46c0fa48b2480f993c`
-- Entries: `60`
-- Latest: `HISTORY#060`
+- Source SHA-256: `34e69a678304ee7fa15399ca97264686aa26cef4ac3310e3d79687f7530b6fbd`
+- Entries: `61`
+- Latest: `HISTORY#061`
 
 | ID | Date | Status | Commit | Topics | Supersedes | Event |
 |---:|---|---|---|---|---|---|
+| 061 | 2026-08-29 | planned | `working-tree` | agent, architecture, continuity, docs, handoff, history, memory, provenance, roadmap, status, trust | #060 | Record grounded Research Librarian roadmap boundary |
 | 060 | 2026-08-28 | done | `working-tree` | architecture, ci, continuity, docs, gates, handoff, history, memory, operations, provenance, security, status, tools, trust, verification | #059 | Publish heartbeat action-journal design evidence |
 | 059 | 2026-08-27 | in-progress | `working-tree` | architecture, continuity, docs, handoff, history, memory, operations, provenance, security, tools, trust, verification | #058 | Specify heartbeat action reconciliation |
 | 058 | 2026-08-27 | done | `2a85aab6e069` | architecture, ci, continuity, docs, gates, handoff, history, memory, provenance, security, status, tests, tools, trust, verification | #057 | Publish current-turn action-provenance boundaries |

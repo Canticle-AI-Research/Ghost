@@ -75,6 +75,7 @@ capability gate, and no track closes without its Q gates.
 | G1 dependable single agent | in progress | 20-case frozen BIL-0 suite + step ceiling implemented; live/release-candidate exit proof remains |
 | G2 deliberate memory | in progress | protected-main mechanisms cover admission/mutation/isolation; sealed quality comparison remains |
 | G3 graph-aware specialists | planned | provider-free envelope/provenance/failure contract exists; model-backed activation and comparison wait on G1/G2 |
+| G3a grounded Research Librarian | planned | orchestration contract recorded; SEAM acquisition adapters and frozen comparison remain prerequisites |
 | G4 measured product | exploratory | checkpoint recovery and redacted-health primitives exist; hosted product still waits on R4/G2 and production gates |
 | U0 static identity | done | SVG/PNG/ICO/faces and reproducible toolkit landed |
 | U0b multi-harness launchers | in progress | four launchers local; Grok/Antigravity definitions tracked; charter, Claude definition, and Codex profile external |
@@ -504,6 +505,46 @@ weakening permission, memory, provenance, or isolation guarantees, proven by a
 Q3 bundle comparing specialists against single-agent Ghost under identical
 budgets.
 
+### G3a — Grounded Research Librarian
+
+**Status: planned and deferred**
+
+Prerequisites: G1/G2 exit, the G3 specialist envelope, SEAM Track V's
+deterministic acquisition contract, and the applicable sealed Q3 baseline.
+This entry records architecture only; it does not register or run an agent,
+contact a provider, fetch a source, or create a second knowledge store.
+
+Ghost owns a persistent Research Librarian role that:
+
+- turns a bounded research goal into explicit queries and an acquisition plan;
+- ranks candidate papers, models, datasets, and code references;
+- records why each source was selected or rejected;
+- delegates deterministic fetch/normalize work to SEAM's Hugging Face and arXiv
+  adapters; and
+- synthesizes only from citation-bearing, provenance-linked evidence returned
+  through the existing Ghost/SEAM boundary.
+
+SEAM remains the only durable semantic memory and provenance authority. The
+agent never executes downloaded code, silently accepts gated/private content,
+rewrites source manifests, or interprets retrieval as permission to train a
+model. Provider-neutral CLI workflows are preferred; MCP is an authorized
+fallback only when required functionality cannot be reproduced through the
+provider's CLI or official non-MCP API.
+
+The useful SuperML pattern is one specialist workflow available across agent
+clients, grounded by a knowledge base and measured through an evaluation loop.
+Ghost does not copy SuperML's plugin startup injection, MCP-backed
+Leeroopedia store, provider-specific prompt authority, or separate memory
+owner. Primary future harness targets are Codex, Claude, DeepSeek, and local
+model runtimes; existing launchers remain current facts until replaced through
+their own reviewed workstream.
+
+Exit gate: the same frozen research task runs through each primary harness
+under identical source, budget, authority, and evidence constraints; every
+material claim resolves to exact SEAM provenance; no harness creates a second
+memory owner or provider-specific authority drift; and a sealed Q3 comparison
+names the baseline, costs, failures, and remaining limitations.
+
 ### G4 — Measured product
 
 **Status: exploratory**
@@ -632,6 +673,12 @@ Remaining: the charter itself still lives outside the repository at
 `~/.config/canticle-agents/ghost.md`, so a clean-room rebuild cannot yet
 reproduce it. Decide whether the charter belongs in this repository or in a
 tracked dotfiles source before calling this reproducible.
+
+Planned priority after the reproducible-charter gate: make Codex, Claude,
+DeepSeek, and local model runtimes the primary provider-neutral Ghost harness
+targets for G3a. This does not remove or deprecate the current Grok and
+Antigravity launchers, and it does not claim that DeepSeek or a local harness
+exists today.
 
 Exit gate: a new machine can install all four launchers and their charter from
 tracked sources, and each client demonstrably discovers `canticle-ghost`.

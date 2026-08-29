@@ -87,6 +87,7 @@ learning surface is [the Ghost engineering wiki](README.md).
 
 | Document | Covers |
 |---|---|
+| [handoffs/2026-08-29-research-acquisition-roadmap.md](handoffs/2026-08-29-research-acquisition-roadmap.md) | current planned Research Librarian and SEAM acquisition boundary; runtime priority remains GPROV-001 |
 | [handoffs/2026-08-28-gprov-001-heartbeat-design-published.md](handoffs/2026-08-28-gprov-001-heartbeat-design-published.md) | current protected-main GPROV-001 design publication and operator-review boundary |
 | [handoffs/2026-08-27-gprov-001-heartbeat-design.md](handoffs/2026-08-27-gprov-001-heartbeat-design.md) | superseded local GPROV-001 design candidate |
 | [handoffs/2026-08-27-action-provenance-boundaries-published.md](handoffs/2026-08-27-action-provenance-boundaries-published.md) | current protected-main action-provenance result and GPROV-001 route |

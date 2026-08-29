@@ -2,7 +2,7 @@
 
 handoff_id: `ghost-gprov-001-heartbeat-design-published-20260828`
 supersedes: `ghost-gprov-001-heartbeat-design-20260827`
-handoff_status: `current`
+handoff_status: `superseded`
 history: `HISTORY#060`
 created_at: `2026-08-28T00:10:12-05:00`
 
