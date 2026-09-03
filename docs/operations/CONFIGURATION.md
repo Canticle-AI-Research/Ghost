@@ -87,6 +87,24 @@ service-owned and are never configured through Ghost. `SEAM_BASE_URL` should
 use HTTPS outside trusted loopback. The service must implement the additive
 `/v1/agent/turns/*` routes documented in the architecture blueprint.
 
+## Desktop avatar variables
+
+The avatar is a presentation lane. It never decides whether a turn succeeded,
+and every one of these is off or inert unless the operator opts in. A missing
+or unreachable avatar is swallowed by `ghost.avatar.hook` so it cannot end a
+turn.
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `GHOST_AVATAR` | false | opt into turn-start/turn-end notifications from the CLI |
+| `GHOST_AVATAR_WS` | empty | explicit avatar bridge WebSocket URL; setting it also enables the hook |
+| `GHOST_SPRITE` | bundled `ghost_blob_sprite.png` | override the desktop pet's sprite sheet |
+| `GHOST_PET_X` | unset | initial pet window x position in pixels |
+| `GHOST_PET_Y` | unset | initial pet window y position in pixels |
+
+`GHOST_PET_X` and `GHOST_PET_Y` are read together; setting only one leaves the
+pet at its computed default position.
+
 ## Safe configuration practices
 
 - Keep `.env.local` mode 0600 and ignored.

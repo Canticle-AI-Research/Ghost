@@ -1,8 +1,16 @@
 # Desktop avatar architecture
 
-**Status: local and unmerged.** This page explains the current working-tree
-design so it can be recovered and rebuilt; it does not claim avatar behavior on
-`origin/main`.
+**Status: merged as a presentation lane; not a qualified capability.** The
+source, tests, overlay front-end, and the three referenced sprites are tracked.
+The avatar never decides whether a turn succeeded, and every entry point is off
+unless the operator opts in with `GHOST_AVATAR` or `GHOST_AVATAR_WS`.
+
+The generation intermediates that produced the sprites are deliberately not
+tracked; see `assets/avatar/README.md`. The GTK desktop pet additionally needs
+PyGObject, which is not a declared dependency, and resolves its sprites
+relative to the repository root -- it is a source-checkout tool. The packaged
+`ghost-avatar` entry point serves the overlay from inside the package and does
+not depend on that path.
 
 ## Two local render paths
 

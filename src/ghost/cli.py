@@ -12,6 +12,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from .application import GhostAgent
+from .avatar.hook import notify_turn_end, notify_turn_start
 from .config import GhostSettings
 from .lifeline import LifelineComponent, lifeline, touches_lifeline
 from .operations import backup_checkpoint, restore_checkpoint, verify_checkpoint
@@ -156,6 +157,25 @@ def _run_checkpoint_command(args: argparse.Namespace, settings: GhostSettings) -
     return 0
 
 
+def _run_turn(ghost: GhostAgent, prompt: str, *, thread_id: str) -> str:
+    """One invoke, with the desktop avatar following the turn when enabled.
+
+    The avatar is a presentation lane and must never decide whether a turn
+    succeeds. `notify_turn_end` is reached on every path out, including the
+    failure path, so an interrupted turn does not leave the avatar stuck in its
+    thinking state.
+    """
+
+    notify_turn_start(prompt)
+    try:
+        answer = ghost.invoke(prompt, thread_id=thread_id)
+    except BaseException:
+        notify_turn_end(ok=False)
+        raise
+    notify_turn_end(ok=True)
+    return answer
+
+
 def _lifeline_approval(
     components: Sequence[LifelineComponent],
 ) -> Callable[[str], bool]:
@@ -226,7 +246,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             settings, approve=_lifeline_approval(lifeline(settings))
         ) as ghost:
             if args.prompt:
-                print(ghost.invoke(" ".join(args.prompt), thread_id=args.thread_id))
+                prompt = " ".join(args.prompt)
+                print(_run_turn(ghost, prompt, thread_id=args.thread_id))
                 return 0
 
             print("Ghost is ready. Type /exit to leave.")
@@ -240,7 +261,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     return 0
                 if not prompt:
                     continue
-                print(f"ghost> {ghost.invoke(prompt, thread_id=args.thread_id)}")
+                print(f"ghost> {_run_turn(ghost, prompt, thread_id=args.thread_id)}")
     except KeyboardInterrupt:
         print("\nInterrupted.", file=sys.stderr)
         return 130

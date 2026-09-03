@@ -9,3 +9,15 @@
 __pycache__/
 *.egg-info/
 *.py[cod]
+
+# Avatar generation intermediates. The three sprites the code actually
+# references are tracked; the ~28MB of candidate iterations that produced them
+# are not. They are selection artifacts, and this repository is public, so
+# committing them would put them in history permanently for no runtime benefit.
+# See assets/avatar/README.md.
+assets/avatar/ghost_opt_*
+assets/avatar/ghost_blob_0*
+assets/avatar/ghost_blob_cut_*
+assets/avatar/ghost_bunny_front_*
+assets/avatar/ghost_blob_meshy*
+assets/avatar/*.glb

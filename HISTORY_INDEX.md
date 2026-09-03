@@ -3,12 +3,13 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `94a4825cc040ee963d04ab542b2f987389a0cbcfa588ab13515c858481b526a5`
-- Entries: `62`
-- Latest: `HISTORY#062`
+- Source SHA-256: `962a9fbb06b7a91c258d75caa6398e90b79bdef59962ea39f54aa9aa56bc39d6`
+- Entries: `63`
+- Latest: `HISTORY#063`
 
 | ID | Date | Status | Commit | Topics | Supersedes | Event |
 |---:|---|---|---|---|---|---|
+| 063 | 2026-09-03 | done | `working-tree` | avatar, build, cli, config, docs, packaging, status, tests, tools | — | Desktop avatar ported onto current main and published |
 | 062 | 2026-09-03 | done | `working-tree` | agent, architecture, cli, docs, memory, security, shell, tools, trust, verification | — | Ghost's lifeline, and operator authority above it |
 | 061 | 2026-09-03 | done | `working-tree` | agent, architecture, correction, docs, evaluation, gates, memory, operations, roadmap, tools, verification | — | Capability-versus-provenance audit and the benchmark-gated autopilot loop |
 | 060 | 2026-08-28 | done | `working-tree` | architecture, ci, continuity, docs, gates, handoff, history, memory, operations, provenance, security, status, tools, trust, verification | #059 | Publish heartbeat action-journal design evidence |
