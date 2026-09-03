@@ -79,6 +79,7 @@ dependencies = [
     { name = "langgraph" },
     { name = "langgraph-checkpoint-sqlite" },
     { name = "python-dotenv" },
+    { name = "websockets" },
 ]
 
 [package.dev-dependencies]
@@ -98,6 +99,7 @@ requires-dist = [
     { name = "langgraph", specifier = ">=1.0,<2" },
     { name = "langgraph-checkpoint-sqlite", specifier = ">=3.1,<4" },
     { name = "python-dotenv", specifier = ">=1.1,<2" },
+    { name = "websockets", specifier = ">=15,<16" },
 ]
 
 [package.metadata.requires-dev]

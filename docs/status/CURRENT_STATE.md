@@ -94,8 +94,11 @@ This is a status snapshot, not authorization to delete or combine local files.
 - Desktop sensing, movement direction, expressions, and avatar tests.
 - Generated image and GLB intermediary assets.
 
-The local avatar is not present on `origin/main`. Documentation must not call it
-shipped.
+The avatar was published as an opt-in presentation lane on 2026-09-03
+(HISTORY#063), superseding this snapshot's claim that it is local only. It is
+inert unless the operator sets `GHOST_AVATAR` or `GHOST_AVATAR_WS`, and it
+remains unqualified: no evaluation covers it and it cannot promote core
+maturity.
 
 ## Licensing and company boundary
 

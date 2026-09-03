@@ -20,11 +20,13 @@ dependencies = [
   # condition. Execution state only; SEAM remains the semantic memory.
   "langgraph-checkpoint-sqlite>=3.1,<4",
   "httpx>=0.27,<1",
+  "websockets>=15,<16",
   "python-dotenv>=1.1,<2",
 ]
 
 [project.scripts]
 ghost = "ghost.cli:main"
+ghost-avatar = "ghost.avatar.runner:main"
 
 [dependency-groups]
 dev = [
@@ -95,6 +97,12 @@ select = [
 "tools/branding/assets.py" = ["S603", "S607"]
 # Continuity tools invoke only the current interpreter or fixed Git subcommands;
 # subprocess use is the operator-facing feature and receives no model input.
+# Desktop sensor interacts with X11 utilities (xwininfo, xrandr, xdg-open).
+"src/ghost/avatar/sensor.py" = ["S603", "S607", "S110"]
+# The avatar runner prints status and starts browser/overlay subprocesses.
+"src/ghost/avatar/runner.py" = ["T201", "S603", "S607"]
+# Overlay hook swallows connection errors so a missing avatar never kills a turn.
+"src/ghost/avatar/hook.py" = ["S110"]
 "tools/history/closeout.py" = ["S603"]
 "tools/history/model.py" = ["S603", "S607"]
 "tools/history/write_snapshot.py" = ["S603", "S607"]

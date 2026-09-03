@@ -110,7 +110,7 @@ Ghost/
 │   ├── config.py              environment parsing and bounds
 │   ├── context.py             per-invocation transient context
 │   ├── cli.py                 console operator interface
-│   └── avatar/                local unmerged avatar lane
+│   └── avatar/                opt-in desktop avatar presentation lane
 ├── tests/                     provider-free and live verification
 ├── tools/
 │   ├── branding/              deterministic asset tooling
@@ -313,9 +313,9 @@ The repository-neutral Temporal Chain starter under
 `templates/temporal-chain/` reproduces this core path for other repositories. SEAM's routing and stream
 split is an optional scale layer, not a prerequisite for the append-only core.
 
-## Local avatar lane
+## Desktop avatar lane
 
-The current working tree contains an additional unmerged path:
+An opt-in presentation lane, inert unless the operator enables it:
 
 ```text
 Ghost CLI ──WebSocket──► AvatarBridge ──► browser overlay / desktop sensor

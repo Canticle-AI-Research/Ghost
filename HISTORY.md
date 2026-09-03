@@ -1608,3 +1608,49 @@ promotion surface SEAM exposes remains unused. The repair is program phase P2.
 No memory default was changed, no admission behavior was altered, and no
 capability claim is made for the flagging check.
 
+## HISTORY#063 — Desktop avatar ported onto current main and published
+
+- Date: `2026-09-03T00:00:00-05:00`
+- Agent: `claude`
+- Status: `done`
+- Topics: `avatar, build, cli, config, docs, packaging, status, tests, tools`
+- Commits: `working-tree`
+- Refs: `src/ghost/avatar/, tests/test_avatar.py, tools/export_ghost_glb.py, tools/make_galaxy_sprite.py, assets/avatar/README.md, docs/operations/CONFIGURATION.md, docs/architecture/AVATAR_SYSTEM.md`
+- Supersedes: `none`
+- Verification: `uv run pytest passed 366 provider-free tests with 8 live tests deselected, including 19 avatar tests; uv run ruff check . passed; uv build --wheel built canticle_ghost-0.1.0 and the wheel was inspected to confirm the three overlay front-end files under src/ghost/avatar/overlay/ are packaged; no runtime, provider, live SEAM, release, deployment, or GTK/browser avatar lane ran`
+
+The avatar subsystem had been untracked in the primary checkout since
+2026-08-21 while `main` advanced twenty-three commits, so it was drifting
+against a Ghost that no longer existed. This entry ports it onto current main
+rather than restoring the branch it was written on.
+
+The port was cheaper than the drift suggested because the coupling is
+one-directional: no module under `src/ghost/avatar/` imports Ghost's core, and
+only `cli.py` imports the avatar. The integration was re-applied to the current
+`cli.py`, which had since gained the memory and checkpoint subcommands and the
+lifeline approval, and `_run_turn` reaches `notify_turn_end` on the failure
+path so an interrupted turn cannot leave the avatar stuck thinking.
+
+Asset selection is deliberate and is recorded because it is irreversible.
+`assets/` held roughly 30MB, of which the code references three sprites. The
+remainder are candidate iterations -- the option sets, the numbered blob and
+bunny renders, and the Meshy intermediates -- that were the input to a
+selection already made in favour of the B2 direction. This repository is public
+and its history is permanent, so the three referenced sprites are tracked while
+the candidates are excluded by repository ignore rules and explained in
+`assets/avatar/README.md`. They remain on the originating machine.
+
+The five avatar environment variables that had been failing the documentation
+drift gate since the work went untracked are now documented, which clears the
+two failing tests the audit recorded in HISTORY#061.
+
+A packaging boundary was checked rather than assumed. The shipped
+`ghost-avatar` entry point resolves its overlay package-relative and the wheel
+carries it. The GTK desktop pet is not equivalent: it needs PyGObject, which is
+not a declared dependency, and resolves sprites relative to the repository
+root, so it is a source-checkout tool. `AVATAR_SYSTEM.md` now says so.
+
+The avatar is published as an opt-in presentation lane, inert unless the
+operator sets `GHOST_AVATAR` or `GHOST_AVATAR_WS`. It is not qualified: no
+evaluation covers it, it never decides whether a turn succeeded, and it cannot
+promote core maturity.
