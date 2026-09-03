@@ -101,6 +101,7 @@ Ghost/
 │   ├── application.py         framework/model/checkpoint adapter
 │   ├── command_result.py      framework-free shell-result truth
 │   ├── lifecycle.py           framework-free turn contract
+│   ├── lifeline.py            Ghost's own substrate, named and flagged
 │   ├── memory_policy.py       deterministic admission classifier
 │   ├── seam_memory.py         opaque public HTTP boundary
 │   ├── middleware.py          transient recall injection

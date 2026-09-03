@@ -39,6 +39,7 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [architecture/SPECIALIST_CONTRACT.md](architecture/SPECIALIST_CONTRACT.md) | bounded specialist envelopes, authority, provenance, and terminal states |
 | [architecture/AVATAR_SYSTEM.md](architecture/AVATAR_SYSTEM.md) | local desktop-avatar architecture and status |
 | [concepts/SECOND_BRAIN.md](concepts/SECOND_BRAIN.md) | second-brain definition and limits |
+| [concepts/LIFELINE.md](concepts/LIFELINE.md) | Ghost's substrate, the operator-authority clause, and acute versus chronic memory loss |
 
 ## Operations and commands
 

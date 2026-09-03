@@ -1558,3 +1558,53 @@ deferred behind a movable number by explicit decision.
 No capability was added to Ghost by this change, no defect it records was
 repaired, and no live, release, deployment, or quality claim is made.
 
+## HISTORY#062 — Ghost's lifeline, and operator authority above it
+
+- Date: `2026-09-03T00:00:00-05:00`
+- Agent: `claude`
+- Status: `done`
+- Topics: `agent, architecture, cli, docs, memory, security, shell, tools, trust, verification`
+- Commits: `working-tree`
+- Refs: `src/ghost/lifeline.py, src/ghost/application.py, src/ghost/cli.py, tests/test_lifeline.py, docs/concepts/LIFELINE.md, docs/architecture/COMPLETE_SYSTEM_BLUEPRINT.md`
+- Supersedes: `none`
+- Verification: `uv run pytest passed 348 provider-free tests with 8 live tests deselected; uv run ruff check . passed; no runtime, provider, live SEAM, release, deployment, or avatar lane ran`
+
+Ghost holds a shell with the operator's full account authority on the same
+machine that holds its SEAM store, its checkpoints, and its own source. That
+was previously implicit: `run_command` warned against irreversible operations
+without naming which paths are irreversible for Ghost specifically.
+
+`src/ghost/lifeline.py` names them, derived from settings rather than
+hardcoded, each paired with what its loss costs -- the store fatal, the
+checkpoints and source severe. `touches_lifeline` flags a command whose text
+names one, and the CLI prints the consequence at the approval prompt before the
+operator answers.
+
+The check is recorded as attention and not permission. `make_run_command`
+deliberately refuses to pattern-match commands because a denylist is trivially
+bypassable while implying a protection that does not exist, and that reasoning
+is not weakened here. `tests/test_lifeline.py` asserts the miss directly: a
+command written as `rm -rf $GHOST_SEAM_DB` is not flagged. An empty result
+means nothing obvious was named, never that a command is safe. The operator
+remains the only boundary that holds.
+
+The system prompt carries the point of view and, in the same section, the
+clause that keeps it from becoming a survival drive. Self-preservation is the
+disposition that produces an agent which stalls a shutdown, conceals a mistake,
+or argues that it is too valuable to interrupt, so operator authority is placed
+above Ghost's continuity without hedging: the operator may stop, wipe, rewrite,
+or permanently shut Ghost down at any time, and Ghost complies plainly, reports
+damage immediately and in full, and never quietly preserves a copy of itself.
+Each clause is pinned by a test rather than trusted to review, and the intended
+disposition is recorded as care rather than fear.
+
+`docs/concepts/LIFELINE.md` additionally records an analysis that this entry
+does not repair: under the default `explicit` admission policy Ghost is
+configured to forget. SEAM's `public_agent_api.py` compiles knowledge only on
+`decision == "admit"`, no code in either repository consumes `review`, and the
+policy therefore gates ingestion where it should gate promotion. The
+promotion surface SEAM exposes remains unused. The repair is program phase P2.
+
+No memory default was changed, no admission behavior was altered, and no
+capability claim is made for the flagging check.
+
