@@ -3,12 +3,14 @@
 > Derived from `HISTORY.md`; do not edit by hand. Regenerate with
 > `uv run python -m tools.history.rebuild_index`.
 
-- Source SHA-256: `29178197a3defb9b86f14096792fe3c1a9e6a7973cdaae46c0fa48b2480f993c`
-- Entries: `60`
-- Latest: `HISTORY#060`
+- Source SHA-256: `76f3155503406cd7c9f85c6957fe937416d1db87ea06157a118c884c2a892468`
+- Entries: `62`
+- Latest: `HISTORY#062`
 
 | ID | Date | Status | Commit | Topics | Supersedes | Event |
 |---:|---|---|---|---|---|---|
+| 062 | 2026-09-03 | done | `working-tree` | agent, architecture, cli, docs, memory, security, shell, tools, trust, verification | — | Ghost's lifeline, and operator authority above it |
+| 061 | 2026-09-03 | done | `working-tree` | agent, architecture, correction, docs, evaluation, gates, memory, operations, roadmap, tools, verification | — | Capability-versus-provenance audit and the benchmark-gated autopilot loop |
 | 060 | 2026-08-28 | done | `working-tree` | architecture, ci, continuity, docs, gates, handoff, history, memory, operations, provenance, security, status, tools, trust, verification | #059 | Publish heartbeat action-journal design evidence |
 | 059 | 2026-08-27 | in-progress | `working-tree` | architecture, continuity, docs, handoff, history, memory, operations, provenance, security, tools, trust, verification | #058 | Specify heartbeat action reconciliation |
 | 058 | 2026-08-27 | done | `2a85aab6e069` | architecture, ci, continuity, docs, gates, handoff, history, memory, provenance, security, status, tests, tools, trust, verification | #057 | Publish current-turn action-provenance boundaries |

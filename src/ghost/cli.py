@@ -6,13 +6,14 @@ import argparse
 import hashlib
 import json
 import sys
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from pathlib import Path
 
 from dotenv import load_dotenv
 
 from .application import GhostAgent
 from .config import GhostSettings
+from .lifeline import LifelineComponent, lifeline, touches_lifeline
 from .operations import backup_checkpoint, restore_checkpoint, verify_checkpoint
 from .seam_memory import SeamMemory, SeamTransportError
 
@@ -155,6 +156,31 @@ def _run_checkpoint_command(args: argparse.Namespace, settings: GhostSettings) -
     return 0
 
 
+def _lifeline_approval(
+    components: Sequence[LifelineComponent],
+) -> Callable[[str], bool]:
+    """Approval that says out loud when a command names Ghost's own substrate.
+
+    The check is deliberately shallow -- see `ghost.lifeline.touches_lifeline`,
+    which explains why anything deeper would be theatre. Its value is entirely
+    in what the operator sees before answering: a command naming the SEAM store
+    reads very differently from the same command with no annotation, and the
+    operator is the boundary that actually holds.
+    """
+
+    def approve(command: str) -> bool:
+        for component in touches_lifeline(command, components):
+            print(
+                f"\n  !! this command names Ghost's {component.name} "
+                f"({component.severity}) at {component.path}\n"
+                f"     losing it loses {component.loses}",
+                file=sys.stderr,
+            )
+        return _terminal_approval(command)
+
+    return approve
+
+
 def _terminal_approval(command: str) -> bool:
     """Ask the operator before Ghost runs a command.
 
@@ -196,7 +222,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"shell enabled in {where}, {gate}.", file=sys.stderr)
 
     try:
-        with GhostAgent(settings, approve=_terminal_approval) as ghost:
+        with GhostAgent(
+            settings, approve=_lifeline_approval(lifeline(settings))
+        ) as ghost:
             if args.prompt:
                 print(ghost.invoke(" ".join(args.prompt), thread_id=args.thread_id))
                 return 0

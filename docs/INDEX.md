@@ -24,6 +24,7 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [product/REBUILD_BLUEPRINT.md](product/REBUILD_BLUEPRINT.md) | zero-to-working-system reconstruction | current |
 | [status/CURRENT_STATE.md](status/CURRENT_STATE.md) | detailed checkout/remote/maturity state | current |
 | [roadmap/SECOND_BRAIN_ROADMAP.md](roadmap/SECOND_BRAIN_ROADMAP.md) | dependency-ordered roadmap and gates | current |
+| [roadmap/AUTOPILOT_PROGRAM.md](roadmap/AUTOPILOT_PROGRAM.md) | dependency-ordered autopilot build program and phase gates | current |
 
 ## Architecture
 
@@ -38,6 +39,7 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [architecture/SPECIALIST_CONTRACT.md](architecture/SPECIALIST_CONTRACT.md) | bounded specialist envelopes, authority, provenance, and terminal states |
 | [architecture/AVATAR_SYSTEM.md](architecture/AVATAR_SYSTEM.md) | local desktop-avatar architecture and status |
 | [concepts/SECOND_BRAIN.md](concepts/SECOND_BRAIN.md) | second-brain definition and limits |
+| [concepts/LIFELINE.md](concepts/LIFELINE.md) | Ghost's substrate, the operator-authority clause, and acute versus chronic memory loss |
 
 ## Operations and commands
 
@@ -53,6 +55,7 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [operations/AGENT_HARNESSES.md](operations/AGENT_HARNESSES.md) | running Ghost's persona across Claude, Codex, Grok, and Antigravity |
 | [operations/RELEASE_AND_DEPLOYMENT.md](operations/RELEASE_AND_DEPLOYMENT.md) | build, package, release, runner, deployment gates |
 | [operations/RECOVERY_AND_OBSERVABILITY.md](operations/RECOVERY_AND_OBSERVABILITY.md) | checkpoint backup/restore, health, telemetry, and incident boundaries |
+| [operations/AUTOPILOT_LOOP.md](operations/AUTOPILOT_LOOP.md) | the autonomous build cycle and the benchmark gate that keeps it honest |
 
 ## Security and trust
 
@@ -125,6 +128,7 @@ learning surface is [the Ghost engineering wiki](README.md).
 | [handoffs/2026-08-25-documentation-foundation.md](handoffs/2026-08-25-documentation-foundation.md) | locally qualified documentation predecessor |
 | [handoffs/2026-08-21-desktop-pet.md](handoffs/2026-08-21-desktop-pet.md) | registered predecessor avatar boundary |
 | [audits/INDEX.md](audits/INDEX.md) | dated audit registry |
+| [audits/2026-09-03-capability-versus-provenance-audit.md](audits/2026-09-03-capability-versus-provenance-audit.md) | frozen tool roster, unmovable benchmark score, unrunnable SEAM path, and repository sprawl |
 | [audits/2026-08-27-action-provenance-boundaries.md](audits/2026-08-27-action-provenance-boundaries.md) | current-turn extraction, strict SEAM egress, real checkpoint regressions, and GPROV-001 crash-window report |
 | [audits/2026-08-27-gtool-002-shell-result-truth.md](audits/2026-08-27-gtool-002-shell-result-truth.md) | GTOOL-002 typed command-result and fail-closed lifecycle closure report |
 | [audits/2026-08-27-structural-remediation-ledger.md](audits/2026-08-27-structural-remediation-ledger.md) | unified structural defects, benchmark gaps, improvements, TODOs, and dependency-ordered course of action |

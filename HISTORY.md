@@ -1514,3 +1514,96 @@ This successor makes the published design, its evidence, and its explicit
 operator-review-before-planning boundary the single current handoff. The
 publication does not implement GPROV-001 or make a release, deployment,
 provider-live, quality, production, or universally exactly-once claim.
+
+## HISTORY#061 — Capability-versus-provenance audit and the benchmark-gated autopilot loop
+
+- Date: `2026-09-03T00:00:00-05:00`
+- Agent: `claude`
+- Status: `done`
+- Topics: `agent, architecture, correction, docs, evaluation, gates, memory, operations, roadmap, tools, verification`
+- Commits: `working-tree`
+- Refs: `docs/audits/2026-09-03-capability-versus-provenance-audit.md, docs/roadmap/AUTOPILOT_PROGRAM.md, docs/operations/AUTOPILOT_LOOP.md, tools/autopilot/gate.py, tests/test_autopilot_gate.py`
+- Supersedes: `none`
+- Verification: `uv run pytest passed 332 provider-free tests with 8 live tests deselected; uv run ruff check tools/autopilot tests/test_autopilot_gate.py passed; uv run python -m tools.history.verify_continuity verified 60 entries with facts audited; uv run python -m tools.evaluation smoke sealed a bundle reporting ghost-memory pass_rate 1.0, no-memory pass_rate 0.5, task_success_delta 0.5, evaluator deterministic-contract-stub/1, claimable false; uv run python -m tools.autopilot.gate refused a capability claim against that bundle with exit 1; no runtime, provider, live SEAM, release, deployment, or avatar lane ran`
+
+An audit of the first autonomous development run found that twenty-nine merged
+pull requests grew the evidence around Ghost's tools without growing the tools.
+The roster is unchanged since the first release: `seam_recall`, `read_file`,
+`search_repo`, and `run_command`, with `WRITE_TOOLS` still a single entry. The
+cause recorded is the rubric rather than the work — `AGENTS.md` governs
+provenance and states no capability obligation, so an agent optimizing it
+produces provenance.
+
+Four further findings are recorded. The frozen Stage 1 score cannot move: the
+candidate arm sits at a saturated 1.0 against answers stored as literals in the
+fixture, so `task_success_delta` is a constant and gating on it unchanged would
+pass every cycle. Ghost cannot presently execute a turn, because `seam_memory`
+is now an opaque HTTP client and no SEAM service listens on the configured
+`127.0.0.1:8765` while pgvector is up on 55432. `specialists.py` remains a
+complete, tested contract that nothing imports. The primary checkout was
+nineteen commits behind `origin/main`, carried two failing documentation-drift
+tests from uncommitted avatar work, and had accumulated eleven sibling
+worktrees under `Documents/Projects/` against a standing operator instruction.
+
+This entry adds the correction rather than applying it. `tools/autopilot/gate.py`
+decides mechanically whether one cycle counted: safety is a ratchet across every
+cycle kind, a capability cycle is refused when the evaluator is non-scoring or
+the arm is saturated, a substrate cycle must change the measurement, and
+consecutive substrate cycles are budgeted. `AUTOPILOT_PROGRAM.md` orders the
+work — reconcile and make runnable, make the number real, wire SEAM's unused
+promotion, graph-product, and recoverable-operation surface, then run Ghost
+against the Seam repository on the `seam-box` runner. Specialist activation is
+deferred behind a movable number by explicit decision.
+
+No capability was added to Ghost by this change, no defect it records was
+repaired, and no live, release, deployment, or quality claim is made.
+
+## HISTORY#062 — Ghost's lifeline, and operator authority above it
+
+- Date: `2026-09-03T00:00:00-05:00`
+- Agent: `claude`
+- Status: `done`
+- Topics: `agent, architecture, cli, docs, memory, security, shell, tools, trust, verification`
+- Commits: `working-tree`
+- Refs: `src/ghost/lifeline.py, src/ghost/application.py, src/ghost/cli.py, tests/test_lifeline.py, docs/concepts/LIFELINE.md, docs/architecture/COMPLETE_SYSTEM_BLUEPRINT.md`
+- Supersedes: `none`
+- Verification: `uv run pytest passed 348 provider-free tests with 8 live tests deselected; uv run ruff check . passed; no runtime, provider, live SEAM, release, deployment, or avatar lane ran`
+
+Ghost holds a shell with the operator's full account authority on the same
+machine that holds its SEAM store, its checkpoints, and its own source. That
+was previously implicit: `run_command` warned against irreversible operations
+without naming which paths are irreversible for Ghost specifically.
+
+`src/ghost/lifeline.py` names them, derived from settings rather than
+hardcoded, each paired with what its loss costs -- the store fatal, the
+checkpoints and source severe. `touches_lifeline` flags a command whose text
+names one, and the CLI prints the consequence at the approval prompt before the
+operator answers.
+
+The check is recorded as attention and not permission. `make_run_command`
+deliberately refuses to pattern-match commands because a denylist is trivially
+bypassable while implying a protection that does not exist, and that reasoning
+is not weakened here. `tests/test_lifeline.py` asserts the miss directly: a
+command written as `rm -rf $GHOST_SEAM_DB` is not flagged. An empty result
+means nothing obvious was named, never that a command is safe. The operator
+remains the only boundary that holds.
+
+The system prompt carries the point of view and, in the same section, the
+clause that keeps it from becoming a survival drive. Self-preservation is the
+disposition that produces an agent which stalls a shutdown, conceals a mistake,
+or argues that it is too valuable to interrupt, so operator authority is placed
+above Ghost's continuity without hedging: the operator may stop, wipe, rewrite,
+or permanently shut Ghost down at any time, and Ghost complies plainly, reports
+damage immediately and in full, and never quietly preserves a copy of itself.
+Each clause is pinned by a test rather than trusted to review, and the intended
+disposition is recorded as care rather than fear.
+
+`docs/concepts/LIFELINE.md` additionally records an analysis that this entry
+does not repair: under the default `explicit` admission policy Ghost is
+configured to forget. SEAM's `public_agent_api.py` compiles knowledge only on
+`decision == "admit"`, no code in either repository consumes `review`, and the
+policy therefore gates ingestion where it should gate promotion. The
+promotion surface SEAM exposes remains unused. The repair is program phase P2.
+
+No memory default was changed, no admission behavior was altered, and no
+capability claim is made for the flagging check.
