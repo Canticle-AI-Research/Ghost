@@ -1654,4 +1654,3 @@ The avatar is published as an opt-in presentation lane, inert unless the
 operator sets `GHOST_AVATAR` or `GHOST_AVATAR_WS`. It is not qualified: no
 evaluation covers it, it never decides whether a turn succeeded, and it cannot
 promote core maturity.
-
