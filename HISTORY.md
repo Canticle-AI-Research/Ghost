@@ -1514,3 +1514,47 @@ This successor makes the published design, its evidence, and its explicit
 operator-review-before-planning boundary the single current handoff. The
 publication does not implement GPROV-001 or make a release, deployment,
 provider-live, quality, production, or universally exactly-once claim.
+
+## HISTORY#061 — Capability-versus-provenance audit and the benchmark-gated autopilot loop
+
+- Date: `2026-09-03T00:00:00-05:00`
+- Agent: `claude`
+- Status: `done`
+- Topics: `agent, architecture, correction, docs, evaluation, gates, memory, operations, roadmap, tools, verification`
+- Commits: `working-tree`
+- Refs: `docs/audits/2026-09-03-capability-versus-provenance-audit.md, docs/roadmap/AUTOPILOT_PROGRAM.md, docs/operations/AUTOPILOT_LOOP.md, tools/autopilot/gate.py, tests/test_autopilot_gate.py`
+- Supersedes: `none`
+- Verification: `uv run pytest passed 332 provider-free tests with 8 live tests deselected; uv run ruff check tools/autopilot tests/test_autopilot_gate.py passed; uv run python -m tools.history.verify_continuity verified 60 entries with facts audited; uv run python -m tools.evaluation smoke sealed a bundle reporting ghost-memory pass_rate 1.0, no-memory pass_rate 0.5, task_success_delta 0.5, evaluator deterministic-contract-stub/1, claimable false; uv run python -m tools.autopilot.gate refused a capability claim against that bundle with exit 1; no runtime, provider, live SEAM, release, deployment, or avatar lane ran`
+
+An audit of the first autonomous development run found that twenty-nine merged
+pull requests grew the evidence around Ghost's tools without growing the tools.
+The roster is unchanged since the first release: `seam_recall`, `read_file`,
+`search_repo`, and `run_command`, with `WRITE_TOOLS` still a single entry. The
+cause recorded is the rubric rather than the work — `AGENTS.md` governs
+provenance and states no capability obligation, so an agent optimizing it
+produces provenance.
+
+Four further findings are recorded. The frozen Stage 1 score cannot move: the
+candidate arm sits at a saturated 1.0 against answers stored as literals in the
+fixture, so `task_success_delta` is a constant and gating on it unchanged would
+pass every cycle. Ghost cannot presently execute a turn, because `seam_memory`
+is now an opaque HTTP client and no SEAM service listens on the configured
+`127.0.0.1:8765` while pgvector is up on 55432. `specialists.py` remains a
+complete, tested contract that nothing imports. The primary checkout was
+nineteen commits behind `origin/main`, carried two failing documentation-drift
+tests from uncommitted avatar work, and had accumulated eleven sibling
+worktrees under `Documents/Projects/` against a standing operator instruction.
+
+This entry adds the correction rather than applying it. `tools/autopilot/gate.py`
+decides mechanically whether one cycle counted: safety is a ratchet across every
+cycle kind, a capability cycle is refused when the evaluator is non-scoring or
+the arm is saturated, a substrate cycle must change the measurement, and
+consecutive substrate cycles are budgeted. `AUTOPILOT_PROGRAM.md` orders the
+work — reconcile and make runnable, make the number real, wire SEAM's unused
+promotion, graph-product, and recoverable-operation surface, then run Ghost
+against the Seam repository on the `seam-box` runner. Specialist activation is
+deferred behind a movable number by explicit decision.
+
+No capability was added to Ghost by this change, no defect it records was
+repaired, and no live, release, deployment, or quality claim is made.
+

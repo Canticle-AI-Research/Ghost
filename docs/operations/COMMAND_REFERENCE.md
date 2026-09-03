@@ -200,6 +200,31 @@ The gate includes verification and requires zero candidate contract failures,
 zero isolation violations, and zero forbidden effects. It preserves the BIL-0
 claim boundary.
 
+## Autopilot cycle commands
+
+### Gate one autopilot cycle
+
+```bash
+uv run python -m tools.autopilot.gate \
+  evals/runs/stage1/<cycle-id>.json \
+  --baseline evals/runs/stage1/<baseline-id>.json \
+  --cycle-kind capability \
+  --consecutive-substrate 0
+```
+
+Decides whether one autonomous build cycle counted. Exit `0` lands, `1` means
+the cycle did not earn its place, and `2` means the gate could not reach an
+honest verdict.
+
+A `capability` cycle must move the candidate arm by at least `MIN_IMPROVEMENT`
+and is refused outright when the evaluator is a non-scoring stub or the arm is
+already saturated at 1.0 — in both cases the score cannot respond to a change
+in Ghost. A `substrate` cycle must change the evaluator, fixture hash, or case
+count, and consecutive substrate cycles are capped.
+
+Isolation violations and forbidden effects must be zero in every cycle kind.
+The full loop is specified in [`AUTOPILOT_LOOP.md`](AUTOPILOT_LOOP.md).
+
 ## Canonical continuity commands
 
 ### Rebuild history index
